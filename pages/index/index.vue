@@ -1,9 +1,12 @@
 <template>
 	<view class="content">
-		<image class="logo" src="/static/logo.png"></image>
-		<view class="text-area">
-			<text class="title">{{title}}</text>
-			<uni-calendar></uni-calendar>
+		<view class="identity-card">
+			<uni-icons custom-prefix="iconfont" type="icon-xuesheng" size="40" color="#f3fec3"></uni-icons>
+			<text class="card-text">我是学生</text>
+		</view> 
+		<view class="identity-card">
+			<uni-icons custom-prefix="iconfont" type="icon-shangkelaoshiwo" size="40" color="#f3fec3"></uni-icons>
+			<text class="card-text">我是老师</text>
 		</view>
 	</view>
 </template>
@@ -25,29 +28,25 @@
 </script>
 
 <style>
-	.content {
+	.identity-card {
 		display: flex;
-		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		width: 660upx;
+		height: 250upx;
+		margin: 100upx auto;
+		background: url("https://www.jxnu.edu.cn/_upload/site/00/05/5/logo.png") 500upx 50upx no-repeat;
+		background-color: #a13838;
+		border-radius: 20upx;
+		color: #f3fec3;
+		text-shadow: #ffffce;
+		font-size: 40upx;
+		box-shadow: 0px 1px 10px 2px rgba($color: #a5a4a4, $alpha: 0.5);
 	}
-
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin-top: 200rpx;
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 50rpx;
+	.identity-card:hover{
+		color: white;
 	}
-
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
-
-	.title {
-		font-size: 36rpx;
-		color: #8f8f94;
+	.card-text{
+		margin-left: 40upx;
 	}
 </style>
