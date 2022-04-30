@@ -13,12 +13,18 @@
 			"style": {
 				"navigationBarTitleText": "请假系统"
 			}
+		},
+		{
+			"path": "pages/login/login",
+			"style": {
+				"navigationBarTitleText": "登录-请假系统"
+			}
 		}
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "请假系统",
-		"navigationBarBackgroundColor": "#a13838",
+		"navigationBarBackgroundColor": "#1b478e",
 		"backgroundColor": "#F8F8F8"
 	}
 }
