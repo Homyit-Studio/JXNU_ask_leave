@@ -40,7 +40,6 @@
 		width: 660upx;
 		height: 250upx;
 		margin: 150upx auto;
-		background: url("https://bkimg.cdn.bcebos.com/pic/b21c8701a18b87d6473830f5000828381e30fde6")no-repeat;
 		background-size: 100upx;
 		background-color: #1b478e;
 		border-radius: 20upx;

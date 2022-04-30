@@ -8,26 +8,26 @@
 			<text class="uni-h6">账号登录</text>
 		</view>
 		<view class="login-form" v-if="optionChoose">
-			<uni-forms ref="baseForm" :modelValue="loginFormData">
-				<uni-forms-item>
-					<uni-easyinput prefixIcon=".uniui-person-filled" v-model="loginFormData.studentNumber" placeholder="请输入工号或学号" />
+			<uni-forms ref="studentForm" :rules="studentRules" :modelValue="loginFormData" validateTrigger="submit">
+				<uni-forms-item name="studentNumber">
+					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.studentNumber" placeholder="请输入工号或学号" />
 				</uni-forms-item>
-				<uni-forms-item>
-					<uni-easyinput prefixIcon=".uniui-locked-filled" v-model="loginFormData.password" placeholder="请输入登录密码" />
+				<uni-forms-item name="password">
+					<uni-easyinput type="password" prefixIcon=".uniui-locked-filled" v-model="loginFormData.password" placeholder="请输入登录密码" />
 				</uni-forms-item>
 			</uni-forms>
-			<button type="default" class="button" @click="loginSubmit">提交</button>
+			<button type="default" class="button" @click="loginSubmit('studentForm')">提交</button>
 		</view>
 		<view class="login-form" v-else>
-			<uni-forms ref="baseForm" :modelValue="loginFormData">
-				<uni-forms-item>
-					<uni-easyinput prefixIcon=".uniui-person-filled" v-model="loginFormData.teacherNumber" placeholder="请输入工号或学号" />
+			<uni-forms ref="teacherForm" :rules="teacherRules" :modelValue="loginFormData">
+				<uni-forms-item name="teacherNumber">
+					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.teacherNumber" placeholder="请输入工号或学号" />
 				</uni-forms-item>
-				<uni-forms-item>
-					<uni-easyinput prefixIcon=".uniui-locked-filled" v-model="loginFormData.password" placeholder="请输入登录密码" />
+				<uni-forms-item name="password">
+					<uni-easyinput type="password" prefixIcon=".uniui-locked-filled" v-model="loginFormData.password" placeholder="请输入登录密码" />
 				</uni-forms-item>
 			</uni-forms>
-			<button type="default" class="button" @click="loginSubmit">提交</button>
+			<button type="default" class="button" @click="loginSubmit('teacherForm')">提交</button>
 		</view>
 	</view>
 </template>
@@ -37,6 +37,34 @@
 		data() {
 			return {
 				loginFormData:{
+				},
+				studentRules:{
+					"studentNumber":{
+						rules:[{
+							required: true,
+							errorMessage: "请输入正确的学号"
+						}]
+					},
+					"password":{
+						rules:[{
+							required: true,
+							errorMessage: "请输入正确的密码"
+						}]
+					}
+				},
+				teacherRules:{
+					"teacherNumber":{
+						rules:[{
+							required: true,
+							errorMessage: "请输入正确的工号"
+						}]
+					},
+					"password":{
+						rules:[{
+							required: true,
+							errorMessage: "请输入正确的密码"
+						}]
+					}
 				},
 				optionChoose: ""
 			}
@@ -61,8 +89,15 @@
 					}
 				}
 			},
-			loginSubmit(){
-				console.log(this.loginFormData)
+			loginSubmit(ref){
+				console.log(ref)
+				this.$refs[ref].validate().then(res => {
+					uni.showToast({
+						title: "登录成功，请稍等.."
+					})
+				}).catch(err => {
+					console.log('err'+err);
+				})
 			}
 		}
 	}
@@ -85,6 +120,7 @@
 			text-align: center;
 			width: 700rpx;
 			margin-bottom: 40rpx;
+			font-size: $jxnu-font-14;
 		}
 	}
 	
@@ -98,6 +134,7 @@
 			background-color: $jxnu-bg-color;
 			color: $uni-text-color-inverse;
 			border-radius: 100rpx;
+			font-size: $jxnu-font-14;
 		}
 	}
 </style>
