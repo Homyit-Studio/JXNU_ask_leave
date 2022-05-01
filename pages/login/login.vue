@@ -95,6 +95,13 @@
 					uni.showToast({
 						title: "登录成功，请稍等.."
 					})
+					setTimeout(()=>{
+						if(ref === "studentForm"){
+							uni.navigateTo({
+								url:'/pages/studentHome/studentHome'
+							})
+						}
+					}, 1000);
 				}).catch(err => {
 					console.log('err'+err);
 				})
