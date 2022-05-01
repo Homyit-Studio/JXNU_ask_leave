@@ -1,0 +1,140 @@
+<template>
+	<view class="login-content">
+		<view>
+			<image class="login-img" src="https://uis.jxnu.edu.cn/cas/file/png/logoM.png" lazy-load mode="aspectFit"
+				fade-show></image>
+		</view>
+		<view class="login-card">
+			<text class="uni-h6">账号登录</text>
+		</view>
+		<view class="login-form" v-if="optionChoose">
+			<uni-forms ref="studentForm" :rules="studentRules" :modelValue="loginFormData" validateTrigger="submit">
+				<uni-forms-item name="studentNumber">
+					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.studentNumber" placeholder="请输入工号或学号" />
+				</uni-forms-item>
+				<uni-forms-item name="password">
+					<uni-easyinput type="password" prefixIcon=".uniui-locked-filled" v-model="loginFormData.password" placeholder="请输入登录密码" />
+				</uni-forms-item>
+			</uni-forms>
+			<button type="default" class="button" @click="loginSubmit('studentForm')">提交</button>
+		</view>
+		<view class="login-form" v-else>
+			<uni-forms ref="teacherForm" :rules="teacherRules" :modelValue="loginFormData">
+				<uni-forms-item name="teacherNumber">
+					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.teacherNumber" placeholder="请输入工号或学号" />
+				</uni-forms-item>
+				<uni-forms-item name="password">
+					<uni-easyinput type="password" prefixIcon=".uniui-locked-filled" v-model="loginFormData.password" placeholder="请输入登录密码" />
+				</uni-forms-item>
+			</uni-forms>
+			<button type="default" class="button" @click="loginSubmit('teacherForm')">提交</button>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				loginFormData:{
+				},
+				studentRules:{
+					"studentNumber":{
+						rules:[{
+							required: true,
+							errorMessage: "请输入正确的学号"
+						}]
+					},
+					"password":{
+						rules:[{
+							required: true,
+							errorMessage: "请输入正确的密码"
+						}]
+					}
+				},
+				teacherRules:{
+					"teacherNumber":{
+						rules:[{
+							required: true,
+							errorMessage: "请输入正确的工号"
+						}]
+					},
+					"password":{
+						rules:[{
+							required: true,
+							errorMessage: "请输入正确的密码"
+						}]
+					}
+				},
+				optionChoose: ""
+			}
+		},
+		onLoad(option) {
+			this.optionChoose = option.card == "student" ? true : false
+			this.cardChoose(option.card)
+		},
+		computed:{
+		},
+		methods: {
+			cardChoose(card){
+				if(card == "student"){
+					this.loginFormData = {
+						"studentNumber":null,
+						"password":""
+					}
+				}else{
+					this.loginFormData = {
+						"teacherNumber":null,
+						"password":""
+					}
+				}
+			},
+			loginSubmit(ref){
+				console.log(ref)
+				this.$refs[ref].validate().then(res => {
+					uni.showToast({
+						title: "登录成功，请稍等.."
+					})
+				}).catch(err => {
+					console.log('err'+err);
+				})
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+	.login-content {
+		width: 700rpx;
+		display: flex;
+		justify-content: center;
+		flex-wrap: wrap;
+		margin: 0 auto;
+
+		.login-img {
+			width: 500rpx;
+			height: 200rpx;
+		}
+		.login-card{
+			color: $jxnu-bg-color;
+			text-align: center;
+			width: 700rpx;
+			margin-bottom: 40rpx;
+			font-size: $jxnu-font-14;
+		}
+	}
+	
+	.login-form{
+		.uni-easyinput{
+			width: 650rpx;
+			border-radius: 100rpx;
+		}
+		.button{
+			margin-top: 50rpx;
+			background-color: $jxnu-bg-color;
+			color: $uni-text-color-inverse;
+			border-radius: 100rpx;
+			font-size: $jxnu-font-14;
+		}
+	}
+</style>
