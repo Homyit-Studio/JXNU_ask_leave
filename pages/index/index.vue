@@ -2,7 +2,9 @@
 	<view class="content">
 		<view class="identity-card">
 			<uni-icons custom-prefix="iconfont" type="icon-xuesheng" size="40" color="#f3fec3"></uni-icons>
-			<text class="card-text">我是学生</text>
+			<navigator url="/pages/studentHome/studentHome">
+				<text class="card-text">我是学生</text>
+			</navigator>
 		</view> 
 		<view class="identity-card">
 			<uni-icons custom-prefix="iconfont" type="icon-shangkelaoshiwo" size="40" color="#f3fec3"></uni-icons>
