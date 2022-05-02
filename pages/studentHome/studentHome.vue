@@ -5,6 +5,7 @@
 			<uni-card class="uni-card">
 			    <view class="welcome-box">
 					<text>欢迎，XXXX</text>
+					<uni-icons type="forward" size="20" color="#585858" class="more-icon" @click="showStudentMsg()"></uni-icons>
 			    </view>
 			</uni-card>
 		</view>
@@ -31,6 +32,14 @@
 			    </uni-row>
 			</uni-card>
 		</view>
+		<uni-popup ref="popup" type="bottom">
+			<uni-list>
+				<uni-list-item  title="学号" :rightText="studentMsg.id" ></uni-list-item>
+				<uni-list-item  title="姓名" :rightText="studentMsg.name" ></uni-list-item>
+				<uni-list-item  title="班级" :rightText="studentMsg.class"></uni-list-item>
+				<uni-list-item  title="辅导员" :rightText="studentMsg.instructor"></uni-list-item>
+			</uni-list>
+		</uni-popup>
 	</view>
 </template>
 
@@ -38,9 +47,20 @@
 	export default {
 		data() {
 			return {
-				
+				studentMsg:{
+					id:"123321567",
+					name:'ergou',
+					class:'26级计算机科学与技术5班',
+					instructor:'樊砂砾'
+				}
 			}
 		},
+		methods:{
+			showStudentMsg(){
+				//跳转到学生信息页面
+				this.$refs.popup.open()
+			}
+		}
 	}
 </script>
 
@@ -70,7 +90,7 @@
 			}
 			.btn-style{
 				display: inline-block;
-				margin-right: 35rpx;
+				margin-right: 50rpx;
 				width: 100rpx;
 				height: 100rpx;
 				background-color: $jxnu-bg-color;
@@ -83,6 +103,9 @@
 			}
 			.icon-style{
 				line-height: 100rpx;
+			}
+			.more-icon{
+				float: right;
 			}
 		}
 		
