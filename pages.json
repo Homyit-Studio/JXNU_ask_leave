@@ -1,12 +1,13 @@
 {
 	"easycom": {
-			"autoscan": true,
-			"custom": {
-				//这两种方法都可以成功最好放在components文件下
-				//"uni-(.*)":"@/components/uni/uni-$1/uni-$1.vue"
-				"uni-(.*)": "@/uni_modules/uni-$1/components/uni-$1/uni-$1.vue"
-			}
-		},
+		"autoscan": true,
+		"custom": {
+			//这两种方法都可以成功最好放在components文件下
+			//"uni-(.*)":"@/components/uni/uni-$1/uni-$1.vue"
+			"uni-(.*)": "@/uni_modules/uni-$1/components/uni-$1/uni-$1.vue",
+			"v-(.*)": "/components/v-$1/v-$1.vue"
+		}
+	},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
 			"path": "pages/index/index",
@@ -19,25 +20,61 @@
 			"style": {
 				"navigationBarTitleText": "登录-请假系统"
 			}
+		},
+		{
+			"path": "pages/teacherHome/teacherHome",
+			"style": {
+				"navigationBarTitleText": "教师中心"
+			}
+		}, {
+			"path": "pages/studentHome/studentHome",
+			"style": {
+				"navigationBarTitleText": "学生中心",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/applyLeave/applyLeave",
+			"style": {
+				"navigationBarTitleText": "申请假条",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/handleLeave/handleLeave",
+			"style": {
+				"navigationBarTitleText": "处理假条",
+				"enablePullDownRefresh": false
+			}
+
+		},
+		{
+			"path": "pages/handleLeaveDetail/handleLeaveDetail",
+			"style": {
+				"navigationBarTitleText": "假条处理",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/classList/classList",
+			"style": {
+				"navigationBarTitleText": "班级列表",
+				"enablePullDownRefresh": false
+			}
+		},
+		{
+			"path": "pages/classRoster/classRoster",
+			"style": {
+				"navigationBarTitleText": "班级成员",
+				"enablePullDownRefresh": false,
+				//禁止bounce效果
+				"disableScroll": true,
+				"app-plus": {
+					"bounce": "none"
+				}
+			}
 		}
-	    ,{
-            "path" : "pages/studentHome/studentHome",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "学生中心",
-                "enablePullDownRefresh": false
-            }
-        }
-        ,{
-            "path" : "pages/applyLeave/applyLeave",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "申请假条",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-    ],
+	],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "请假系统",
