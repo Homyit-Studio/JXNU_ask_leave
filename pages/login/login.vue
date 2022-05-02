@@ -95,6 +95,9 @@
 					uni.showToast({
 						title: "登录成功，请稍等.."
 					})
+					uni.navigateTo({
+						url:"../teacherMain/teacherMain"
+					})
 				}).catch(err => {
 					console.log('err'+err);
 				})

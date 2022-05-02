@@ -4,7 +4,8 @@
 			"custom": {
 				//这两种方法都可以成功最好放在components文件下
 				//"uni-(.*)":"@/components/uni/uni-$1/uni-$1.vue"
-				"uni-(.*)": "@/uni_modules/uni-$1/components/uni-$1/uni-$1.vue"
+				"uni-(.*)": "@/uni_modules/uni-$1/components/uni-$1/uni-$1.vue",
+				"v-(.*)": "/components/v-$1/v-$1.vue"
 			}
 		},
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
@@ -18,6 +19,12 @@
 			"path": "pages/login/login",
 			"style": {
 				"navigationBarTitleText": "登录-请假系统"
+			}
+		},
+		{
+			"path": "pages/teacherMain/teacherMain",
+			"style": {
+				"navigationBarTitleText": "请假系统-教师端"
 			}
 		}
 	],
