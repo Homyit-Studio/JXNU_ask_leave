@@ -10,10 +10,12 @@
 		<view class="login-form" v-if="optionChoose">
 			<uni-forms ref="studentForm" :rules="studentRules" :modelValue="loginFormData" validateTrigger="submit">
 				<uni-forms-item name="studentNumber">
-					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.studentNumber" placeholder="请输入工号或学号" />
+					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.studentNumber"
+						placeholder="请输入工号或学号" />
 				</uni-forms-item>
 				<uni-forms-item name="password">
-					<uni-easyinput type="password" prefixIcon=".uniui-locked-filled" v-model="loginFormData.password" placeholder="请输入登录密码" />
+					<uni-easyinput type="password" prefixIcon=".uniui-locked-filled" v-model="loginFormData.password"
+						placeholder="请输入登录密码" />
 				</uni-forms-item>
 			</uni-forms>
 			<button type="default" class="button" @click="loginSubmit('studentForm')">提交</button>
@@ -21,10 +23,12 @@
 		<view class="login-form" v-else>
 			<uni-forms ref="teacherForm" :rules="teacherRules" :modelValue="loginFormData">
 				<uni-forms-item name="teacherNumber">
-					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.teacherNumber" placeholder="请输入工号或学号" />
+					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.teacherNumber"
+						placeholder="请输入工号或学号" />
 				</uni-forms-item>
 				<uni-forms-item name="password">
-					<uni-easyinput type="password" prefixIcon=".uniui-locked-filled" v-model="loginFormData.password" placeholder="请输入登录密码" />
+					<uni-easyinput type="password" prefixIcon=".uniui-locked-filled" v-model="loginFormData.password"
+						placeholder="请输入登录密码" />
 				</uni-forms-item>
 			</uni-forms>
 			<button type="default" class="button" @click="loginSubmit('teacherForm')">提交</button>
@@ -36,31 +40,30 @@
 	export default {
 		data() {
 			return {
-				loginFormData:{
-				},
-				studentRules:{
-					"studentNumber":{
-						rules:[{
+				loginFormData: {},
+				studentRules: {
+					"studentNumber": {
+						rules: [{
 							required: true,
 							errorMessage: "请输入正确的学号"
 						}]
 					},
-					"password":{
-						rules:[{
+					"password": {
+						rules: [{
 							required: true,
 							errorMessage: "请输入正确的密码"
 						}]
 					}
 				},
-				teacherRules:{
-					"teacherNumber":{
-						rules:[{
+				teacherRules: {
+					"teacherNumber": {
+						rules: [{
 							required: true,
 							errorMessage: "请输入正确的工号"
 						}]
 					},
-					"password":{
-						rules:[{
+					"password": {
+						rules: [{
 							required: true,
 							errorMessage: "请输入正确的密码"
 						}]
@@ -73,33 +76,45 @@
 			this.optionChoose = option.card == "student" ? true : false
 			this.cardChoose(option.card)
 		},
-		computed:{
-		},
+		computed: {},
 		methods: {
-			cardChoose(card){
-				if(card == "student"){
+			cardChoose(card) {
+				if (card == "student") {
 					this.loginFormData = {
-						"studentNumber":null,
-						"password":""
+						"studentNumber": null,
+						"password": ""
 					}
-				}else{
+				} else {
 					this.loginFormData = {
-						"teacherNumber":null,
-						"password":""
+						"teacherNumber": null,
+						"password": ""
 					}
 				}
 			},
-			loginSubmit(ref){
+			loginSubmit(ref) {
 				console.log(ref)
 				this.$refs[ref].validate().then(res => {
 					uni.showToast({
 						title: "登录成功，请稍等.."
 					})
-					uni.navigateTo({
-						url:"../teacherMain/teacherMain"
-					})
+					setTimeout(() => {
+						if (ref === "studentForm") {
+							uni.navigateTo({
+								url: '/pages/studentHome/studentHome'
+							})
+						}
+					}, 1000);
+					setTimeout(() => {
+						if (ref === "teacherForm") {
+							uni.navigateTo({
+								url: '../teacherHome/teacherHome',
+								animationType: 'pop-in',
+								animationDuration: 200
+							})
+						}
+					}, 1000);
 				}).catch(err => {
-					console.log('err'+err);
+					console.log('err' + err);
 				})
 			}
 		}
@@ -118,7 +133,8 @@
 			width: 500rpx;
 			height: 200rpx;
 		}
-		.login-card{
+
+		.login-card {
 			color: $jxnu-bg-color;
 			text-align: center;
 			width: 700rpx;
@@ -126,13 +142,14 @@
 			font-size: $jxnu-font-14;
 		}
 	}
-	
-	.login-form{
-		.uni-easyinput{
+
+	.login-form {
+		.uni-easyinput {
 			width: 650rpx;
 			border-radius: 100rpx;
 		}
-		.button{
+
+		.button {
 			margin-top: 50rpx;
 			background-color: $jxnu-bg-color;
 			color: $uni-text-color-inverse;

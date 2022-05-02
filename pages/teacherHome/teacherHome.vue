@@ -1,0 +1,173 @@
+<template>
+	<view class="teacher-home">
+		<view class="backgrond-style">
+		</view>
+		<view class="teacher-message">
+			<uni-card title="老师" :sub-title="teacherMessage.realName" :extra="teacherMessage.teachNumber">
+				<view slot="actions" class="card-actions">
+					<view class="card-actions-item" @click="revisePassword">
+						<uni-icons type="loop" size="20" color="#999"></uni-icons>
+						<text class="card-actions-item-text">修改密码</text>
+					</view>
+				</view>
+			</uni-card>
+		</view>
+		<view>
+			<!-- 修改密码弹窗 -->
+			<uni-popup ref="popupRevisePassword" background-color="#fff" type="bottom">
+				<view class="revise-popup-content">
+					<uni-forms class="revise-form" ref="revisePasswordForm" :modelValue="reviseFormData"
+						validateTrigger="submit">
+						<uni-forms-item name="oldPassword">
+							<uni-easyinput type="password" prefixIcon=".uniui-person-filled"
+								v-model="reviseFormData.oldPassword" placeholder="请输入原密码" />
+						</uni-forms-item>
+						<uni-forms-item name="newPassword">
+							<uni-easyinput type="password" prefixIcon=".uniui-locked-filled"
+								v-model="reviseFormData.newPassword" placeholder="请设置新密码" />
+						</uni-forms-item>
+					</uni-forms>
+					<view class="revise-buttons">
+						<button type="default" class="cancel-button" @click="cancelSubmit">取消</button>
+						<button type="default" class="revise-button" @click="reviseSubmit">确认</button>
+					</view>
+				</view>
+			</uni-popup>
+		</view>
+		<view class="teacher-tools">
+			<uni-card>
+				<view>
+					<text>常用工具</text>
+				</view>
+				<view class="tools-box">
+					<view>
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/handleLeave/handleLeave" class="tools-btn">
+							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>学生请假</text>
+					</view>
+					<view>
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList" class="tools-btn">
+							<uni-icons type="personadd" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>管理班级</text>
+					</view>
+					<view>
+						<navigator class="tools-btn">
+							<uni-icons type="paperplane" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>退出登录</text>
+					</view>
+				</view>
+			</uni-card>
+		</view>
+	</view>
+</template>
+
+<script>
+	export default {
+		data() {
+			return {
+				teacherMessage: {
+					teachNumber: "201020403020",
+					realName: "张老师"
+				},
+				reviseFormData: {
+					oldPassword: "",
+					newPassword: ""
+				}
+			}
+		},
+		onLoad() {
+
+		},
+		methods: {
+			revisePassword() {
+				this.$refs.popupRevisePassword.open()
+			},
+			cancelSubmit() {
+				this.$refs.popupRevisePassword.close()
+			},
+			reviseSubmit() {
+				uni.showToast({
+					title: "正在修改中"
+				})
+				setTimeout(() => {
+					uni.showToast({
+						title: "修改成功"
+					})
+					this.$refs.popupRevisePassword.close()
+				}, 1000)
+			}
+		}
+	}
+</script>
+
+<style lang="scss">
+	@mixin bgstyle($bgstyle: #1b478e) {
+		width: 100vw;
+		height: 310rpx;
+		position: absolute;
+		top: -100rpx;
+		border-radius: 0 0 40rpx 40rpx;
+		background: $bgstyle
+	}
+
+	.backgrond-style {
+		@include bgstyle;
+	}
+
+	.teacher-home {
+		.card-actions-item {
+			display: flex;
+			justify-content: flex-end;
+		}
+	}
+
+	.revise-form {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding-top: 50rpx;
+
+		.uni-easyinput {
+			width: 650rpx;
+			border-radius: 100rpx;
+		}
+	}
+
+	.revise-popup-content {
+		.revise-buttons {
+			display: flex;
+			justify-content: center;
+			padding-bottom: 50rpx;
+
+			button {
+				width: 300rpx;
+				height: 60rpx;
+				line-height: 60rpx;
+				font-size: $jxnu-font-14;
+			}
+
+			.revise-button {
+				background-color: $jxnu-bg-color;
+			}
+		}
+	}
+
+	.teacher-tools {
+		.tools-box {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-start;
+			text-align: center;
+			.tools-btn {
+				padding: 20rpx;
+				margin: 20rpx;
+				background-color: $jxnu-bg-color;
+				color: $uni-text-color;
+				border-radius: 30rpx;
+			}
+		}
+	}
+</style>
