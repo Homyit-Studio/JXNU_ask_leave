@@ -36,7 +36,10 @@
 			"path": "pages/applyLeave/applyLeave",
 			"style": {
 				"navigationBarTitleText": "申请假条",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": false,
+				"app-plus": {
+					"bounce": "none"
+				}
 			}
 
 		},
@@ -74,7 +77,33 @@
 				}
 			}
 		}
-	],
+	    ,{
+            "path" : "pages/allLeaves/allLeaves",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "申请记录",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/allLeaveDetails/allLeaveDetails",
+            "style" :                                                                                    
+            {
+				"navigationBarTitleText": "假条详情",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/finishLeave/finishLeave",
+            "style" :                                                                                    
+            {
+                "enablePullDownRefresh": false
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "请假系统",

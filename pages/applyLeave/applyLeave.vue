@@ -108,7 +108,9 @@
 		methods:{
 			submitForm(){
 				this.$refs.form.validate().then(res=>{
-								console.log('表单数据信息：', res);
+								uni.navigateTo({
+									url:'../finishLeave/finishLeave'
+								})
 							}).catch(err =>{
 								console.log('表单错误信息：', err);
 							})
@@ -123,14 +125,15 @@
 </script>
 
 <style lang="scss" scoped>
+	$w:90vw;
 	.apply-leave{
-		width: 700rpx;
+		width: $w;
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
 		margin: 0 auto;
 		.form-style{
-			width: 700rpx;
+			width: $w;
 			.switch{
 				margin-left: 20rpx;
 			}
@@ -139,10 +142,21 @@
 			}
 		}
 		button{
-			width: 700rpx;
+			width: $w;
 			background-color: $jxnu-bg-color;
 			color: aliceblue;
-			margin-top: 70rpx;
+			margin-top: 0.5vh;
+		}
+	}
+	@media screen and (min-width:950px){
+		.apply-leave{
+			width: 900px;
+			.form-style{
+				width: 900px;
+			}
+			button{
+				width: 900px
+			}
 		}
 	}
 </style>
