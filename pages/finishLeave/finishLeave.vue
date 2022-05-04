@@ -63,10 +63,16 @@
 				}
 			}
 		},
-		onLoad(id) {
-			console.log(id)
+		methods: {
+			getData(formData){
+				this.leaveDetails = formData;
+			}
 		},
-		methods: {}
+		onLoad:function(options) {
+			let obj=JSON.parse(decodeURIComponent(options.formData))
+			this.getData(obj);
+		},
+	
 	}
 </script>
 

@@ -7,7 +7,7 @@
 			<view class="leave-from">
 				<uni-forms-item required name="left" label="是否返校" >
 					<view class="switch">
-						<switch @change="switchChange" color="#1b478e"/>
+						<switch @change="switchChange" checked color="#1b478e"/>
 					</view>
 				</uni-forms-item>
 				<view v-if="leaveData.left">
@@ -31,7 +31,7 @@
 		data() {
 			return {
 				leaveData:{
-					left:false,
+					left:true,
 					leaveTime:'',
 					left_info:''
 				},

@@ -3,9 +3,9 @@
 		<view class="backgrond-style"></view>
 		<view>
 			<uni-card class="uni-card">
-			    <view class="welcome-box">
+			    <view class="welcome-box" @click="showStudentMsg()">
 					<text>欢迎，{{studentMsg.id}}</text>
-					<uni-icons type="forward" size="20" color="#585858" class="more-icon" @click="showStudentMsg()"></uni-icons>
+					<uni-icons type="forward" size="20" color="#585858" class="more-icon" ></uni-icons>
 			    </view>
 			</uni-card>
 		</view>
