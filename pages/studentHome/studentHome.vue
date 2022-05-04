@@ -33,6 +33,25 @@
 						</view>
 			    </uni-row>
 			</uni-card>
+			<uni-card class="uni-card">
+				<uni-row>
+					   <text>离校记录</text>
+				</uni-row>
+			    <uni-row class="btn-box">
+			    		<view class="btn-style">
+							<navigator url="/pages/applyLeave/applyLeave" animation-type="pop-in" animation-duration="300">
+								<view><uni-icons type="contact" size="35" color="#f0f0f0" class="icon-style" ></uni-icons></view>
+							</navigator>
+							<text>确认离校</text>
+						</view>
+						<view class="btn-style">
+							<navigator url="/pages/allLeaves/allLeaves" animation-type="pop-in" animation-duration="300">
+								<view><uni-icons type="contact" size="35" color="#f0f0f0" class="icon-style"></uni-icons></view>
+							</navigator>
+							<text>确认返校</text>
+						</view>
+			    </uni-row>
+			</uni-card>
 		</view>
 		<uni-popup ref="popup" type="bottom">
 			<uni-list class="list-style">
@@ -95,8 +114,8 @@
 				}
 			}
 			.btn-box{
-				height: 220rpx;
-				margin-top: 10rpx;
+				height: 180rpx;
+				margin-top: 20rpx;
 			}
 			.btn-style{
 				display: inline-block;

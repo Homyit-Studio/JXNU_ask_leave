@@ -40,6 +40,11 @@
 					<text class="reason-text">{{leaveDetails.reason}}</text>
 				</view>
 			</uni-card>
+			<view class="btn-grounps">
+					<navigator url="/pages/allLeaves/allLeaves">
+						<button type="default">我要销假</button>
+					</navigator>
+			</view>
 		</view>
 	</view>
 </template>
@@ -96,6 +101,18 @@
 					width: 400rpx;
 				}
 			}
+		}
+		.btn-grounps{
+			width: 700rpx;
+			margin: 0rpx auto;
+			button{
+				height: 80rpx;
+				background-color: $uni-bg-color;
+				border: 1px solid $jxnu-bg-color; /* Green */
+				color: $jxnu-bg-color;
+				font-size: $jxnu-font-16;
+			}
+			
 		}
 
 	}
