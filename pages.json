@@ -103,6 +103,24 @@
             }
             
         }
+        ,{
+            "path" : "pages/confirmLeftSchool/confirmLeftSchool",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "确认离校",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/confirmBackSchool/confirmBackSchool",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "确认返校",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

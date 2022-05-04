@@ -39,13 +39,13 @@
 				</uni-row>
 			    <uni-row class="btn-box">
 			    		<view class="btn-style">
-							<navigator url="/pages/applyLeave/applyLeave" animation-type="pop-in" animation-duration="300">
+							<navigator url="/pages/confirmLeftSchool/confirmLeftSchool" animation-type="pop-in" animation-duration="300">
 								<view><uni-icons type="contact" size="35" color="#f0f0f0" class="icon-style" ></uni-icons></view>
 							</navigator>
 							<text>确认离校</text>
 						</view>
 						<view class="btn-style">
-							<navigator url="/pages/allLeaves/allLeaves" animation-type="pop-in" animation-duration="300">
+							<navigator url="/pages/confirmBackSchool/confirmBackSchool" animation-type="pop-in" animation-duration="300">
 								<view><uni-icons type="contact" size="35" color="#f0f0f0" class="icon-style"></uni-icons></view>
 							</navigator>
 							<text>确认返校</text>
