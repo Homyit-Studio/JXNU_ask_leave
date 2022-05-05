@@ -1,4 +1,4 @@
-package cn.homyit.onlineLeaveSystem.eneity.DO;
+package cn.homyit.onlineLeaveSystem.eneity.VO;
 
 
 import cn.homyit.onlineLeaveSystem.myEnum.ExamineEnum;
@@ -7,30 +7,37 @@ import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * @author 渐入佳境
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SimpleNote implements Serializable {
-  private static final long serialVersionUID = -40356785423868311L;
-
+public class LeaveNoteVo {
   private Long id;
   private Long studentNumber;
   private String majorAndClass;
   private String username;
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date startTime;
-
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+  private Date endTime;
   private LeaveEnum depart;
-  private String days;
-  @TableLogic
-  private Integer deleted;
-
+  private String destination;
+  private String dormitoryNumber;
+  private String way;
+  private String phoneNumber;
+  private String reason;
+  private String instructorOpinion;
+  private String instituteOpinion;
+  private String deanOpinion;
   private ExamineEnum examine;
 
   private LevelEnum level;

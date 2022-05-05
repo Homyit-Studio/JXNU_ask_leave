@@ -3,15 +3,14 @@ package cn.homyit.onlineLeaveSystem.controller;
 import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
 import cn.homyit.onlineLeaveSystem.eneity.DO.SimpleNote;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.SelectNotePageDTO;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
+import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.Result;
 import cn.homyit.onlineLeaveSystem.log.ApiLog;
 import cn.homyit.onlineLeaveSystem.service.LeaveNoteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -29,7 +28,7 @@ public class LeaveController {
     //todo 加上事务，两个表更新
     @ApiLog
     @PostMapping("/ask")
-    public Result ask(@RequestBody LeaveNote note){
+    public Result insertNote(@RequestBody LeaveNote note){
         leaveNoteService.insertNote(note);
         return Result.success();
     }
@@ -48,5 +47,23 @@ public class LeaveController {
         PageVo<SimpleNote> simpleNoteListVo = leaveNoteService.selectNoteByRole(selectNoteDTO);
         return Result.success(simpleNoteListVo);
     }
+
+    @GetMapping("/selectANote/{id}")
+    public Result<LeaveNoteVo> selectANote(@PathVariable Long id){
+        LeaveNoteVo leaveNoteVo = leaveNoteService.selectANote(id);
+        return Result.success(leaveNoteVo);
+    }
+
+    //todo 根据角色执行更形权限
+    //todo 安全校验枚举值
+
+    @PostMapping("/updateNote")
+    public Result updateNote(@RequestBody UpdateNoteDTO updateNoteDTO){
+        leaveNoteService.updateNote(updateNoteDTO);
+
+        return Result.success();
+    }
+
+
 
 }

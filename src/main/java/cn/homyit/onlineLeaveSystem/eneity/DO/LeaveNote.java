@@ -1,7 +1,9 @@
 package cn.homyit.onlineLeaveSystem.eneity.DO;
 
 
+import cn.homyit.onlineLeaveSystem.myEnum.ExamineEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.LeaveEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
@@ -41,6 +43,10 @@ public class LeaveNote {
   private String deanOpinion;
   @TableLogic
   private Integer deleted;
+
+  private ExamineEnum examine;
+
+  private LevelEnum level;
 
 
 }

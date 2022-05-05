@@ -4,6 +4,8 @@ import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
 import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
 import cn.homyit.onlineLeaveSystem.eneity.DO.SimpleNote;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.SelectNotePageDTO;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
+import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.mapper.LeaveNoteMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SimpleNoteMapper;
@@ -39,11 +41,15 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
     @Autowired
     private TeacherService teacherService;
 
-    /*生成请假条*/
+    /*生成一条请假条*/
+
+    //todo 详情请假条未生成审核等级
+
     @Override
     public void insertNote(LeaveNote note) {
         leaveNoteMapper.insert(note);
         SimpleNote simpleNote = new SimpleNote();
+        simpleNote.setId(note.getId());
         BeanUtils.copyProperties(note,simpleNote);
         long diff = note.getEndTime().getTime()-note.getStartTime().getTime();
         String diffStr = ""+diff/ (24 * 60 * 60 * 1000)+"天"+ diff/( 60 * 60 * 1000)%24+"时";
@@ -127,5 +133,25 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             throw new RuntimeException("深拷贝异常");
         }
         return new PageVo<>(list,iPage.getTotal(),iPage.getPages());
+    }
+
+    @Override
+    public LeaveNoteVo selectANote(Long id) {
+        LeaveNote note = leaveNoteMapper.selectById(id);
+        LeaveNoteVo leaveNoteVo = MyBeanUtils.copyBean(note, LeaveNoteVo.class);
+        return leaveNoteVo;
+    }
+
+    @Override
+    public void updateNote(UpdateNoteDTO updateNoteDTO) {
+        LeaveNote note = new LeaveNote();
+        SimpleNote simpleNote = new SimpleNote();
+        note.setExamine(updateNoteDTO.getExamineEnum());
+        simpleNote.setExamine(updateNoteDTO.getExamineEnum());
+        note.setId(updateNoteDTO.getId());
+        simpleNote.setId(updateNoteDTO.getId());
+
+        leaveNoteMapper.updateById(note);
+        simpleNoteMapper.updateById(simpleNote);
     }
 }
