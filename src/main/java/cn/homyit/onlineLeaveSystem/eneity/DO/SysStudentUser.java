@@ -2,6 +2,7 @@ package cn.homyit.onlineLeaveSystem.eneity.DO;
 
 
 
+import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.SexEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -28,7 +29,11 @@ public class SysStudentUser implements Serializable {
   private String phoneNumber;
   private String username;
 
+  private LevelEnum role;
   private SexEnum sex;
+
+  private String highUser;
+  private String majorAndClass;
 
   private Date createTime;
   private Date updateTime;

@@ -2,13 +2,20 @@ package cn.homyit.onlineLeaveSystem.service.impl;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
+import cn.homyit.onlineLeaveSystem.eneity.VO.UserInfo;
+import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
 import cn.homyit.onlineLeaveSystem.service.UserService;
 import cn.homyit.onlineLeaveSystem.util.JwtUtil;
 import cn.homyit.onlineLeaveSystem.util.RedisCache;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -29,6 +36,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RedisCache redisCache;
 
+    @Autowired
+    private SysStudentUserMapper userMapper;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @Override
     public HashMap<String,String> login(SysStudentUser user) {
         UsernamePasswordAuthenticationToken authenticationToken =
@@ -47,6 +60,45 @@ public class UserServiceImpl implements UserService {
         HashMap<String,String> map = new HashMap<>();
         map.put("token",jwt);
         return map;
+
+    }
+
+    @Override
+    public void logout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        Long userid = loginUser.getUser().getId();
+        redisCache.deleteObject("login:"+userid);
+    }
+
+    /*获取个人信息*/
+    @Override
+    public UserInfo personInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        UserInfo userInfo = new UserInfo();
+        BeanUtils.copyProperties(loginUser.getUser(),userInfo);
+        return userInfo;
+    }
+
+    /*修改密码*/
+    @Override
+    public void updatePWD(PasswordDTO passwordDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+
+        boolean matches = passwordEncoder.matches(passwordDTO.getOldPassword(), loginUser.getPassword());
+
+        if (!matches){
+            throw new RuntimeException("密码输入错误");
+        }
+
+        SysStudentUser user = new SysStudentUser();
+        user.setId(loginUser.getUser().getId());
+        String encode = passwordEncoder.encode(passwordDTO.getNewPassword());
+        user.setPassword(encode);
+        userMapper.updateById(user);
+
 
     }
 

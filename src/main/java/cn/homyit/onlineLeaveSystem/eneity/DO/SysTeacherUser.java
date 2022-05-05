@@ -1,12 +1,12 @@
 package cn.homyit.onlineLeaveSystem.eneity.DO;
 
 
-import cn.homyit.onlineLeaveSystem.myEnum.ExamineEnum;
-import cn.homyit.onlineLeaveSystem.myEnum.LeaveEnum;
-import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
+
+import cn.homyit.onlineLeaveSystem.myEnum.SexEnum;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,21 +17,28 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SimpleNote implements Serializable {
-  private static final long serialVersionUID = -40356785423868311L;
+@TableName(value = "sys_teacher_user")
+public class SysTeacherUser implements Serializable {
+  private static final long serialVersionUID = -40356785423868312L;
+
   @TableId(type = IdType.AUTO)
   private Long id;
   private Long studentNumber;
-  private String majorAndClass;
+  private String password;
+  private String phoneNumber;
   private String username;
-  private Date startTime;
 
-  private LeaveEnum depart;
-  private String days;
+  private SexEnum sex;
+
+  private String highUser;
+  private String majorAndClass;
+
+  private Date createTime;
+  private Date updateTime;
   @TableLogic
   private Integer deleted;
 
-  private ExamineEnum examine;
 
-  private LevelEnum level;
+
+
 }

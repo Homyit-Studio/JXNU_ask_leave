@@ -2,13 +2,16 @@ package cn.homyit.onlineLeaveSystem.myEnum;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
 
-public enum LeaveEnum implements IEnum<Integer> {
-    YES(1,"离校"),
-    NO(2,"留校")
+public enum LevelEnum implements IEnum<Integer> {
+    STUDENT(0,"学生"),
+    INSTRUCTOR(1,"辅导员"),
+    SECRETARY(2,"副党委书记"),
+    DEAN(3,"院长"),
+    LOOK(4,"查看")
     ;
 
 
-    LeaveEnum(int value, String desc){
+    LevelEnum(int value, String desc){
         this.value = value;
         this.desc = desc;
     }

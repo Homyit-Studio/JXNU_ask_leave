@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.homyit.onlineLeaveSystem.mapper.SysStudentClassMapper">
+
+
+    <select id="selectAllStudentNumber" resultType="java.lang.Long">
+        SELECT
+            ssc.student_number
+        FROM
+            sys_student_class ssc
+        LEFT JOIN `sys_class_teacher` sct ON sct.`class_id`=ssc.`class_id`
+        WHERE sct.`student_number` =#{number};
+
+    </select>
+
+
+</mapper>

@@ -1,14 +1,13 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.Result;
+import cn.homyit.onlineLeaveSystem.eneity.VO.UserInfo;
 import cn.homyit.onlineLeaveSystem.log.ApiLog;
 import cn.homyit.onlineLeaveSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -32,6 +31,26 @@ public class UserController {
         HashMap<String, String> map = userService.login(user);
         return Result.success(map);
     }
+
+    @GetMapping("/logout")
+    public Result logout(){
+        userService.logout();
+        return Result.success();
+    }
+
+    @GetMapping("/personInfo")
+    public Result<UserInfo> personInfo(){
+        UserInfo  userInfo = userService.personInfo();
+        return Result.success(userInfo);
+    }
+
+    @ApiLog
+    @PostMapping("/updatePWD")
+    public Result updatePWD(@RequestBody PasswordDTO passwordDTO){
+        userService.updatePWD(passwordDTO);
+        return Result.success();
+    }
+
 
 
 
