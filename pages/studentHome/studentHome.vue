@@ -53,13 +53,42 @@
 			    </uni-row>
 			</uni-card>
 		</view>
+		<!-- 学生信息弹框 -->
 		<uni-popup ref="popup" type="bottom">
 			<uni-list class="list-style">
 				<uni-list-item  title="学号" :rightText="studentMsg.id" ></uni-list-item>
 				<uni-list-item  title="姓名" :rightText="studentMsg.name" ></uni-list-item>
 				<uni-list-item  title="班级" :rightText="studentMsg.class"></uni-list-item>
+				<uni-list-item  title="手机号" :rightText="studentMsg.phoneNumber"></uni-list-item>
 				<uni-list-item  title="辅导员" :rightText="studentMsg.instructor"></uni-list-item>
+				<view slot="actions" class="card-actions">
+					<view class="card-actions-item">
+						<button type="default" @click="changePassword()">
+							修改密码
+						</button>
+					</view>
+				</view>
 			</uni-list>
+		</uni-popup>
+		<!-- 密码修改弹框 -->
+		<uni-popup ref="pass_word_up" type="dialog">
+			<view class="password-dialog">
+				<view class="password-dialog-title">
+					<text>修改密码</text>
+				</view>
+				<view>
+					<uni-easyinput  type="password" prefixIcon=".uniui-person-filled" v-model="studentMsg.changePassWord.PassWord1"  placeholder="请输入新密码" />
+				</view>
+				<view>
+					<uni-easyinput  type="password" prefixIcon=".uniui-person-filled" v-model="studentMsg.changePassWord.PassWord2"  placeholder="请再次输入密码" />
+				</view>
+				<view class="btn-boder">
+					<view class="btn-grounps">
+						<text @click="close()">取消</text>
+						<text class="right" @click="confirm()">确认</text>
+					</view>
+				</view>
+				</view>
 		</uni-popup>
 	</view>
 </template>
@@ -72,20 +101,35 @@
 					id:"202026202156",
 					name:'薛二狗',
 					class:'26级计算机科学与技术5班',
-					instructor:'樊砂砾'
-				}
+					instructor:'樊砂砾',
+					phoneNumber:'13678058666',
+					changePassWord:{
+						PassWord1:'',
+						PassWord2:'',
+					}
+				},
 			}
 		},
 		methods:{
 			showStudentMsg(){
 				//弹出学生信息页面
 				this.$refs.popup.open()
+			},
+			changePassword(){
+				this.$refs.pass_word_up.open()
+			},
+			close() {
+				this.$refs.pass_word_up.close()
+			},
+			confirm(value) {
+				this.$refs.pass_word_up.close()
 			}
-		}
+	},
 	}
 </script>
 
 <style lang="scss">
+	$dialog_w : 600rpx;
 	@mixin bgstyle($bgstyle: #1b478e) {
 		width: 100vw;
 		height: 310rpx;
@@ -94,7 +138,6 @@
 		border-radius: 0 0 40rpx 40rpx;
 		background: $bgstyle
 	}
-	
 	.backgrond-style {
 		@include bgstyle;
 	}
@@ -138,11 +181,61 @@
 			}
 		}
 		.list-style{
-			height: 600rpx;
+			height: 50vh;
 			margin: 0 auto;
 			uni-view{
 				height: 100rpx;
 			}
+			.card-actions-item{
+				display: flex;
+				justify-content: flex-end;
+				margin-top: 20rpx;
+				margin-right: 20rpx;
+				button{
+					margin-top: 20rpx;
+					width: 600rpx;
+					height: 80rpx;
+					background-color: $jxnu-bg-color;
+					color: $uni-bg-color;
+					font-size: $jxnu-font-16;
+				}
+			}
 		}
+		
 	}	
+	.password-dialog{
+		width: $dialog_w;
+		height: 400rpx;
+		background-color:$uni-bg-color ;
+		border: 1px #ffffff solid;
+		border-radius: 20rpx;
+		.password-dialog-title{
+			text-align: center;
+			color: $uni-text-color-placeholder;
+			font-size: $jxnu-font-16;
+			margin-top: 20rpx;
+			// margin-bottom: 20rpx;
+		}
+		view{
+			width: 480rpx;
+			margin: 0 auto;
+			margin-top: 30rpx;
+			margin-bottom: 10rpx;
+			display: block;
+		}
+		.btn-boder{
+			width: $dialog_w;
+			border-top: 3px $uni-bg-color-grey solid;
+			.btn-grounps{
+				width:350rpx;
+				margin-top: 30rpx;
+				font-size: $jxnu-font-16;
+				.right{
+					float: right;
+					color: $jxnu-bg-color;
+				}
+			}
+		}
+	}
+	
 </style>
