@@ -134,6 +134,7 @@
 		justify-content: center;
 		flex-wrap: wrap;
 		margin: 0 auto;
+		margin-top: 5vh;
 		.form-style{
 			width: $w;
 			.switch{

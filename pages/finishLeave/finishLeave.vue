@@ -105,9 +105,11 @@
 			view{
 				width: 330rpx;
 				height: 80rpx;
+				line-height: 80rpx;
 				display: inline-block;
 				button{
-					height: 80rpx;
+					height: 70rpx;
+					line-height: 70rpx;
 					background-color: $uni-bg-color;
 					border: 1px solid $jxnu-bg-color; /* Green */
 					color: $jxnu-bg-color;
@@ -117,7 +119,8 @@
 			.btn-right{
 				float: right;
 				button{
-					height: 80rpx;
+					height: 70rpx;
+					line-height: 70rpx;
 					background-color: $jxnu-bg-color;
 					color: #fff;
 					border: none;
