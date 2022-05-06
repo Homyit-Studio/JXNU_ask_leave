@@ -3,8 +3,8 @@ package cn.homyit.onlineLeaveSystem.myEnum;
 import com.baomidou.mybatisplus.annotation.IEnum;
 
 public enum LeaveEnum implements IEnum<Integer> {
-    YES(1,"离校"),
-    NO(2,"留校")
+    YES(0,"离校"),
+    NO(1,"留校")
     ;
 
 

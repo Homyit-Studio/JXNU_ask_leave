@@ -4,6 +4,7 @@ package cn.homyit.onlineLeaveSystem.eneity.DO;
 
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.SexEnum;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
@@ -24,21 +25,27 @@ public class SysStudentUser implements Serializable {
 
   @TableId(type = IdType.AUTO)
   private Long id;
-  private Long studentNumber;
-  private String password;
-  private String phoneNumber;
-  private String username;
-
+  private Long classId;
   private LevelEnum role;
-  private SexEnum sex;
-
   private String highUser;
+  private String username;
+  private String idNumber;
+  private String nation;
+  private Long studentNumber;
+  private SexEnum sex;
+  private String nativePlace;
+  private String homeAddress;
   private String majorAndClass;
-
+  private String phoneNumber;
+  private String parentNumber;
+  private String buildingNumber;
+  private String dormitoryNumber;
+  private String password;
   private Date createTime;
   private Date updateTime;
   @TableLogic
   private Integer deleted;
+
 
 
 

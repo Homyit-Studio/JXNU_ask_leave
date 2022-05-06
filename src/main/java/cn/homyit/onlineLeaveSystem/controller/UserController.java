@@ -3,7 +3,7 @@ package cn.homyit.onlineLeaveSystem.controller;
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.Result;
-import cn.homyit.onlineLeaveSystem.eneity.VO.UserInfo;
+import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
 import cn.homyit.onlineLeaveSystem.log.ApiLog;
 import cn.homyit.onlineLeaveSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,8 +39,8 @@ public class UserController {
     }
 
     @GetMapping("/personInfo")
-    public Result<UserInfo> personInfo(){
-        UserInfo  userInfo = userService.personInfo();
+    public Result<StudentUserVo> personInfo(){
+        StudentUserVo  userInfo = userService.personInfo();
         return Result.success(userInfo);
     }
 

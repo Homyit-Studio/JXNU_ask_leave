@@ -12,6 +12,6 @@
                 LEFT JOIN `sys_role_menu` rm ON ur.`role_id` = rm.`role_id`
                 LEFT JOIN `sys_menu` m ON m.`id` = rm.`menu_id`
         WHERE
-            student_numeber = #{studentNumber}
+            ur.student_number = #{studentNumber}
     </select>
 </mapper>

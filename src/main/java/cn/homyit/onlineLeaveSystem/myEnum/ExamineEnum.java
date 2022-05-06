@@ -8,9 +8,9 @@ import com.baomidou.mybatisplus.annotation.IEnum;
  * @since 2022-05-04 11:07
  */
 public enum ExamineEnum implements IEnum<Integer> {
-    INSTRUCTOR(1,"辅导员审核中"),
-    SECRETARY(2,"副党委书记审核中"),
-    DEAN(3,"院长审核中"),
+    INSTRUCTOR(0,"辅导员审核中"),
+    SECRETARY(1,"副党委书记审核中"),
+    DEAN(2,"院长审核中"),
     SUCCESS(-1,"审核完成")
     ;
 

@@ -1,7 +1,6 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SimpleNote;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.SelectNotePageDTO;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
@@ -25,7 +24,7 @@ public class LeaveController {
     @Autowired
     private LeaveNoteService leaveNoteService;
 
-    //todo 加上事务，两个表更新
+    //ok
     @ApiLog
     @PostMapping("/ask")
     public Result insertNote(@RequestBody LeaveNote note){
@@ -34,18 +33,19 @@ public class LeaveController {
     }
 
 
-//
+    //根据学号获取
     @PostMapping("/selectNote")
-    public Result<PageVo<SimpleNote>> selectSimpleNote(@RequestBody SelectNotePageDTO selectNoteDTO){
-        PageVo<SimpleNote> simpleNoteListVo = leaveNoteService.selectSimpleNote(selectNoteDTO);
+    public Result<PageVo<LeaveNote>> selectLeaveNote(@RequestBody SelectNotePageDTO selectNoteDTO){
+        PageVo<LeaveNote> simpleNoteListVo = leaveNoteService.selectLeaveNote(selectNoteDTO);
         return Result.success(simpleNoteListVo);
     }
+
     //根据用户角色来执行不同的逻辑
     @ApiLog
     @PostMapping("/selectNoteByRole")
-    public Result<PageVo<SimpleNote>> selectNoteByRole(@RequestBody SelectNotePageDTO selectNoteDTO){
-        PageVo<SimpleNote> simpleNoteListVo = leaveNoteService.selectNoteByRole(selectNoteDTO);
-        return Result.success(simpleNoteListVo);
+    public Result<PageVo<LeaveNote>> selectNoteByRole(@RequestBody SelectNotePageDTO selectNoteDTO){
+        PageVo<LeaveNote> noteListVo = leaveNoteService.selectNoteByRole(selectNoteDTO);
+        return Result.success(noteListVo);
     }
 
     @GetMapping("/selectANote/{id}")

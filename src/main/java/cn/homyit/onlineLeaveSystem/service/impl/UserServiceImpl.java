@@ -3,7 +3,7 @@ package cn.homyit.onlineLeaveSystem.service.impl;
 import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.UserInfo;
+import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
 import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
 import cn.homyit.onlineLeaveSystem.service.UserService;
 import cn.homyit.onlineLeaveSystem.util.JwtUtil;
@@ -73,10 +73,10 @@ public class UserServiceImpl implements UserService {
 
     /*获取个人信息*/
     @Override
-    public UserInfo personInfo() {
+    public StudentUserVo personInfo() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        UserInfo userInfo = new UserInfo();
+        StudentUserVo userInfo = new StudentUserVo();
         BeanUtils.copyProperties(loginUser.getUser(),userInfo);
         return userInfo;
     }

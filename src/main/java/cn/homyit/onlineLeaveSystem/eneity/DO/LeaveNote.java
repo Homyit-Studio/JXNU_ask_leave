@@ -48,5 +48,9 @@ public class LeaveNote {
 
   private LevelEnum level;
 
+  private String days;
+
+
+
 
 }

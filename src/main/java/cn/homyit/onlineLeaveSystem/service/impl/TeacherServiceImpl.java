@@ -1,14 +1,12 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentClass;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentClassInfo;
+import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
 import cn.homyit.onlineLeaveSystem.eneity.VO.ClassInfoVO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.ClassStudentVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
+import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
 import cn.homyit.onlineLeaveSystem.mapper.ClassInfoMapper;
-import cn.homyit.onlineLeaveSystem.mapper.ClassStudentMapper;
-import cn.homyit.onlineLeaveSystem.mapper.SysStudentClassMapper;
+import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
 import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -34,10 +32,9 @@ public class TeacherServiceImpl implements TeacherService {
     private ClassInfoMapper classInfoMapper;
 
     @Autowired
-    private ClassStudentMapper classStudentMapper;
+    private SysStudentUserMapper studentUserMapper;
 
-    @Autowired
-    private SysStudentClassMapper sysStudentClassMapper;
+
 
     @Override
     public List<ClassInfoVO> getClassInfo() {
@@ -50,23 +47,21 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public PageVo<ClassStudentVo> getStudentsByClassId(Long classId) {
-        Page<SysStudentClass> page = new Page<>(1,10);
-        QueryWrapper<SysStudentClass> wrapper = new QueryWrapper<>();
+    public  PageVo<StudentUserVo>  getStudentsByClassId(Long classId) {
+        Page<SysStudentUser> page = new Page<>(1,10);
+        QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
         wrapper.eq("class_id",classId);
         wrapper.orderByAsc("student_number");
+         IPage<SysStudentUser> iPage = studentUserMapper.selectPage(page, wrapper);
 
-        IPage<SysStudentClass> iPage = classStudentMapper.selectPage(page, wrapper);
-
-        List<ClassStudentVo> list = null;
+        List<StudentUserVo> list = null;
         try {
-            list = MyBeanUtils.copyList(iPage.getRecords(),ClassStudentVo.class);
+            list = MyBeanUtils.copyList(iPage.getRecords(),StudentUserVo.class);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("拷贝异常");
         }
         return new PageVo<>(list,iPage.getTotal(),iPage.getPages());
-
     }
 
     /*获取教师所属班级下所有学生的学号*/
@@ -76,7 +71,8 @@ public class TeacherServiceImpl implements TeacherService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         Long studentNumber = loginUser.getUser().getStudentNumber();
-        List<Long> list = sysStudentClassMapper.selectAllStudentNumber(studentNumber);
+
+        List<Long> list  = studentUserMapper.selectAllStudentNumber(studentNumber);
         return list;
     }
 

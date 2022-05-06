@@ -9,7 +9,7 @@
         FROM
             sys_class_teacher   sct
         LEFT JOIN `sys_student_class_info` ssci  ON sct.`class_id` = ssci.`id`
-        WHERE student_number = #{number}
+        WHERE sct.student_number = #{number}
     </select>
 
 

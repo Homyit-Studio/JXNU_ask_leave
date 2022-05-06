@@ -16,6 +16,4 @@ import lombok.NoArgsConstructor;
 public class ClassInfoVO {
     private Long id;
     private String majorAndClass;
-    private Integer capacity;
-    private String highUser;
 }

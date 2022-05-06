@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -20,7 +21,8 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LeaveNoteVo {
+public class LeaveNoteVo implements Serializable {
+  private static final long serialVersionUID = -40356785423688312L;
   private Long id;
   private Long studentNumber;
   private String majorAndClass;

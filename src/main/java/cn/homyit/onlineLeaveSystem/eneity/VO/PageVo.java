@@ -1,6 +1,5 @@
 package cn.homyit.onlineLeaveSystem.eneity.VO;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.SimpleNote;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

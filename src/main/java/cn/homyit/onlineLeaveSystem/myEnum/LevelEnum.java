@@ -1,7 +1,11 @@
 package cn.homyit.onlineLeaveSystem.myEnum;
 
 import com.baomidou.mybatisplus.annotation.IEnum;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
 
+@Getter
 public enum LevelEnum implements IEnum<Integer> {
     STUDENT(0,"学生"),
     INSTRUCTOR(1,"辅导员"),
@@ -16,6 +20,7 @@ public enum LevelEnum implements IEnum<Integer> {
         this.desc = desc;
     }
 
+
     @Override
     public Integer getValue() {
         return value;
@@ -26,6 +31,8 @@ public enum LevelEnum implements IEnum<Integer> {
         return desc;
     }
 
-    private final int value;
+
+    private final Integer value;
+//    @JsonValue
     private final String desc;
 }
