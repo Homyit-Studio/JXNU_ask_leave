@@ -3,7 +3,7 @@
 		<view class="detail-status">
 			<uni-tag text="未处理" type="error" />
 			<view class="current-time">
-				<text class="time-tag">2020-12-22 20:11:11</text>
+				<text class="time-tag">当前时间：2020-12-22 20:11:11</text>
 			</view>
 		</view>
 		<view class="details-card">
@@ -82,7 +82,7 @@
 			padding-top: 20rpx;
 
 			.time-tag {
-				padding: 2rpx;
+				padding: 5rpx;
 				background-color: #999;
 				border-radius: 10rpx;
 				color: #fff;
@@ -105,8 +105,8 @@
 		.handle-buttons {
 			display: flex;
 			justify-content: center;
-			padding-bottom: 50rpx;
-
+			padding: 50rpx 0;
+			
 			button {
 				width: 300rpx;
 				height: 60rpx;
