@@ -110,7 +110,7 @@
 		position: absolute;
 		top: -100rpx;
 		border-radius: 0 0 40rpx 40rpx;
-		background: $bgstyle
+		background: $bgstyle;
 	}
 
 	.backgrond-style {

@@ -2,7 +2,7 @@
 	<view class="apply-leave">
 		<uni-forms  ref="form" :modelValue="formData" :rules="dataRules" class="form-style" :border="true" validateTrigger="bind" err-show-type="toast">
 			<uni-forms-item required name="dormitoryNumber" label="宿舍号" >
-				<uni-easyinput multiple v-model="formData.majorAndClass"  placeholder="请输入宿舍号" :inputBorder="false"/>
+				<uni-easyinput multiple v-model="formData.dormitoryNumber"  placeholder="请输入宿舍号,格式如7栋NF120" :inputBorder="false"/>
 			</uni-forms-item>
 			<uni-forms-item required name="leave" label="是否离校" >
 				<view class="switch">
@@ -39,7 +39,6 @@
 	export default {
 		data() {
 			return {
-				endPlaceholder:'',
 					formData:{
 						applicant:"",//姓名
 						majorAndClass:'',//班级
@@ -108,14 +107,19 @@
 		methods:{
 			submitForm(){
 				this.$refs.form.validate().then(res=>{
-								console.log('表单数据信息：', res);
+								uni.$emit('postformData', {
+									formData: this.formData
+								})
+								uni.navigateTo({
+									url:'../finishLeave/finishLeave?formData=' + encodeURIComponent(JSON.stringify(this.formData))
+								})
 							}).catch(err =>{
-								console.log('表单错误信息：', err);
+								console.log(err);
 							})
 
 			},
 			switchChange(e){
-				console.log(e.detail.value)
+				console.log(e.detail.value);
 				this.formData.leave = e.detail.value;
 			}
 		}
@@ -123,14 +127,16 @@
 </script>
 
 <style lang="scss" scoped>
+	$w:90vw;
 	.apply-leave{
-		width: 700rpx;
+		width: $w;
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
 		margin: 0 auto;
+		margin-top: 5vh;
 		.form-style{
-			width: 700rpx;
+			width: $w;
 			.switch{
 				margin-left: 20rpx;
 			}
@@ -139,10 +145,21 @@
 			}
 		}
 		button{
-			width: 700rpx;
+			width: $w;
 			background-color: $jxnu-bg-color;
 			color: aliceblue;
-			margin-top: 70rpx;
+			margin-top: 0.5vh;
+		}
+	}
+	@media screen and (min-width:950px){
+		.apply-leave{
+			width: 900px;
+			.form-style{
+				width: 900px;
+			}
+			button{
+				width: 900px
+			}
 		}
 	}
 </style>

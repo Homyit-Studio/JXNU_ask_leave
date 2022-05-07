@@ -1,45 +1,87 @@
 <template>
-	<view class="student-home">
-		<view class="backgrond-style"></view>
-		<view>
-			<uni-card class="uni-card">
-			    <view class="welcome-box">
-					<text>欢迎，XXXX</text>
-					<uni-icons type="forward" size="20" color="#585858" class="more-icon" @click="showStudentMsg()"></uni-icons>
-			    </view>
+	<view class="teacher-home">
+		<view class="backgrond-style">
+		</view>
+		<view class="teacher-message">
+			<uni-card :title="studentMessage.realName" :extra="studentMessage.studentNumber">
+				<view slot="actions" class="card-actions">
+					<view class="card-actions-item" @click="revisePassword">
+						<uni-icons type="loop" size="20" color="#999"></uni-icons>
+						<text class="card-actions-item-text">修改密码</text>
+					</view>
+				</view>
 			</uni-card>
 		</view>
 		<view>
-			<uni-card class="uni-card">
-				<uni-row>
-					   <text>常用工具</text>
-				</uni-row>
-			    <uni-row class="btn-box">
-			    		<view class="btn-style">
-							<navigator url="/pages/applyLeave/applyLeave">
-								<view><uni-icons type="contact" size="35" color="#f0f0f0" class="icon-style" ></uni-icons></view>
-							</navigator>
-							<text>请假申请</text>
-						</view>
-						<view class="btn-style">
-							<view><uni-icons type="contact" size="35" color="#f0f0f0" class="icon-style"></uni-icons></view>
-							<text>申请记录</text>
-						</view>
-						<view class="btn-style">
-							<view><uni-icons type="contact" size="35" color="#f0f0f0" class="icon-style"></uni-icons></view>
-							<text>退出登录</text>
-						</view>
-			    </uni-row>
+			<!-- 修改密码弹窗 -->
+			<uni-popup ref="popupRevisePassword" background-color="#fff" type="bottom">
+				<view class="revise-popup-content">
+					<uni-forms class="revise-form" ref="revisePasswordForm" :modelValue="reviseFormData"
+						validateTrigger="submit">
+						<uni-forms-item name="oldPassword">
+							<uni-easyinput type="password" prefixIcon=".uniui-person-filled"
+								v-model="reviseFormData.oldPassword" placeholder="请输入原密码" />
+						</uni-forms-item>
+						<uni-forms-item name="newPassword">
+							<uni-easyinput type="password" prefixIcon=".uniui-locked-filled"
+								v-model="reviseFormData.newPassword" placeholder="请设置新密码" />
+						</uni-forms-item>
+					</uni-forms>
+					<view class="revise-buttons">
+						<button type="default" class="cancel-button" @click="cancelSubmit">取消</button>
+						<button type="default" class="revise-button" @click="reviseSubmit">确认</button>
+					</view>
+				</view>
+			</uni-popup>
+		</view>
+		<view class="teacher-tools">
+			<uni-card>
+				<view>
+					<text>常用工具</text>
+				</view>
+				<view class="tools-box">
+					<view>
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/applyLeave/applyLeave" class="tools-btn">
+							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>请假申请</text>
+					</view>
+					<view>
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/allLeaves/allLeaves" class="tools-btn">
+							<uni-icons type="personadd" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>查看申请</text>
+					</view>
+					<view>
+						<navigator class="tools-btn">
+							<uni-icons type="paperplane" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>退出登录</text>
+					</view>
+				</view>
 			</uni-card>
 		</view>
-		<uni-popup ref="popup" type="bottom">
-			<uni-list>
-				<uni-list-item  title="学号" :rightText="studentMsg.id" ></uni-list-item>
-				<uni-list-item  title="姓名" :rightText="studentMsg.name" ></uni-list-item>
-				<uni-list-item  title="班级" :rightText="studentMsg.class"></uni-list-item>
-				<uni-list-item  title="辅导员" :rightText="studentMsg.instructor"></uni-list-item>
-			</uni-list>
-		</uni-popup>
+		<view class="teacher-tools">
+			<uni-card>
+				<view>
+					<text>离校报备</text>
+				</view>
+				<view class="tools-box">
+					<view>
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/confirmLeftSchool/confirmLeftSchool" class="tools-btn">
+							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>确认离校</text>
+					</view>
+					<view>
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/confirmBackSchool/confirmBackSchool" class="tools-btn">
+							<uni-icons type="personadd" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>确认返校</text>
+					</view>
+				</view>
+			</uni-card>
+		</view>
 	</view>
 </template>
 
@@ -47,76 +89,107 @@
 	export default {
 		data() {
 			return {
-				studentMsg:{
-					id:"123321567",
-					name:'ergou',
-					class:'26级计算机科学与技术5班',
-					instructor:'樊砂砾'
+				studentMessage: {
+					studentNumber: "201020403020",
+					realName: "张sir"
+				},
+				reviseFormData: {
+					oldPassword: "",
+					newPassword: ""
 				}
 			}
 		},
-		methods:{
-			showStudentMsg(){
-				//跳转到学生信息页面
-				this.$refs.popup.open()
+		onLoad() {
+
+		},
+		methods: {
+			revisePassword() {
+				this.$refs.popupRevisePassword.open()
+			},
+			cancelSubmit() {
+				this.$refs.popupRevisePassword.close()
+			},
+			reviseSubmit() {
+				uni.showToast({
+					title: "正在修改中"
+				})
+				setTimeout(() => {
+					uni.showToast({
+						title: "修改成功"
+					})
+					this.$refs.popupRevisePassword.close()
+				}, 1000)
 			}
 		}
 	}
 </script>
 
 <style lang="scss">
-	.student-home{
-		width: 700rpx;
-		display: flex;
-		justify-content: center;
-		flex-wrap: wrap;
-		margin: 0 auto;
-		.uni-card{
-			width: 650rpx;
-			border-radius: 20rpx;
-			text{
-				font-size: $jxnu-font-14;
-			}
-			.welcome-box{
-				height: 200rpx;
-				text{
-					line-height: 200rpx;
-					font-size: $jxnu-font-18;
-				}
-			}
-			.btn-box{
-				height: 220rpx;
-				margin-top: 10rpx;
-			}
-			.btn-style{
-				display: inline-block;
-				margin-right: 50rpx;
-				width: 100rpx;
-				height: 100rpx;
-				background-color: $jxnu-bg-color;
-				border-radius: 30rpx;
-				text-align: center;
-				color: $uni-text-color;
-				text{
-					font-size: 13rpx;
-				}
-			}
-			.icon-style{
-				line-height: 100rpx;
-			}
-			.more-icon{
-				float: right;
-			}
-		}
-		
-		.backgrond-style{
-			width: 750rpx;
-			height: 310rpx;
-			position: absolute;
-			top: -100rpx;
-			border-radius: 0 0 40rpx 40rpx;
-			background-color:  $jxnu-bg-color;
+	@mixin bgstyle($bgstyle: #1b478e) {
+		width: 100vw;
+		height: 310rpx;
+		position: absolute;
+		top: -100rpx;
+		border-radius: 0 0 40rpx 40rpx;
+		background: $bgstyle;
+	}
+
+	.backgrond-style {
+		@include bgstyle;
+	}
+
+	.teacher-home {
+		.card-actions-item {
+			display: flex;
+			justify-content: flex-end;
 		}
 	}
-	
+
+	.revise-form {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		padding-top: 50rpx;
+
+		.uni-easyinput {
+			width: 650rpx;
+			border-radius: 100rpx;
+		}
+	}
+
+	.revise-popup-content {
+		.revise-buttons {
+			display: flex;
+			justify-content: center;
+			padding-bottom: 50rpx;
+
+			button {
+				width: 300rpx;
+				height: 60rpx;
+				line-height: 60rpx;
+				font-size: $jxnu-font-14;
+			}
+
+			.revise-button {
+				color:$uni-text-color-inverse;
+				background-color: $jxnu-bg-color;
+			}
+		}
+	}
+
+	.teacher-tools {
+		.tools-box {
+			display: flex;
+			flex-direction: row;
+			justify-content: flex-start;
+			text-align: center;
+			.tools-btn {
+				padding: 20rpx;
+				margin: 20rpx;
+				background-color: $jxnu-bg-color;
+				color: $uni-text-color;
+				border-radius: 30rpx;
+			}
+		}
+	}
 </style>
