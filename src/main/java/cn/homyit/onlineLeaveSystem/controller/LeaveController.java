@@ -64,6 +64,12 @@ public class LeaveController {
         return Result.success();
     }
 
+    @PostMapping("/selectNodeByGrade")
+    public Result<PageVo<LeaveNote>> selectNodeByGrade(@RequestBody SelectNotePageDTO selectNoteDTO){
+        PageVo<LeaveNote> pageVo = leaveNoteService.selectNodeByGrade(selectNoteDTO);
+        return Result.success(pageVo);
+    }
+
 
 
 }

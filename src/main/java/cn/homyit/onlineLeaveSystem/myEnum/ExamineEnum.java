@@ -11,7 +11,8 @@ public enum ExamineEnum implements IEnum<Integer> {
     INSTRUCTOR(0,"辅导员审核中"),
     SECRETARY(1,"副党委书记审核中"),
     DEAN(2,"院长审核中"),
-    SUCCESS(-1,"审核完成")
+    FAILURE(-1,"拒绝"),
+    SUCCESS(3,"同意")
     ;
 
 
@@ -19,6 +20,20 @@ public enum ExamineEnum implements IEnum<Integer> {
         this.value = value;
         this.desc = desc;
     }
+
+    public static ExamineEnum getEumByCode(int value){
+        for(ExamineEnum enumItem: ExamineEnum.values()) {
+            if(enumItem.getValue().intValue() ==value) {
+                return enumItem;
+            }
+        }
+        return null;
+    }
+
+//
+//    public static void main(String[] args) {
+//        System.out.println(ExamineEnum.getEumByCode(2));
+//    }
 
     @Override
     public Integer getValue() {

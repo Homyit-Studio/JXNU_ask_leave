@@ -71,7 +71,9 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
         String rawPWD = data.getStudentNumber().toString().substring(6, 12);
         user.setPassword(passwordEncoder.encode(rawPWD));
         //插入用户表
-        userMapper.insert(user);
+        LevelEnum role = roleMap.get(data.getRole().trim());
+
+
 
         //插入用户班级表
         String[] allClass = data.getManageClass().split("-");
@@ -90,10 +92,13 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
         }
 
         //插入用户角色表
-        LevelEnum role = roleMap.get(data.getRole());
         if(Objects.isNull(role)){
+            user.setRole(LevelEnum.getEumByCode(roleMap.get("无").getValue()));
+            userMapper.insert(user);
             sysUserRoleMapper.insert(new SysUserRole(data.getStudentNumber(),roleMap.get("无").getValue().longValue()));
         }else{
+            user.setRole(LevelEnum.getEumByCode(role.getValue()));
+            userMapper.insert(user);
             sysUserRoleMapper.insert(new SysUserRole(data.getStudentNumber(),role.getValue().longValue() ));
         }
 

@@ -1,5 +1,6 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
+import cn.homyit.onlineLeaveSystem.eneity.DTO.PageStudentVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.*;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,7 @@ public class TeacherController {
     @Autowired
     private TeacherService teacherService;
 
-    //todo 与创建班级信息逻辑矛盾了
+
 
     /*获取班级信息*/
     @GetMapping("/getClassInfo")
@@ -28,10 +29,10 @@ public class TeacherController {
         return Result.success(list);
     }
 
-    /*获取某个班级的信息*/
-    @GetMapping("/getStudentsByClassId/{classId}")
-    public Result<PageVo<StudentUserVo>> getStudentsByClassId(@PathVariable Long classId){
-        PageVo<StudentUserVo> pageVo =teacherService.getStudentsByClassId(classId);
+    /*获取某个班级所有学生*/
+    @PostMapping("/getStudentsByClassId")
+    public Result<PageVo<StudentUserVo>> getStudentsByClassId(@RequestBody PageStudentVo pageStudentVo){
+        PageVo<StudentUserVo> pageVo =teacherService.getStudentsByClassId(pageStudentVo);
         return Result.success(pageVo);
     }
 

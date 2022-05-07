@@ -20,4 +20,5 @@ public interface LeaveNoteService {
 
     void updateNote(UpdateNoteDTO updateNoteDTO);
 
+    PageVo<LeaveNote> selectNodeByGrade(SelectNotePageDTO selectNoteDTO);
 }

@@ -1,5 +1,6 @@
 package cn.homyit.onlineLeaveSystem.service;
 
+import cn.homyit.onlineLeaveSystem.eneity.DTO.PageStudentVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.ClassInfoVO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
@@ -10,7 +11,7 @@ public interface TeacherService {
 
     List<ClassInfoVO> getClassInfo();
 
-    PageVo<StudentUserVo> getStudentsByClassId(Long classId);
+    PageVo<StudentUserVo> getStudentsByClassId(PageStudentVo pageStudentVo);
 
     List<Long> getAllStudentNumber();
 

@@ -20,6 +20,14 @@ public enum LevelEnum implements IEnum<Integer> {
         this.desc = desc;
     }
 
+    public static LevelEnum getEumByCode(int value){
+        for(LevelEnum enumItem: LevelEnum.values()) {
+            if(enumItem.getValue().intValue() ==value) {
+                return enumItem;
+            }
+        }
+        return null;
+    }
 
     @Override
     public Integer getValue() {

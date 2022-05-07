@@ -2,6 +2,7 @@ package cn.homyit.onlineLeaveSystem.service.impl;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.PageStudentVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.ClassInfoVO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
@@ -47,10 +48,10 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public  PageVo<StudentUserVo>  getStudentsByClassId(Long classId) {
-        Page<SysStudentUser> page = new Page<>(1,10);
+    public  PageVo<StudentUserVo>  getStudentsByClassId(PageStudentVo pageStudentVo) {
+        Page<SysStudentUser> page = new Page<>(pageStudentVo.getPageNo(), pageStudentVo.getPageSize());
         QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
-        wrapper.eq("class_id",classId);
+        wrapper.eq("class_id",pageStudentVo.getClassId());
         wrapper.orderByAsc("student_number");
          IPage<SysStudentUser> iPage = studentUserMapper.selectPage(page, wrapper);
 

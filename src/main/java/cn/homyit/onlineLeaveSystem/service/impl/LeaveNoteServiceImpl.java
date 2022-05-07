@@ -8,7 +8,9 @@ import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.mapper.LeaveNoteMapper;
 import cn.homyit.onlineLeaveSystem.myEnum.CompleteEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.ExamineEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.OpinionEnum;
 import cn.homyit.onlineLeaveSystem.service.LeaveNoteService;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
 import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
@@ -38,9 +40,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
     @Autowired
     private TeacherService teacherService;
 
-    /*生成一条请假条*/
 
-    //todo 详情请假条未生成审核等级
+
 
     @Override
     public void insertNote(LeaveNote note) {
@@ -58,6 +59,22 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         }
         leaveNoteMapper.insert(note);
 
+    }
+
+    @Override
+    public PageVo<LeaveNote> selectNodeByGrade(SelectNotePageDTO selectNoteDTO) {
+        Page<LeaveNote> page = new Page<>(selectNoteDTO.getPageNo(),selectNoteDTO.getPageSize());
+        QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
+        wrapper.likeRight("student_number",selectNoteDTO.getGradeNumber())
+                .orderByAsc("start_time");
+        CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
+        if (completeEnum.equals(CompleteEnum.NO)){
+            wrapper.apply("examine < level");
+        }else {
+            wrapper.apply("examine = level");
+        }
+        IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
+        return new PageVo<>(iPage.getRecords(),iPage.getTotal(),iPage.getPages());
     }
 
     @Override
@@ -105,13 +122,14 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         }
         //确定用户角色
         LevelEnum role = loginUser.getUser().getRole();
+        System.out.println(role+"-------------------");
         if (role.equals(LevelEnum.STUDENT)){
             wrapper.eq("student_number",loginUser.getUser().getStudentNumber());
         }else if (role.equals(LevelEnum.INSTRUCTOR)){
             List<Long> allStudentNumber = teacherService.getAllStudentNumber();
             wrapper.in("student_number",allStudentNumber);
         }else{
-            //todo 大于辅导员
+            //todo 大于辅导员,全看
         }
 
         wrapper.orderByAsc("start_time");
@@ -129,10 +147,32 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
     @Override
     public void updateNote(UpdateNoteDTO updateNoteDTO) {
-        LeaveNote note = new LeaveNote();
-        note.setExamine(updateNoteDTO.getExamineEnum());
-        note.setId(updateNoteDTO.getId());
-        leaveNoteMapper.updateById(note);
+        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        LevelEnum role = loginUser.getUser().getRole();
+        Integer level = role.getValue();
+        LeaveNote note = MyBeanUtils.copyBean(updateNoteDTO, LeaveNote.class);
+        ExamineEnum examineEnum = updateNoteDTO.getExamineEnum();
+        Integer examine =examineEnum.getValue();
+        if (level<=examine){
+            throw new RuntimeException("您已经同意");
+        }
 
+        //审核人意见
+        //拒绝则不往下传递
+        if (updateNoteDTO.getOpinionEnum().equals(OpinionEnum.NO)){
+            note.setExamine(ExamineEnum.FAILURE);
+        }else{
+            //往下传递
+            if(updateNoteDTO.getLevelEnum().getValue()-1 !=updateNoteDTO.getExamineEnum().getValue()){
+                note.setExamine(ExamineEnum.getEumByCode(examineEnum.getValue().intValue()+1));
+            }else{
+                note.setExamine(ExamineEnum.SUCCESS);
+            }
+
+        }
+        leaveNoteMapper.updateById(note);
     }
+
+
 }
