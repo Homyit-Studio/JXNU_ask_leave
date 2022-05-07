@@ -53,7 +53,7 @@ public class TeacherServiceImpl implements TeacherService {
         QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
         wrapper.eq("class_id",pageStudentVo.getClassId());
         wrapper.orderByAsc("student_number");
-         IPage<SysStudentUser> iPage = studentUserMapper.selectPage(page, wrapper);
+        IPage<SysStudentUser> iPage = studentUserMapper.selectPage(page, wrapper);
 
         List<StudentUserVo> list = null;
         try {

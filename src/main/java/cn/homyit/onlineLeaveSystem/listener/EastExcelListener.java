@@ -17,10 +17,7 @@ import com.alibaba.excel.event.AnalysisEventListener;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author 州牧
@@ -106,6 +103,22 @@ public class EastExcelListener extends AnalysisEventListener<StudentDTO> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
+        //完善容量
+
+        QueryWrapper<SysStudentClassInfo> wrapper = new QueryWrapper<>();
+        wrapper.select("id");
+        List<SysStudentClassInfo> ids = classInfoMapper.selectList(wrapper);
+        for (SysStudentClassInfo info : ids) {
+            Long class_id = info.getId();
+            QueryWrapper<SysClassStudent> wrapper1 = new QueryWrapper<>();
+            wrapper1.eq("class_id",class_id);
+            Integer count = sysClassStudentMapper.selectCount(wrapper1);
+            info.setCapacity(count);
+            System.out.println("======================");
+            System.out.println("class_id"+class_id+"  count"+count);
+            System.out.println("======================");
+            classInfoMapper.updateById(info);
+        }
 
     }
 

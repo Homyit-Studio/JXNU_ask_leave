@@ -105,6 +105,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
     }
 
+    //todo  根据用户角色来查找请假条
+
     @Override
     public PageVo<LeaveNote> selectNoteByRole(SelectNotePageDTO selectNoteDTO) {
 
