@@ -22,8 +22,8 @@
 		</view>
 		<view class="login-form" v-else>
 			<uni-forms ref="teacherForm" :rules="teacherRules" :modelValue="loginFormData">
-				<uni-forms-item name="teacherNumber">
-					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.teacherNumber"
+				<uni-forms-item name="studentNumber">
+					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.studentNumber"
 						placeholder="请输入工号或学号" />
 				</uni-forms-item>
 				<uni-forms-item name="password">
@@ -56,7 +56,7 @@
 					}
 				},
 				teacherRules: {
-					"teacherNumber": {
+					"studentNumber": {
 						rules: [{
 							required: true,
 							errorMessage: "请输入正确的工号"
@@ -86,17 +86,14 @@
 					}
 				} else {
 					this.loginFormData = {
-						"teacherNumber": null,
-						"password": ""
+						"studentNumber": "102126204062",
+						"password": "204062"
 					}
 				}
 			},
 			loginSubmit(ref) {
 				console.log(ref)
 				this.$refs[ref].validate().then(res => {
-					uni.showToast({
-						title: "登录成功，请稍等.."
-					})
 					setTimeout(() => {
 						if (ref === "studentForm") {
 							uni.navigateTo({
@@ -104,15 +101,30 @@
 							})
 						}
 					}, 1000);
-					setTimeout(() => {
-						if (ref === "teacherForm") {
-							uni.navigateTo({
-								url: '../teacherHome/teacherHome',
-								animationType: 'pop-in',
-								animationDuration: 200
-							})
-						}
-					}, 1000);
+					if (ref === "teacherForm") {
+						console.log(this.loginFormData)
+						uni.$http.post("/user/login", this.loginFormData).then(res => {
+							if (res.data.code == 200) {
+								uni.showToast({
+									title: "登录成功，请稍后"
+								})
+								uni.setStorage({
+									key: 'token',
+									data: res.data.data.token,
+									success: function () {
+										console.log('success');
+									}
+								});
+								uni.navigateTo({
+									url: '/pages/teacherHome/teacherHome'
+								})
+							} else {
+								uni.showToast({
+									title: res.data.message
+								})
+							}
+						})
+					}
 				}).catch(err => {
 					console.log('err' + err);
 				})
