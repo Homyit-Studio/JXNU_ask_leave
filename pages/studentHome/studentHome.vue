@@ -3,7 +3,7 @@
 		<view class="backgrond-style">
 		</view>
 		<view class="teacher-message">
-			<uni-card :title="studentMessage.realName" :extra="studentMessage.studentNumber">
+			<uni-card :title="studentMessage.realName" :extra="studentMessage.studentNumber + ''">
 				<view slot="actions" class="card-actions">
 					<view class="card-actions-item" @click="revisePassword">
 						<uni-icons type="loop" size="20" color="#999"></uni-icons>
@@ -100,9 +100,18 @@
 			}
 		},
 		onLoad() {
-
+			this.getData();
 		},
 		methods: {
+			getData(){
+				uni.$http.get('/user/personInfo').then((res)=>{
+					console.log(res.data.data)
+					let userData = res.data.data;
+					this.studentMessage = userData;
+				}).catch((err)=>{
+					console.log(err)
+				})
+			},
 			revisePassword() {
 				this.$refs.popupRevisePassword.open()
 			},

@@ -39,6 +39,9 @@
 	export default {
 		data() {
 			return {
+					studentMsg:{
+						
+					},
 					formData:{
 						applicant:"",//姓名
 						majorAndClass:'',//班级
@@ -104,25 +107,45 @@
 					},
 				}	
 		},
+		
 		methods:{
 			submitForm(){
 				this.$refs.form.validate().then(res=>{
-								uni.$emit('postformData', {
-									formData: this.formData
-								})
-								uni.navigateTo({
-									url:'../finishLeave/finishLeave?formData=' + encodeURIComponent(JSON.stringify(this.formData))
-								})
-							}).catch(err =>{
-								console.log(err);
-							})
+					uni.$http.post('/leave/ask', {
+						 "studentNumber": "202026202013",
+						  "majorAndClass": "20级计科一班",
+						  "username": "王兴民",
+						  "startTime": "2022-05-03 21:38:18",
+						  "endTime": "2022-05-04 19:38:18",
+						  "leave": "YES",
+						  "destination": "镜湖",
+						  "dormitoryNumber": "N629",
+						  "way": "swim",
+						  "phoneNumber": "13755428862",
+						  "reason": "想喝水了"
+					}).then((res)=>{
+						
+					}).catch((err)=>{
+						console.log(err)
+					})
+					uni.navigateTo({
+						url:'../finishLeave/finishLeave?formData=' + encodeURIComponent(JSON.stringify(this.formData))
+					})
+				}).catch(err =>{
+					console.log(err);
+				})
 
 			},
 			switchChange(e){
 				console.log(e.detail.value);
 				this.formData.leave = e.detail.value;
 			}
-		}
+		},
+		onLoad:function(options) {
+			let obj=JSON.parse(decodeURIComponent(options.userData))
+			this.studentMsg = obj;
+			console.log(this.studentMsg)
+		},
 	}
 </script>
 

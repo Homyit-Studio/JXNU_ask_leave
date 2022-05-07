@@ -94,25 +94,28 @@
 			loginSubmit(ref) {
 				console.log(ref)
 				this.$refs[ref].validate().then(res => {
-					uni.showToast({
-						title: "登录成功，请稍等.."
+						uni.showToast({
+							title: "登录成功，请稍等.."
+						})
+						setTimeout(() => {
+							if (ref === "studentForm") {
+								uni.navigateTo({
+									url: '/pages/studentHome/studentHome'
+								})
+							}
+						}, 1000);
+						setTimeout(() => {
+							if (ref === "teacherForm") {
+								uni.navigateTo({
+									url: '../teacherHome/teacherHome',
+									animationType: 'pop-in',
+									animationDuration: 200
+								})
+							}
+						}, 1000);
+					}).catch((err)=>{
+						console.log(err)
 					})
-					setTimeout(() => {
-						if (ref === "studentForm") {
-							uni.navigateTo({
-								url: '/pages/studentHome/studentHome'
-							})
-						}
-					}, 1000);
-					setTimeout(() => {
-						if (ref === "teacherForm") {
-							uni.navigateTo({
-								url: '../teacherHome/teacherHome',
-								animationType: 'pop-in',
-								animationDuration: 200
-							})
-						}
-					}, 1000);
 				}).catch(err => {
 					console.log('err' + err);
 				})

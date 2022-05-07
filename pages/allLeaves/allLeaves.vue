@@ -1,7 +1,8 @@
 <template>
 	<view class="handle-leave-page">
 		<view class="leave-notes">
-					<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后填写确认离校和返校信息。如未出行，也请在确认离校和确认返校界面中点取消行程。"></uni-notice-bar>
+			<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后填写确认离校和返校信息。如未出行，也请在确认离校和确认返校界面中点取消行程。"></uni-notice-bar>
+			<uni-segmented-control :values="current" active-color="#1b478e" style-type="text"></uni-segmented-control>
 			<uni-card v-for="(item, index) in leaveNoteList" 
 				:key="item.studentNumber" note="true">
 				<view class="card-header">
@@ -28,8 +29,7 @@
 	export default {
 		data() {
 			return {
-				currentIndex: 0,
-				currentTitle: "未处理假条",
+				current:['未处理','已审核'],
 				leaveNoteList: [{
 						noteNumber: null,
 						studentNumber: 202026203039,
