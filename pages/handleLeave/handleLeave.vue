@@ -7,9 +7,9 @@
 		<view class="leave-notes">
 			<uni-card v-for="(item, index) in leaveNoteList" :title="currentTitle" :extra="item.startTime"
 				:key="item.studentNumber">
-				<view><text>姓名: {{item.applicant}}</text></view>
-				<view><text>班级: {{item.majorAndClass}}</text></view>
-				<view><text>学号: {{item.studentNumber}}</text></view>
+				<view><text decode="true">姓&emsp;&emsp;名: {{item.applicant}}</text></view>
+				<view><text decode="true">班&emsp;&emsp;级: {{item.majorAndClass}}</text></view>
+				<view><text decode="true">学&emsp;&emsp;号: {{item.studentNumber}}</text></view>
 				<view><text>是否离校: {{item.leave}}</text></view>
 				<view><text>请假天数: 3天</text></view>
 				<view slot="actions" class="card-actions">
@@ -122,7 +122,6 @@
 		// 	}
 		// },
 		onLoad() {
-
 		},
 		methods: {
 			onClickChoice(index) {

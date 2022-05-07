@@ -79,7 +79,21 @@
 			}
 		},
 		onLoad() {
-
+			// uni.request({
+			//     url: 'http://101.43.85.67:8081/user/personInfo', //仅为示例，并非真实接口地址。
+			//     header: {
+			//         'token': uni.getStorageSync('token') //自定义请求头信息
+			//     },
+			//     success: (res) => {
+			//         console.log(res.data);
+			//         this.text = 'request success';
+			//     }
+			// });
+			uni.$http.get("/user/personInfo").then(res => {
+				console.log(res)
+			}).catch(err => {
+				console.log(err)
+			})
 		},
 		methods: {
 			revisePassword() {

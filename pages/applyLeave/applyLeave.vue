@@ -2,7 +2,7 @@
 	<view class="apply-leave">
 		<uni-forms  ref="form" :modelValue="formData" :rules="dataRules" class="form-style" :border="true" validateTrigger="bind" err-show-type="toast">
 			<uni-forms-item required name="dormitoryNumber" label="宿舍号" >
-				<uni-easyinput multiple v-model="formData.dormitoryNumber"  placeholder="请输入宿舍号,格式如7栋NF120" :inputBorder="false"/>
+				<uni-easyinput multiple v-model="formData.dormitoryNumber"  placeholder="请输入宿舍号,格式如1栋NF111" :inputBorder="false"/>
 			</uni-forms-item>
 			<uni-forms-item required name="leave" label="是否离校" >
 				<view class="switch">
@@ -40,7 +40,7 @@
 		data() {
 			return {
 					studentMsg:{
-						
+						//学生信息
 					},
 					formData:{
 						applicant:"",//姓名
@@ -112,39 +112,44 @@
 			submitForm(){
 				this.$refs.form.validate().then(res=>{
 					uni.$http.post('/leave/ask', {
-						 "studentNumber": "202026202013",
-						  "majorAndClass": "20级计科一班",
-						  "username": "王兴民",
-						  "startTime": "2022-05-03 21:38:18",
-						  "endTime": "2022-05-04 19:38:18",
-						  "leave": "YES",
-						  "destination": "镜湖",
-						  "dormitoryNumber": "N629",
-						  "way": "swim",
-						  "phoneNumber": "13755428862",
-						  "reason": "想喝水了"
+						 "studentNumber": this.studentMsg.studentNumber,
+						  "majorAndClass": this.studentMsg.majorAndClass,
+						  "username": this.studentMsg.username,
+						  "startTime": this.formData.startTime,
+						  "endTime": this.formData.endTime,
+						  "leave": this.formData.leave === true ? "YES" : "NO",
+						  "destination": this.formData.destination,
+						  "dormitoryNumber": this.formData.dormitoryNumber,
+						  "way": this.formData.way,
+						  "phoneNumber": this.formData.phoneNumber,
+						  "reason": this.formData.reason
 					}).then((res)=>{
-						
+						console.log(res)
+						if(res.data.code === 200){
+							this.formData.studentNumber = this.studentMsg.studentNumber;
+							this.formData.majorAndClass = this.studentMsg.majorAndClass;
+							this.formData.leave = this.formData.leave === true ? '是' : '否';
+							uni.navigateTo({
+								url:'../finishLeave/finishLeave?formData=' + encodeURIComponent(JSON.stringify(this.formData))
+							})
+						}
 					}).catch((err)=>{
 						console.log(err)
 					})
-					uni.navigateTo({
-						url:'../finishLeave/finishLeave?formData=' + encodeURIComponent(JSON.stringify(this.formData))
-					})
+					
 				}).catch(err =>{
 					console.log(err);
 				})
 
 			},
 			switchChange(e){
-				console.log(e.detail.value);
+				//console.log(e.detail.value);
 				this.formData.leave = e.detail.value;
 			}
 		},
 		onLoad:function(options) {
-			let obj=JSON.parse(decodeURIComponent(options.userData))
-			this.studentMsg = obj;
-			console.log(this.studentMsg)
+			let userData = JSON.parse(uni.getStorageSync('userStr'));
+			this.studentMsg = userData;
 		},
 	}
 </script>
