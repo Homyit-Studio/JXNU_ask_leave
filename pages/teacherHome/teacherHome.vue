@@ -17,8 +17,8 @@
 			<!-- 修改密码弹窗 -->
 			<uni-popup ref="popupRevisePassword" background-color="#fff" type="bottom">
 				<view class="revise-popup-content">
-					<uni-forms class="revise-form" ref="revisePasswordForm" :modelValue="reviseFormData"
-						validateTrigger="submit">
+					<uni-forms class="revise-form" ref="revisePasswordForm" :rules="reviseRules"
+						:modelValue="reviseFormData" validateTrigger="submit">
 						<uni-forms-item name="oldPassword">
 							<uni-easyinput type="password" prefixIcon=".uniui-person-filled"
 								v-model="reviseFormData.oldPassword" placeholder="请输入原密码" />
@@ -105,6 +105,31 @@
 					"INSTRUCTOR": "辅导员",
 					"SECRETARY": "副党委书记",
 					"DEAN": "院长"
+				},
+				reviseRules: {
+					oldPassword: {
+						rules: [{
+							validateFunction: function(rule, value, data, callback) {
+								if (value.length < 6) {
+									callback('请输入至少6位数的密码')
+								}
+								return true
+							}
+						}]
+					},
+					newPassword: {
+						rules: [{
+							validateFunction: function(rule, value, data, callback) {
+								if (value == data.oldPassword) {
+									callback('新密码与原密码一致')
+								}
+								if (value.length < 6) {
+									callback('请输入至少6位数的密码')
+								}
+								return true
+							}
+						}]
+					}
 				}
 			}
 		},
@@ -132,6 +157,9 @@
 				this.msg.messageText = err
 				this.$refs.message.open()
 			})
+			this.$nextTick(() => {
+				console.log(this.$refs)
+			})
 		},
 		methods: {
 			revisePassword() {
@@ -141,15 +169,40 @@
 				this.$refs.popupRevisePassword.close()
 			},
 			reviseSubmit() {
-				uni.showToast({
-					title: "正在修改中"
-				})
-				setTimeout(() => {
-					uni.showToast({
-						title: "修改成功"
+				this.$refs.revisePasswordForm.validate().then(res => {
+					uni.$http.post("/user/updatePWD", res).then(res => {
+						if (res.data.code == 200) {
+							uni.showToast({
+								title: "正在修改中"
+							})
+							setTimeout(() => {
+								uni.showToast({
+									title: "修改成功"
+								})
+								this.$refs.popupRevisePassword.close()
+								uni.navigateTo({
+									url: "../login/login"
+								})
+							}, 1000)
+						} else {
+							this.msg.msgType = "error"
+							this.msg.messageText = res.data.message
+							this.$refs.message.open()
+							setTimeout(() => {
+								this.$refs.popupRevisePassword.close()
+							}, 500)
+						}
+					}).catch(err => {
+						this.msg.msgType = "error"
+						this.msg.messageText = err
+						this.$refs.message.open()
+						setTimeout(() => {
+							this.$refs.popupRevisePassword.close()
+						}, 500)
 					})
-					this.$refs.popupRevisePassword.close()
-				}, 1000)
+				}).catch(err => {
+					console.log(err)
+				})
 			}
 		}
 	}

@@ -1,7 +1,9 @@
 <template>
 	<view class="handle-leave-details-page">
 		<view class="detail-status">
-			<uni-tag text="未处理" type="error" />
+			<uni-tag v-if="leaveDetails.examine == 'SUCCESS'" text="已同意" type="success"></uni-tag>
+			<uni-tag v-else-if="leaveDetails.examine == 'FAILURE'" text="已拒绝" type="error"></uni-tag>
+			<uni-tag v-else text="审核中" type="primary"></uni-tag>
 			<view class="current-time">
 				<text class="time-tag">当前时间：2020-12-22 20:11:11</text>
 			</view>
@@ -30,7 +32,7 @@
 				</uni-steps>
 			</view>
 		</view>
-		<view class="handle-buttons">
+		<view class="handle-buttons" v-if="currentStatus == 'NO'">
 			<button type="warn" class="refuse-button" @click="cancelSubmit">拒绝</button>
 			<button type="primary" class="agree-button" @click="reviseSubmit">同意</button>
 		</view>
@@ -56,12 +58,13 @@
 			return {
 				leaveDetails: {},
 				process: [],
-				msg:{
+				msg: {
 					msgType: 'success',
 					messageText: '这是一条成功提示',
 				},
 				activeProcess: null,
-				opinionEnum: null
+				opinionEnum: null,
+				currentStatus: null
 			}
 		},
 		onLoad(options) {
@@ -70,6 +73,8 @@
 		},
 		methods: {
 			showLeaveDetail(id, current) {
+				this.currentStatus = current
+				console.log(this.currentStatus)
 				uni.$http.get(`/leave/selectANote/${id}`).then(res => {
 					if (res.data.code == 200) {
 						uni.showToast({
@@ -89,12 +94,13 @@
 								if (current == "NO") {
 									if (this.process[key].other == res.data.data.examine) {
 										this.activeProcess = key - 1
-										console.log(this.activeProcess, this.process[key].other, res.data.data.examine)
+										console.log(this.activeProcess, this.process[key].other, res.data.data
+											.examine)
 										break
 									}
 								} else if (current == "YES") {
 									if (this.process[key].other == res.data.data.examine) {
-										this.activeProcess = key-1
+										this.activeProcess = key - 1
 										break
 									}
 								}
@@ -196,6 +202,9 @@
 						this.msg.msgType = "success"
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
+						uni.navigateTo({
+							url: "../handleLeave/handleLeave"
+						})
 					} else {
 						this.msg.msgType = "error"
 						this.msg.messageText = res.data.message

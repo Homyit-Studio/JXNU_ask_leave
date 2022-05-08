@@ -5,8 +5,18 @@
 				active-color="#1b478e" @clickItem="onClickChoice" />
 		</view>
 		<view class="leave-notes">
-			<uni-card v-for="(item, index) in leaveNoteList" :title="currentTitle" :extra="item.startTime"
+			<uni-card v-for="(item, index) in leaveNoteList"
 				:key="item.id">
+				<template v-slot:title>
+						<view class="card-header">
+							<uni-tag v-if="item.examine == 'SUCCESS'" text="已同意" type="success"></uni-tag>
+							<uni-tag v-else-if="item.examine == 'FAILURE'" text="已拒绝" type="error"></uni-tag>
+							<uni-tag v-else text="审核中" type="primary"></uni-tag>
+							<view>
+								<text>{{item.startTime}}</text>
+							</view>
+						</view>
+				</template>
 				<view><text decode="true">姓&emsp;&emsp;名: {{item.username}}</text></view>
 				<view><text decode="true">班&emsp;&emsp;级: {{item.majorAndClass}}</text></view>
 				<view><text decode="true">学&emsp;&emsp;号: {{item.studentNumber}}</text></view>
@@ -41,7 +51,6 @@
 					messageText: '这是一条成功提示',
 				},
 				currentIndex: 0,
-				currentTitle: "未处理假条",
 				handleChoices: ["未处理", "已处理"],
 				leaveNoteList: [],
 				listRequest: {
@@ -70,12 +79,10 @@
 		methods: {
 			onClickChoice(index) {
 				if (index.currentIndex == 0) {
-					this.currentTitle = "未处理假条"
 					this.listRequest.completeEnum = "NO"
 					this.listRequest.pageNo = 1
 					this.requestLeaveNotes()
 				} else {
-					this.currentTitle = "已处理假条"
 					this.listRequest.pageNo = 1
 					this.listRequest.completeEnum = "YES"
 					this.requestLeaveNotes()
@@ -152,6 +159,12 @@
 			justify-content: flex-end;
 			align-items: center;
 			color: $jxnu-bg-color;
+		}
+		.card-header{
+			display: flex;
+			justify-content: space-between;
+			margin-top: 10rpx;
+			color: #666;
 		}
 	}
 </style>
