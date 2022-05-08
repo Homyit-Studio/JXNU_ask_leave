@@ -91,8 +91,8 @@
 			cardChoose(card) {
 				if (card == "student") {
 					this.loginFormData = {
-						"studentNumber": null,
-						"password": ""
+						"studentNumber": "202126201001",
+						"password": "201001"
 					}
 				} else {
 					this.loginFormData = {
@@ -104,13 +104,6 @@
 			loginSubmit(ref) {
 				console.log(ref)
 				this.$refs[ref].validate().then(res => {
-					setTimeout(() => {
-						if (ref === "studentForm") {
-							uni.navigateTo({
-								url: '/pages/studentHome/studentHome'
-							})
-						}
-					}, 1000);
 					if (ref === "teacherForm") {
 						uni.$http.post("/user/login", this.loginFormData).then(res => {
 							if (res.data.code == 200) {
@@ -136,6 +129,29 @@
 							this.msg.msgType = "error"
 							this.msg.messageText = err
 							this.$refs.message.open()
+						})
+					}
+					else if(ref === "studentForm"){
+						uni.$http.post("/user/login", this.loginFormData).then(res => {
+							if (res.data.code == 200) {
+								uni.showToast({
+									title: "登录成功，请稍后"
+								})
+								uni.setStorage({
+									key: 'token',
+									data: res.data.data.token,
+									success: function () {
+										console.log('success');
+									}
+								});
+								uni.navigateTo({
+									url: '/pages/studentHome/studentHome'
+								})
+							} else {
+								uni.showToast({
+									title: res.data.message
+								})
+							}
 						})
 					}
 				}).catch(err => {

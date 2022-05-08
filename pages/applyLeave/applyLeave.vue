@@ -2,7 +2,7 @@
 	<view class="apply-leave">
 		<uni-forms  ref="form" :modelValue="formData" :rules="dataRules" class="form-style" :border="true" validateTrigger="bind" err-show-type="toast">
 			<uni-forms-item required name="dormitoryNumber" label="宿舍号" >
-				<uni-easyinput multiple v-model="formData.dormitoryNumber"  placeholder="请输入宿舍号,格式如7栋NF120" :inputBorder="false"/>
+				<uni-easyinput multiple v-model="formData.dormitoryNumber"  placeholder="请输入宿舍号,格式如1栋NF111" :inputBorder="false"/>
 			</uni-forms-item>
 			<uni-forms-item required name="leave" label="是否离校" >
 				<view class="switch">
@@ -39,6 +39,9 @@
 	export default {
 		data() {
 			return {
+					studentMsg:{
+						//学生信息
+					},
 					formData:{
 						applicant:"",//姓名
 						majorAndClass:'',//班级
@@ -104,25 +107,50 @@
 					},
 				}	
 		},
+		
 		methods:{
 			submitForm(){
 				this.$refs.form.validate().then(res=>{
-								uni.$emit('postformData', {
-									formData: this.formData
-								})
-								uni.navigateTo({
-									url:'../finishLeave/finishLeave?formData=' + encodeURIComponent(JSON.stringify(this.formData))
-								})
-							}).catch(err =>{
-								console.log(err);
+					uni.$http.post('/leave/ask', {
+						 "studentNumber": this.studentMsg.studentNumber,
+						  "majorAndClass": this.studentMsg.majorAndClass,
+						  "username": this.studentMsg.username,
+						  "startTime": this.formData.startTime,
+						  "endTime": this.formData.endTime,
+						  "leave": this.formData.leave === true ? "YES" : "NO",
+						  "destination": this.formData.destination,
+						  "dormitoryNumber": this.formData.dormitoryNumber,
+						  "way": this.formData.way,
+						  "phoneNumber": this.formData.phoneNumber,
+						  "reason": this.formData.reason
+					}).then((res)=>{
+						console.log(res)
+						if(res.data.code === 200){
+							this.formData.studentNumber = this.studentMsg.studentNumber;
+							this.formData.majorAndClass = this.studentMsg.majorAndClass;
+							this.formData.leave = this.formData.leave === true ? '是' : '否';
+							uni.navigateTo({
+								url:'../finishLeave/finishLeave?formData=' + encodeURIComponent(JSON.stringify(this.formData))
 							})
+						}
+					}).catch((err)=>{
+						console.log(err)
+					})
+					
+				}).catch(err =>{
+					console.log(err);
+				})
 
 			},
 			switchChange(e){
-				console.log(e.detail.value);
+				//console.log(e.detail.value);
 				this.formData.leave = e.detail.value;
 			}
-		}
+		},
+		onLoad:function(options) {
+			let userData = JSON.parse(uni.getStorageSync('userStr'));
+			this.studentMsg = userData;
+		},
 	}
 </script>
 

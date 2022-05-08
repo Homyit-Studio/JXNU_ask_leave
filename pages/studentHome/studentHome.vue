@@ -3,7 +3,7 @@
 		<view class="backgrond-style">
 		</view>
 		<view class="teacher-message">
-			<uni-card :title="studentMessage.realName" :extra="studentMessage.studentNumber">
+			<uni-card :title="studentMessage.username" :extra="studentMessage.studentNumber + ''">
 				<view slot="actions" class="card-actions">
 					<view class="card-actions-item" @click="revisePassword">
 						<uni-icons type="loop" size="20" color="#999"></uni-icons>
@@ -91,7 +91,7 @@
 			return {
 				studentMessage: {
 					studentNumber: "201020403020",
-					realName: "张sir"
+					username: "张sir"
 				},
 				reviseFormData: {
 					oldPassword: "",
@@ -100,9 +100,26 @@
 			}
 		},
 		onLoad() {
-
+			this.getData();
 		},
 		methods: {
+			getData(){
+				uni.$http.get('/user/personInfo').then((res)=>{
+					//console.log(res.data.data)
+					let userData = res.data.data;
+					this.studentMessage = userData;
+					//储存学生信息，方便其他页面获取
+					uni.setStorage({
+						key: 'userStr',
+						data: JSON.stringify(userData),
+						success: function () {
+							console.log('success');
+						}
+					});
+				}).catch((err)=>{
+					console.log(err)
+				})
+			},
 			revisePassword() {
 				this.$refs.popupRevisePassword.open()
 			},
