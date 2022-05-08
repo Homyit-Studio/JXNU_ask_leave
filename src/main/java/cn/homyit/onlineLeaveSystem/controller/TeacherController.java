@@ -1,6 +1,6 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
-import cn.homyit.onlineLeaveSystem.eneity.DTO.PageStudentVo;
+import cn.homyit.onlineLeaveSystem.eneity.VO.PageStudentVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.*;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,9 +2,15 @@ package cn.homyit.onlineLeaveSystem.service.impl;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.BackNote;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.BackNoteDTO;
+import cn.homyit.onlineLeaveSystem.eneity.VO.BackNoteVo;
+import cn.homyit.onlineLeaveSystem.mapper.BackNoteMapper;
+import cn.homyit.onlineLeaveSystem.myEnum.BackEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.BackStatusEnum;
 import cn.homyit.onlineLeaveSystem.service.BackNoteService;
 import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,9 +21,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class BackNoteServiceImpl implements BackNoteService {
 
+
+  @Autowired
+  private BackNoteMapper backNoteMapper;
+
     @Override
-    public void create(BackNoteDTO backNoteDTO) {
-        BackNote backNote = MyBeanUtils.copyBean(backNoteDTO, BackNote.class);
-        
+    public void insertNote(BackNote backNote) {
+        backNoteMapper.insert(backNote);
     }
+
+  @Override
+  public BackNoteVo selectANote(Long id) {
+    BackNote backNote = backNoteMapper.selectById(id);
+    BackNoteVo backNoteVo = MyBeanUtils.copyBean(backNote, BackNoteVo.class);
+    return backNoteVo;
+  }
+
+  @Override
+  public void updateNote(BackNoteDTO backNoteVoDTO) {
+    BackNote backNote = MyBeanUtils.copyBean(backNoteVoDTO, BackNote.class);
+    if(backNoteVoDTO.getBack().equals(BackEnum.YES)){
+      backNote.setStatus(BackStatusEnum.SUCCESS);
+    }else{
+      backNote.setStatus(BackStatusEnum.FAILURE);
+    }
+    System.out.println(backNote);
+    backNoteMapper.updateById(backNote);
+  }
+
+
 }

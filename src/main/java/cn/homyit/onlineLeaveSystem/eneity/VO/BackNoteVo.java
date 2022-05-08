@@ -1,8 +1,7 @@
-package cn.homyit.onlineLeaveSystem.eneity.DTO;
+package cn.homyit.onlineLeaveSystem.eneity.VO;
 
-import cn.homyit.onlineLeaveSystem.myEnum.BackEnum;
-import cn.homyit.onlineLeaveSystem.myEnum.BackStatusEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.LeaveEnum;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,19 +12,18 @@ import java.util.Date;
 /**
  * @author 州牧
  * @description
- * @since 2022-05-07 22:47
+ * @since 2022-05-08 16:02
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BackNoteDTO {
+public class BackNoteVo {
     private Long id;
-    private LeaveEnum depart;
-    private BackEnum back;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date departTime;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date backTime;
-    private String backWay;
     private String departWay;
+    private LeaveEnum depart;
+    private String backWay;
 }

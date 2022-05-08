@@ -38,7 +38,7 @@ public class LeaveNoteVo implements Serializable {
   private String phoneNumber;
   private String reason;
   private String instructorOpinion;
-  private String instituteOpinion;
+  private String secretaryOpinion;
   private String deanOpinion;
   private ExamineEnum examine;
 

@@ -1,6 +1,7 @@
 package cn.homyit.onlineLeaveSystem.eneity.DTO;
 
 import cn.homyit.onlineLeaveSystem.myEnum.ExamineEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.LeaveEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.OpinionEnum;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,8 @@ public class UpdateNoteDTO {
     private ExamineEnum examineEnum;
     private OpinionEnum opinionEnum;
     private LevelEnum levelEnum;
+    private LeaveEnum depart;
     private String instructorOpinion;
-    private String instituteOpinion;
+    private String secretaryOpinion;
     private String deanOpinion;
 }

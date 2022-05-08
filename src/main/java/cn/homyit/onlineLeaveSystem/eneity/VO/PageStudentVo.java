@@ -1,4 +1,4 @@
-package cn.homyit.onlineLeaveSystem.eneity.DTO;
+package cn.homyit.onlineLeaveSystem.eneity.VO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

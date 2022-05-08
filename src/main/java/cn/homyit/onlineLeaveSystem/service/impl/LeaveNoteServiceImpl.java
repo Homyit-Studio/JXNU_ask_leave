@@ -1,5 +1,6 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
+import cn.homyit.onlineLeaveSystem.eneity.DO.BackNote;
 import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
 import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
@@ -8,17 +9,14 @@ import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.mapper.LeaveNoteMapper;
-import cn.homyit.onlineLeaveSystem.myEnum.CompleteEnum;
-import cn.homyit.onlineLeaveSystem.myEnum.ExamineEnum;
-import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
-import cn.homyit.onlineLeaveSystem.myEnum.OpinionEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.*;
+import cn.homyit.onlineLeaveSystem.service.BackNoteService;
 import cn.homyit.onlineLeaveSystem.service.LeaveNoteService;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
 import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,6 +39,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
     @Autowired
     private TeacherService teacherService;
 
+    @Autowired
+    private BackNoteService backNoteService;
 
 
 
@@ -84,6 +84,12 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         }
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
         return new PageVo<>(iPage.getRecords(),iPage.getTotal(),iPage.getPages());
+    }
+
+    @Override
+    public void deletedANote(Long id) {
+        //删除假条
+        leaveNoteMapper.deleteById(id);
     }
 
     @Override
@@ -188,6 +194,15 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                 note.setExamine(ExamineEnum.getEumByCode(examineEnum.getValue().intValue()+1));
             }else{
                 note.setExamine(ExamineEnum.SUCCESS);
+
+                //生成销假条
+                BackNote backNote = MyBeanUtils.copyBean(note, BackNote.class);
+
+                //创建时学生仍然在学校
+                backNote.setDepart(LeaveEnum.NO);
+                //插入销假条表
+                backNoteService.insertNote(backNote);
+
             }
 
         }

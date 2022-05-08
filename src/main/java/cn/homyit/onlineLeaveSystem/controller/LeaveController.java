@@ -70,6 +70,11 @@ public class LeaveController {
         return Result.success(pageVo);
     }
 
+    @GetMapping("/deletedANote/{id}")
+    public Result deletedANote(@PathVariable Long id){
+        leaveNoteService.deletedANote(id);
+        return Result.success();
+    }
 
 
 }

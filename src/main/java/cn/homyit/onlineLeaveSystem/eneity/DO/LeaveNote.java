@@ -39,7 +39,7 @@ public class LeaveNote {
   private String phoneNumber;
   private String reason;
   private String instructorOpinion;
-  private String instituteOpinion;
+  private String secretaryOpinion;
   private String deanOpinion;
   @TableLogic
   private Integer deleted;
