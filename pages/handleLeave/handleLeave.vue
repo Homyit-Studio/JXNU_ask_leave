@@ -65,10 +65,7 @@
 		// 	}
 		// },
 		onLoad() {
-<<<<<<< HEAD
 			this.requestLeaveNotes()
-=======
->>>>>>> 58ebed7379c61602e7890241b298935ae687f635
 		},
 		methods: {
 			onClickChoice(index) {
