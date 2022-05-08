@@ -3,7 +3,8 @@
 		<view class="backgrond-style">
 		</view>
 		<view class="teacher-message">
-			<uni-card title="老师" :sub-title="teacherMessage.realName" :extra="teacherMessage.teachNumber">
+			<uni-card :title="identity[teacherMessage.role]" :sub-title="teacherMessage.username"
+				:extra="teacherMessage.phoneNumber">
 				<view slot="actions" class="card-actions">
 					<view class="card-actions-item" @click="revisePassword">
 						<uni-icons type="loop" size="20" color="#999"></uni-icons>
@@ -41,14 +42,16 @@
 				</view>
 				<view class="tools-box">
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/handleLeave/handleLeave" class="tools-btn">
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/handleLeave/handleLeave"
+							class="tools-btn">
 							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>学生请假</text>
 					</view>
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList" class="tools-btn">
-							<uni-icons type="personadd" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList"
+							class="tools-btn">
+							<uni-icons type="staff" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>管理班级</text>
 					</view>
@@ -61,6 +64,27 @@
 				</view>
 			</uni-card>
 		</view>
+		<view class="teacher-tools">
+			<uni-card>
+				<view>
+					<text>更多</text>
+				</view>
+				<view class="tools-box">
+					<view>
+						<navigator class="tools-btn">
+							<uni-icons type="personadd-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>更多假条</text>
+					</view>
+				</view>
+			</uni-card>
+		</view>
+		<view>
+			<!-- 提示信息弹窗 -->
+			<uni-popup ref="message" type="message">
+				<uni-popup-message :type="msg.msgType" :message="msg.messageText" :duration="2000"></uni-popup-message>
+			</uni-popup>
+		</view>
 	</view>
 </template>
 
@@ -68,13 +92,19 @@
 	export default {
 		data() {
 			return {
-				teacherMessage: {
-					teachNumber: "201020403020",
-					realName: "张老师"
+				msg: {
+					msgType: 'success',
+					messageText: '这是一条成功提示',
 				},
+				teacherMessage: {},
 				reviseFormData: {
 					oldPassword: "",
 					newPassword: ""
+				},
+				identity: {
+					"INSTRUCTOR": "辅导员",
+					"SECRETARY": "副党委书记",
+					"DEAN": "院长"
 				}
 			}
 		},
@@ -90,9 +120,17 @@
 			//     }
 			// });
 			uni.$http.get("/user/personInfo").then(res => {
-				console.log(res)
+				if (res.data.code == 200) {
+					this.teacherMessage = res.data.data
+				} else {
+					this.msg.msgType = "error"
+					this.msg.messageText = res.data.message
+					this.$refs.message.open()
+				}
 			}).catch(err => {
-				console.log(err)
+				this.msg.msgType = "error"
+				this.msg.messageText = err
+				this.$refs.message.open()
 			})
 		},
 		methods: {
@@ -175,6 +213,7 @@
 			flex-direction: row;
 			justify-content: flex-start;
 			text-align: center;
+
 			.tools-btn {
 				padding: 20rpx;
 				margin: 20rpx;

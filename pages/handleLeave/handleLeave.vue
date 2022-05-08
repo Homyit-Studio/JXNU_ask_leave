@@ -6,19 +6,25 @@
 		</view>
 		<view class="leave-notes">
 			<uni-card v-for="(item, index) in leaveNoteList" :title="currentTitle" :extra="item.startTime"
-				:key="item.studentNumber">
-				<view><text decode="true">姓&emsp;&emsp;名: {{item.applicant}}</text></view>
+				:key="item.id">
+				<view><text decode="true">姓&emsp;&emsp;名: {{item.username}}</text></view>
 				<view><text decode="true">班&emsp;&emsp;级: {{item.majorAndClass}}</text></view>
 				<view><text decode="true">学&emsp;&emsp;号: {{item.studentNumber}}</text></view>
-				<view><text>是否离校: {{item.leave}}</text></view>
-				<view><text>请假天数: 3天</text></view>
+				<view><text>是否离校: {{item.depart == 'YES'? '是' :'否'}}</text></view>
+				<view><text>请假时长: {{item.days}}</text></view>
 				<view slot="actions" class="card-actions">
-					<view class="card-actions-item" @click="checkDetails(item.studentNumber)">
+					<view class="card-actions-item" @click="checkDetails(item.id)">
 						<text class="card-actions-item-text">查看详情</text>
 						<uni-icons type="arrow-right" size="20" color="#1b478e"></uni-icons>
 					</view>
 				</view>
 			</uni-card>
+		</view>
+		<view>
+			<!-- 提示信息弹窗 -->
+			<uni-popup ref="message" type="message">
+				<uni-popup-message :type="msg.msgType" :message="msg.messageText" :duration="2000"></uni-popup-message>
+			</uni-popup>
 		</view>
 	</view>
 </template>
@@ -27,85 +33,22 @@
 	export default {
 		data() {
 			return {
+				isloading: false,
+				//数据总数
+				endPage: null,
+				msg: {
+					msgType: 'success',
+					messageText: '这是一条成功提示',
+				},
 				currentIndex: 0,
 				currentTitle: "未处理假条",
 				handleChoices: ["未处理", "已处理"],
-				leaveNoteList: [{
-						noteNumber: null,
-						studentNumber: 202026203039,
-						applicant: "张三",
-						majorAndClass: "20级计科1班",
-						startTime: "2020-4-26 15:00:00",
-						endTime: "2020-4-27 15:00:00",
-						leave: "是",
-						destination: "宿舍",
-						dormitoryNumber: "6栋s121",
-						way: "地铁",
-						phoneNumber: "12832919291",
-						instructorOpinion: "",
-						insituteOpionion: ""
-					},
-					{
-						noteNumber: null,
-						studentNumber: 202026203039,
-						applicant: "张三",
-						majorAndClass: "20级计科1班",
-						startTime: "2020-4-26 15:00:00",
-						endTime: "2020-4-27 15:00:00",
-						leave: "是",
-						destination: "宿舍",
-						dormitoryNumber: "6栋s121",
-						way: "地铁",
-						phoneNumber: "12832919291",
-						instructorOpinion: "",
-						insituteOpionion: ""
-					},
-					{
-						noteNumber: null,
-						studentNumber: 202026203039,
-						applicant: "张三",
-						majorAndClass: "20级计科1班",
-						startTime: "2020-4-26 15:00:00",
-						endTime: "2020-4-27 15:00:00",
-						leave: "是",
-						destination: "宿舍",
-						dormitoryNumber: "6栋s121",
-						way: "地铁",
-						phoneNumber: "12832919291",
-						instructorOpinion: "",
-						insituteOpionion: ""
-					},
-					{
-						noteNumber: null,
-						studentNumber: 202026203039,
-						applicant: "张三",
-						majorAndClass: "20级计科1班",
-						startTime: "2020-4-26 15:00:00",
-						endTime: "2020-4-27 15:00:00",
-						leave: "是",
-						destination: "宿舍",
-						dormitoryNumber: "6栋s121",
-						way: "地铁",
-						phoneNumber: "12832919291",
-						instructorOpinion: "",
-						insituteOpionion: ""
-					},
-					{
-						noteNumber: null,
-						studentNumber: 202026203039,
-						applicant: "张三",
-						majorAndClass: "20级计科1班",
-						startTime: "2020-4-26 15:00:00",
-						endTime: "2020-4-27 15:00:00",
-						leave: "是",
-						destination: "宿舍",
-						dormitoryNumber: "6栋s121",
-						way: "地铁",
-						phoneNumber: "12832919291",
-						instructorOpinion: "",
-						insituteOpionion: ""
-					}
-				]
+				leaveNoteList: [],
+				listRequest: {
+					"pageNo": 1,
+					"pageSize": 5,
+					"completeEnum": "NO"
+				}
 
 			}
 		},
@@ -122,23 +65,80 @@
 		// 	}
 		// },
 		onLoad() {
-
+			this.requestLeaveNotes()
 		},
 		methods: {
 			onClickChoice(index) {
 				if (index.currentIndex == 0) {
 					this.currentTitle = "未处理假条"
+					this.listRequest.completeEnum = "NO"
+					this.listRequest.pageNo = 1
+					this.requestLeaveNotes()
 				} else {
 					this.currentTitle = "已处理假条"
+					this.listRequest.pageNo = 1
+					this.listRequest.completeEnum = "YES"
+					this.requestLeaveNotes()
 				}
 			},
-			checkDetails(studentId) {
+			requestLeaveNotes() {
+				uni.$http.post("/leave/selectNoteByRole", this.listRequest).then(res => {
+					if (res.data.code == 200) {
+						uni.showToast({
+							title: '加载中',
+							duration: 1000,
+							icon: "loading"
+						});
+						this.leaveNoteList = res.data.data.list
+						this.endPage = res.data.data.endPage
+					} else {
+						this.msg.msgType = "error"
+						this.msg.messageText = res.data.message
+						this.$refs.message.open()
+					}
+				}).catch(err => {
+
+				})
+			},
+			checkDetails(id) {
 				uni.navigateTo({
-					url: "../handleLeaveDetail/handleLeaveDetail?id=" + studentId,
+					url: `../handleLeaveDetail/handleLeaveDetail?id=${id}&current=${this.listRequest.completeEnum}`,
 					animationType: 'pop-in',
 					animationDuration: 200
 				})
 			}
+		},
+		onReachBottom() {
+			if (this.listRequest.pageNo >= this.endPage) {
+				this.msg.msgType = "error"
+				this.msg.messageText = "假条已全部显示"
+				this.$refs.message.open()
+				return
+			}
+			if (this.isloading) return;
+			this.isloading = true
+			this.listRequest.pageNo++;
+			uni.$http.post(`/leave/selectNoteByRole`, this.listRequest).then(res => {
+				if (res.data.code == 200) {
+					uni.showToast({
+						title: '加载中',
+						duration: 500,
+						icon: "loading"
+					});
+					this.leaveNoteList = [...this.leaveNoteList, ...res.data.data.list]
+					this.isloading = false
+				} else {
+					this.msg.msgType = "error"
+					this.msg.messageText = res.data.message
+					this.$refs.message.open()
+					this.isloading = false
+				}
+			}).catch(err => {
+				this.msg.msgType = "error"
+				this.msg.messageText = err
+				this.$refs.message.open()
+				this.isloading = false
+			})
 		}
 	}
 </script>

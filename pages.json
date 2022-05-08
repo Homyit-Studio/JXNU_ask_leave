@@ -47,7 +47,7 @@
 			"path": "pages/handleLeave/handleLeave",
 			"style": {
 				"navigationBarTitleText": "处理假条",
-				"enablePullDownRefresh": false
+				"onReachBottomDistance": 150
 			}
 
 		},
@@ -69,12 +69,7 @@
 			"path": "pages/classRoster/classRoster",
 			"style": {
 				"navigationBarTitleText": "班级成员",
-				"enablePullDownRefresh": false,
-				//禁止bounce效果
-				"disableScroll": true,
-				"app-plus": {
-					"bounce": "none"
-				}
+				"onReachBottomDistance": 150
 			}
 		}
 	    ,{
