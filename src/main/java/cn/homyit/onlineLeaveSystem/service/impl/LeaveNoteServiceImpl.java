@@ -118,9 +118,14 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         //确定是审核还是未审核
         CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
         if (completeEnum.equals(CompleteEnum.NO)){
-            wrapper.apply("examine < level");
+
+            //审核状态修改
+            wrapper.eq("examine",ExamineEnum.INSTRUCTOR);
+//            wrapper.apply("examine < level");
         }else {
-            wrapper.apply("examine = level");
+//            wrapper.apply("examine = level");
+            wrapper.eq("examine",ExamineEnum.SUCCESS);
+            wrapper.or().eq("examine",ExamineEnum.FAILURE);
         }
         //确定用户角色
         LevelEnum role = loginUser.getUser().getRole();

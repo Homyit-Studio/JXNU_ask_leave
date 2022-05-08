@@ -71,7 +71,7 @@ public class EastExcelListener extends AnalysisEventListener<StudentDTO> {
 
         SysStudentUser user = MyBeanUtils.copyBean(data, SysStudentUser.class);
 
-        if (data.equals("男")){
+        if (data.getSex().trim().equals("男")){
             user.setSex(SexEnum.MAN);
         }else{
             user.setSex(SexEnum.WOMAN);
