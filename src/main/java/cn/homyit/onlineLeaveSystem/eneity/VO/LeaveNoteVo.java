@@ -43,4 +43,5 @@ public class LeaveNoteVo implements Serializable {
   private ExamineEnum examine;
 
   private LevelEnum level;
+  private String days;
 }
