@@ -142,7 +142,7 @@
 				}
 			}).catch(err => {
 				this.msg.msgType = "error"
-				this.msg.messageText = err
+				this.msg.messageText = err.errMsg
 				this.$refs.message.open()
 				this.isloading = false
 			})

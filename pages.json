@@ -99,19 +99,10 @@
             
         }
         ,{
-            "path" : "pages/confirmLeftSchool/confirmLeftSchool",
+            "path" : "pages/terminateLeave/terminateLeave",
             "style" :                                                                                    
             {
-                "navigationBarTitleText": "确认离校",
-                "enablePullDownRefresh": false
-            }
-            
-        }
-        ,{
-            "path" : "pages/confirmBackSchool/confirmBackSchool",
-            "style" :                                                                                    
-            {
-                "navigationBarTitleText": "确认返校",
+                "navigationBarTitleText": "假条销假",
                 "enablePullDownRefresh": false
             }
             

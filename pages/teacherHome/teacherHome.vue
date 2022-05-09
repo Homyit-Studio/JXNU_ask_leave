@@ -162,7 +162,7 @@
 				}
 			}).catch(err => {
 				this.msg.msgType = "error"
-				this.msg.messageText = err
+				this.msg.messageText = err.errMsg
 				this.$refs.message.open()
 			})
 			this.$nextTick(() => {
@@ -202,20 +202,22 @@
 						}
 					}).catch(err => {
 						this.msg.msgType = "error"
-						this.msg.messageText = err
+						this.msg.messageText = err.errMsg
 						this.$refs.message.open()
 						setTimeout(() => {
 							this.$refs.popupRevisePassword.close()
 						}, 500)
 					})
 				}).catch(err => {
-					console.log(err)
+					this.msg.msgType = "error"
+					this.msg.messageText = err.errMsg
+					this.$refs.message.open()
 				})
 			},
-			signout(){
+			signout() {
 				this.$refs.alertDialog.open()
 			},
-			signoutConfirm(){
+			signoutConfirm() {
 				uni.$http.get("/user/logout").then(res => {
 					if (res.data.code == 200) {
 						uni.showToast({
@@ -223,6 +225,9 @@
 						})
 						uni.removeStorage({
 							key: 'token',
+						});
+						uni.removeStorage({
+							key: 'role',
 						});
 						setTimeout(() => {
 							uni.showToast({

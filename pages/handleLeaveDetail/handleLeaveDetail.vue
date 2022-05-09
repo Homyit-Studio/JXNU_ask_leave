@@ -49,6 +49,11 @@
 				<uni-popup-message :type="msg.msgType" :message="msg.messageText" :duration="2000"></uni-popup-message>
 			</uni-popup>
 		</view>
+		<view>
+			<uni-card title="销假记录">
+				<view>未进行销假</view>
+			</uni-card>
+		</view>
 	</view>
 </template>
 
@@ -68,7 +73,6 @@
 			}
 		},
 		onLoad(options) {
-			console.log(options)
 			this.showLeaveDetail(options.id, options.current)
 		},
 		methods: {
@@ -115,7 +119,7 @@
 					}
 				}).catch(err => {
 					this.msg.msgType = "error"
-					this.msg.messageText = err
+					this.msg.messageText = err.errMsg
 					this.$refs.message.open()
 				})
 			},
@@ -214,7 +218,7 @@
 					}
 				}).catch(err => {
 					this.msg.msgType = "error"
-					this.msg.messageText = err
+					this.msg.messageText = err.errMsg
 					this.$refs.message.open()
 				})
 			},

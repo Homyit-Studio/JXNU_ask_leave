@@ -83,10 +83,19 @@
 			}
 		},
 		onLoad(option) {
-			console.log(uni.getStorageSync('token'))
-			if(uni.getStorageSync('token')){
+			if(uni.getStorageSync('token') && uni.getStorageSync('role') != '学生' && option.card == "teacher"){
 				uni.redirectTo({
 					url:"../teacherHome/teacherHome",
+					success(){
+						uni.showToast({
+							title:"登录成功",
+							duration:500
+						})
+					}
+				})
+			}else if(uni.getStorageSync('token') && uni.getStorageSync('role') == '学生' && option.card == "student"){
+				uni.redirectTo({
+					url:"../studentHome/studentHome",
 					success(){
 						uni.showToast({
 							title:"登录成功",
@@ -125,9 +134,10 @@
 								uni.setStorage({
 									key: 'token',
 									data: res.data.data.token,
-									success: function() {
-										console.log('success');
-									}
+								});
+								uni.setStorage({
+									key: 'role',
+									data: res.data.data.role,
 								});
 								uni.navigateTo({
 									url: '/pages/teacherHome/teacherHome'
@@ -139,7 +149,7 @@
 							}
 						}).catch(err => {
 							this.msg.msgType = "error"
-							this.msg.messageText = err
+							this.msg.messageText = err.errMsg
 							this.$refs.message.open()
 						})
 					}
@@ -152,9 +162,13 @@
 								uni.setStorage({
 									key: 'token',
 									data: res.data.data.token,
-									success: function () {
-										console.log('success');
-									}
+									// success: function () {
+									// 	console.log('success');
+									// }
+								});
+								uni.setStorage({
+									key: 'role',
+									data: res.data.data.role,
 								});
 								uni.navigateTo({
 									url: '/pages/studentHome/studentHome'
@@ -168,7 +182,7 @@
 					}
 				}).catch(err => {
 					this.msg.msgType = "error"
-					this.msg.messageText = err
+					this.msg.messageText = err.errMsg
 					this.$refs.message.open()
 				})
 			}

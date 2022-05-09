@@ -120,12 +120,11 @@
 					}
 				}).catch(err => {
 					this.msg.msgType = "error"
-					this.msg.messageText = err
+					this.msg.messageText = err.errMsg
 					this.$refs.message.open()
 				})
 			},
 			showStudent(item) {
-				console.log(item)
 				this.studentMessage = item
 				this.$refs.studentPopup.open()
 			}

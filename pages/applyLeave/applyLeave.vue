@@ -45,7 +45,7 @@
 					formData:{
 						applicant:"",//姓名
 						majorAndClass:'',//班级
-						leave:'',//是否离开学校
+						leave:false,//是否离开学校
 						destination:'',//目的地
 						dormitoryNumber:'',//宿舍号
 						way:'',//交通方式
@@ -110,19 +110,19 @@
 		
 		methods:{
 			submitForm(){
+				//console.log(this.formData.leave === true ? "YES" : "NO")
+				this.formData.startTime = this.dateAdd(this.formData.startTime);
+				this.formData.endTime = this.dateAdd(this.formData.endTime);
+				console.log(this.formData.startTime)
 				this.$refs.form.validate().then(res=>{
+					
 					uni.$http.post('/leave/ask', {
-						 "studentNumber": this.studentMsg.studentNumber,
-						  "majorAndClass": this.studentMsg.majorAndClass,
-						  "username": this.studentMsg.username,
-						  "startTime": this.formData.startTime,
-						  "endTime": this.formData.endTime,
-						  "leave": this.formData.leave === true ? "YES" : "NO",
-						  "destination": this.formData.destination,
-						  "dormitoryNumber": this.formData.dormitoryNumber,
-						  "way": this.formData.way,
-						  "phoneNumber": this.formData.phoneNumber,
-						  "reason": this.formData.reason
+							"startTime":this.formData.startTime,
+							"endTime": this.formData.endTime,
+							"depart": this.formData.leave === true ? "YES" : "NO",
+							"destination": this.formData.destination,
+							"way": this.formData.way,
+							"reason": this.formData.reason
 					}).then((res)=>{
 						console.log(res)
 						if(res.data.code === 200){
@@ -140,11 +140,19 @@
 				}).catch(err =>{
 					console.log(err);
 				})
+				
 
 			},
 			switchChange(e){
 				//console.log(e.detail.value);
 				this.formData.leave = e.detail.value;
+			},
+			//补充时间
+			dateAdd(dateStr){
+				if(dateStr.length <= 11){
+					return dateStr + ' 00:00:00'
+				}
+				
 			}
 		},
 		onLoad:function(options) {
