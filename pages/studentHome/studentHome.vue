@@ -12,28 +12,6 @@
 				</view>
 			</uni-card>
 		</view>
-		<view>
-			<!-- 修改密码弹窗 -->
-			<uni-popup ref="popupRevisePassword" background-color="#fff" type="bottom">
-				<view class="revise-popup-content">
-					<uni-forms class="revise-form" ref="revisePasswordForm" :modelValue="reviseFormData"
-						validateTrigger="submit">
-						<uni-forms-item name="oldPassword">
-							<uni-easyinput type="password" prefixIcon=".uniui-person-filled"
-								v-model="reviseFormData.oldPassword" placeholder="请输入原密码" />
-						</uni-forms-item>
-						<uni-forms-item name="newPassword">
-							<uni-easyinput type="password" prefixIcon=".uniui-locked-filled"
-								v-model="reviseFormData.newPassword" placeholder="请设置新密码" />
-						</uni-forms-item>
-					</uni-forms>
-					<view class="revise-buttons">
-						<button type="default" class="cancel-button" @click="cancelSubmit">取消</button>
-						<button type="default" class="revise-button" @click="reviseSubmit">确认</button>
-					</view>
-				</view>
-			</uni-popup>
-		</view>
 		<view class="teacher-tools">
 			<uni-card>
 				<view>
@@ -53,9 +31,9 @@
 						<text>查看申请</text>
 					</view>
 					<view>
-						<navigator class="tools-btn">
+						<view class="tools-btn" @click="logOut()">
 							<uni-icons type="paperplane" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-						</navigator>
+						</view>
 						<text>退出登录</text>
 					</view>
 				</view>
@@ -68,20 +46,37 @@
 				</view>
 				<view class="tools-box">
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/confirmLeftSchool/confirmLeftSchool" class="tools-btn">
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/allLeaves/allLeaves" class="tools-btn">
 							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
-						<text>确认离校</text>
-					</view>
-					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/confirmBackSchool/confirmBackSchool" class="tools-btn">
-							<uni-icons type="personadd" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-						</navigator>
-						<text>确认返校</text>
+						<text>假条销假</text>
 					</view>
 				</view>
 			</uni-card>
 		</view>
+		<uni-popup ref="dialog_up" type="dialog">
+			<uni-popup-dialog type="warn" content="确认退出？" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
+		</uni-popup>
+		<!-- 修改密码弹窗 -->
+		<uni-popup ref="popupRevisePassword" background-color="#fff" type="bottom">
+			<view class="revise-popup-content">
+				<uni-forms class="revise-form" ref="revisePasswordForm" :modelValue="reviseFormData" :rules="dataRules" validateTrigger="submit">
+					<uni-forms-item name="oldPassword">
+						<uni-easyinput type="password" prefixIcon=".uniui-person-filled"
+							v-model="reviseFormData.oldPassword" placeholder="请输入原密码" />
+					</uni-forms-item>
+					<uni-forms-item name="newPassword">
+						<uni-easyinput type="password" prefixIcon=".uniui-locked-filled"
+							v-model="reviseFormData.newPassword" placeholder="请设置新密码" />
+					</uni-forms-item>
+				</uni-forms>
+				<view class="revise-buttons">
+					<button type="default" class="cancel-button" @click="cancelSubmit">取消</button>
+					<button type="default" class="revise-button" @click="reviseSubmit">确认</button>
+				</view>
+			</view>
+		</uni-popup>
+		
 	</view>
 </template>
 
@@ -90,12 +85,28 @@
 		data() {
 			return {
 				studentMessage: {
-					studentNumber: "201020403020",
-					username: "张sir"
+					studentNumber: "null",
+					username: "null"
 				},
 				reviseFormData: {
 					oldPassword: "",
 					newPassword: ""
+				},
+				dataRules:{
+					"oldPassword":{
+						rules:[
+							{
+								required: true,
+								errorMessage: "请输入原密码"
+							}]
+					},
+					"newPassword":{
+						rules:[
+							{
+								required: true,
+								errorMessage: "请输入新密码"
+							}]
+					},
 				}
 			}
 		},
@@ -108,12 +119,13 @@
 					//console.log(res.data.data)
 					let userData = res.data.data;
 					this.studentMessage = userData;
+					
 					//储存学生信息，方便其他页面获取
 					uni.setStorage({
 						key: 'userStr',
 						data: JSON.stringify(userData),
 						success: function () {
-							console.log('success');
+							//console.log('success');
 						}
 					});
 				}).catch((err)=>{
@@ -123,20 +135,58 @@
 			revisePassword() {
 				this.$refs.popupRevisePassword.open()
 			},
-			cancelSubmit() {
-				this.$refs.popupRevisePassword.close()
-			},
+ 
+			//提交修改密码
 			reviseSubmit() {
-				uni.showToast({
-					title: "正在修改中"
-				})
-				setTimeout(() => {
+				this.$refs.revisePasswordForm.validate().then(res=>{
 					uni.showToast({
-						title: "修改成功"
+						title: "正在修改中"
 					})
-					this.$refs.popupRevisePassword.close()
-				}, 1000)
+					uni.$http.post('/user/updatePWD', {
+						  "oldPassword": this.reviseFormData.oldPassword,
+						  "newPassword": this.reviseFormData.newPassword
+					}).then(res=>{
+						console.log(res)
+						if(res.data.code === 200){
+							uni.showToast({
+								title: "修改成功,请重新登录",
+							})
+							setTimeout(()=>{
+								this.$refs.popupRevisePassword.close();
+								this.confirm();//相当于退出登录
+							},1500)
+						}else{
+							uni.showToast({
+								icon:'error',
+								title: res.data.message + ''
+							})
+						}
+					})
+				}).catch(err =>{})
+			},
+			//退出登录
+			logOut(){
+				this.$refs.dialog_up.open()
+			},
+			//弹框操作
+			close() {
+				this.$refs.dialog_up.close()
+			},
+			//确认退出
+			confirm() {
+				uni.$http.get('/user/logout').then(res =>{
+					console.log(res)
+					if(res.data.code === 200){
+						uni.clearStorage();//清理本地缓存
+						uni.navigateTo({
+							url: '/pages/index/index'
+						})	
+					}
+				}).catch(err=>{
+					console.log(err)
+				})
 			}
+			
 		}
 	}
 </script>

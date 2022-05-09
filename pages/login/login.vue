@@ -127,9 +127,9 @@
 								uni.setStorage({
 									key: 'token',
 									data: res.data.data.token,
-									success: function () {
-										console.log('success');
-									}
+									// success: function () {
+									// 	console.log('success');
+									// }
 								});
 								uni.navigateTo({
 									url: '/pages/studentHome/studentHome'

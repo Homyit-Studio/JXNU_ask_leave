@@ -1,24 +1,37 @@
 <template>
 		<view class="handle-leave-details-page">
 		<view class="detail-status">
-			<uni-tag text="未审核" v-if="leaveDetails.type === 0" />
-			<view  v-else-if="leaveDetails.type === 1">
+			<view  v-if = "types === '0'">
+				<view>
+					<uni-icons type="minus-filled" size="120" color="#7f7f7f" class="icon-style"></uni-icons>
+				</view>
+				<text>未审批</text>
+			</view>
+			<view  v-else-if="leaveDetails.examine === 'SUCCESS'">
 				<view>
 					<uni-icons type="checkbox-filled" size="120" color="#00aa27" class="icon-style"></uni-icons>
 				</view>
 				<text>审批通过</text>
 			</view>
-			<view  v-else-if="leaveDetails.type === 2">
+			<view  v-else-if="leaveDetails.examine === 'FAILURE'">
 				<view>
 					<uni-icons type="clear" size="120" color="#aa0000" class="icon-style"></uni-icons>
 				</view>
 				<text>审批未通过</text>
 			</view>
+			<view  v-else>
+				<view>
+					<uni-icons type="minus-filled" size="120" color="#ffaa00" class="icon-style"></uni-icons>
+				</view>
+				<text>审批中</text>
+			</view>
+		
 		</view>
 		<view class="details-card">
 			<uni-card title="审批情况" :is-shadow="false"  class="details-card">
-				<view><text decode="true">辅导员意见:&emsp;{{leaveDetails.instructorOpinion}}</text></view>
-				<view><text decode="true">学院&emsp;意见:&emsp;{{leaveDetails.insituteOpionion}}</text></view>
+				<view><text decode="true">辅导员意见:&emsp;{{leaveDetails.instructorOpinion === null ? '暂无' : leaveDetails.instructorOpinion}}</text></view>
+				<view><text decode="true">学院&emsp;意见:&emsp;{{leaveDetails.instituteOpinion === null ? '暂无' : leaveDetails.instituteOpinion}}</text></view>
+				<view><text decode="true">院长&emsp;意见:&emsp;{{leaveDetails.deanOpinion === null ? '暂无' : leaveDetails.deanOpinion}}</text></view>
 			</uni-card>
 		</view>
 		<view class="details-card">
@@ -26,7 +39,7 @@
 				<view><text decode="true">学&emsp;&emsp;号:&emsp;{{leaveDetails.studentNumber}}</text></view>
 				<view><text decode="true">班&emsp;&emsp;级:&emsp;{{leaveDetails.majorAndClass}}</text></view>
 				<view><text decode="true">目的地点:&emsp;{{leaveDetails.destination}}</text></view>
-				<view><text decode="true">是否离校:&emsp;{{leaveDetails.leave}}</text></view>
+				<view><text decode="true">是否离校:&emsp;{{leaveDetails.depart === 'YES' ? '是' : leaveDetails.depart === 'NO' ? '否' : ''}}</text></view>
 				<view>
 					<view><text decode="true">开始时间:&emsp;{{leaveDetails.startTime}}</text></view>
 					<view><text decode="true">结束时间:&emsp;{{leaveDetails.endTime}}</text></view>
@@ -41,9 +54,7 @@
 				</view>
 			</uni-card>
 			<view class="btn-grounps">
-					<navigator url="/pages/allLeaves/allLeaves">
-						<button type="default">我要销假</button>
-					</navigator>
+				<button type="default" @click="goToTerminate()">我要销假</button>
 			</view>
 		</view>
 	</view>
@@ -53,29 +64,32 @@
 	export default {
 		data() {
 			return {
+				types:'',
 				leaveDetails: {
-					noteNumber: null,
-					studentNumber: 202026203039,
-					applicant: "张三",
-					majorAndClass: "20级计科1班",
-					startTime: "2020-4-26 15:00:00",
-					endTime: "2020-4-27 15:00:00",
-					leave: "是",
-					destination: "宿舍",
-					dormitoryNumber: "6栋 s121",
-					way: "地铁",
-					phoneNumber: "12832919291",
-					reason:'我要回家我要回家，我要回家，我要回家，希望老师批准。',
-					instructorOpinion: "同意",
-					insituteOpionion: "同意",
-					type: 1,
 				}
 			}
 		},
-		onLoad(id) {
-			console.log(id)
+		onLoad(item) {
+			//console.log(item.type)
+			//console.log(this.leaveDetails.type == '0')
+			uni.$http.get('/leave/selectANote/' + item.id).then(res =>{
+				console.log(res)
+				if(res.data.code === 200){
+					this.leaveDetails = res.data.data
+				}
+				
+			})
+			this.types = item.type;
+			//console.log(this.leaveDetails.examine)
+			//console.log(this.types == '0')
 		},
-		methods: {}
+		methods: {
+			goToTerminate(){
+				uni.navigateTo({
+					url:'/pages/terminateLeave/terminateLeave?id=' + this.leaveDetails.id
+				})
+			}
+		}
 	}
 </script>
 
