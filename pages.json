@@ -115,7 +115,15 @@
                 "enablePullDownRefresh": false
             }
             
-        }
+        },
+		{
+			"path": "pages/showGradeLeave/showGradeLeave",
+			"style": {
+				"navigationBarTitleText": "年级假条",
+				"onReachBottomDistance": 150
+			}
+		
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

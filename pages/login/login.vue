@@ -83,6 +83,18 @@
 			}
 		},
 		onLoad(option) {
+			console.log(uni.getStorageSync('token'))
+			if(uni.getStorageSync('token')){
+				uni.redirectTo({
+					url:"../teacherHome/teacherHome",
+					success(){
+						uni.showToast({
+							title:"登录成功",
+							duration:500
+						})
+					}
+				})
+			}
 			this.optionChoose = option.card == "student" ? true : false
 			this.cardChoose(option.card)
 		},

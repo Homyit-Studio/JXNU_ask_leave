@@ -3,7 +3,7 @@
 		<uni-card is-full :is-shadow="false" class="remind">
 			<text>右滑显现班级成员操作按钮</text>
 		</uni-card>
-		<view class="student-title"><text>20级计科1班</text></view>
+		<view class="student-title"><text>{{className}}</text></view>
 		<uni-swipe-action>
 			<uni-swipe-action-item v-for="(item, i) in studentList" :key="item.classNumber" :right-options="options"
 				@click="bindClick" @change="swipeChange($event, index)">
@@ -51,6 +51,7 @@
 			return {
 				//节流阀
 				isloading:false,
+				className:null,
 				//数据总数
 				endPage : null,
 				msg: {
@@ -90,7 +91,7 @@
 			}
 		},
 		onLoad(options) {
-			console.log(options.id)
+			this.className = options.class
 			this.requestClassRoster(options.id)
 		},
 		methods: {

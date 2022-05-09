@@ -4,9 +4,9 @@
 			<uni-tag v-if="leaveDetails.examine == 'SUCCESS'" text="已同意" type="success"></uni-tag>
 			<uni-tag v-else-if="leaveDetails.examine == 'FAILURE'" text="已拒绝" type="error"></uni-tag>
 			<uni-tag v-else text="审核中" type="primary"></uni-tag>
-			<view class="current-time">
+<!-- 			<view class="current-time">
 				<text class="time-tag">当前时间：2020-12-22 20:11:11</text>
-			</view>
+			</view> -->
 		</view>
 		<view class="details-card">
 			<uni-card :title="leaveDetails.username + ' 的请假申请'">
@@ -22,7 +22,7 @@
 				</view>
 				<view><text decode="true">前往方式:&emsp;{{leaveDetails.way}}</text></view>
 				<view><text decode="true">联系号码:&emsp;{{leaveDetails.phoneNumber}}</text></view>
-				<view><text decode="true">宿舍地址:&emsp;{{leaveDetails.dormitoryNumber}}</text></view>
+				<view><text decode="true">宿舍住址:&emsp;{{leaveDetails.dormitoryNumber}}</text></view>
 			</uni-card>
 		</view>
 		<view class="approval-record">
@@ -39,14 +39,14 @@
 		<view>
 			<!-- 输入框示例 -->
 			<uni-popup ref="inputDialog" type="dialog">
-				<uni-popup-dialog ref="inputClose" mode="input" title="审核意见" value="对话框预置提示内容!" placeholder="请输入审核意见"
+				<uni-popup-dialog ref="inputClose" mode="input" title="审核意见" placeholder="请输入审核意见"
 					@confirm="dialogInputConfirm"></uni-popup-dialog>
 			</uni-popup>
 		</view>
 		<view>
 			<!-- 提示信息弹窗 -->
 			<uni-popup ref="message" type="message">
-				<uni-popup-message :type="msgType" :message="messageText" :duration="2000"></uni-popup-message>
+				<uni-popup-message :type="msg.msgType" :message="msg.messageText" :duration="2000"></uni-popup-message>
 			</uni-popup>
 		</view>
 	</view>
@@ -145,7 +145,7 @@
 						},
 						{
 							title: "党委书记审批",
-							desc: data.instituteOpinion,
+							desc: data.secretaryOpinion,
 							other: "SECRETARY"
 						}
 					]
@@ -162,7 +162,7 @@
 						},
 						{
 							title: "党委书记审批",
-							desc: data.instituteOpinion,
+							desc: data.secretaryOpinion,
 							other: "SECRETARY"
 						},
 						{
@@ -185,17 +185,19 @@
 			},
 			//确认审核提交
 			dialogInputConfirm(val) {
+				let status = this.leaveDetails.examine.toLowerCase() + "Opinion"
+				console.log(status)
 				uni.showLoading({
 					title: '审核提交中...'
 				})
-
-				uni.$http.post("/leave/updateNote", {
+				let requestMessage = {
 					"id": this.leaveDetails.id,
-					"examineEnum": this.leaveDetails.examine,
 					"levelEnum": this.leaveDetails.level,
 					"opinionEnum": this.opinionEnum,
-					"instructorOpinion": val
-				}).then(res => {
+				}
+				requestMessage[status] = val
+				console.log(requestMessage)
+				uni.$http.post("/leave/updateNote", requestMessage).then(res => {
 					console.log(res)
 					if (res.data.code == 200) {
 						uni.hideLoading()

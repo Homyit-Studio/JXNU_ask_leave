@@ -55,7 +55,7 @@
 						</navigator>
 						<text>管理班级</text>
 					</view>
-					<view>
+					<view @click="signout">
 						<navigator class="tools-btn">
 							<uni-icons type="paperplane" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
@@ -71,7 +71,8 @@
 				</view>
 				<view class="tools-box">
 					<view>
-						<navigator class="tools-btn">
+						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
+							url="../showGradeLeave/showGradeLeave">
 							<uni-icons type="personadd-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>更多假条</text>
@@ -83,6 +84,13 @@
 			<!-- 提示信息弹窗 -->
 			<uni-popup ref="message" type="message">
 				<uni-popup-message :type="msg.msgType" :message="msg.messageText" :duration="2000"></uni-popup-message>
+			</uni-popup>
+		</view>
+		<view>
+			<!-- 退出登录弹框 -->
+			<uni-popup ref="alertDialog" type="dialog">
+				<uni-popup-dialog type="info" cancelText="取消" confirmText="确认" title="退出登录" content="确认离开嘛"
+					@confirm="signoutConfirm" @close="dialogClose"></uni-popup-dialog>
 			</uni-popup>
 		</view>
 	</view>
@@ -202,6 +210,41 @@
 					})
 				}).catch(err => {
 					console.log(err)
+				})
+			},
+			signout(){
+				this.$refs.alertDialog.open()
+			},
+			signoutConfirm(){
+				uni.$http.get("/user/logout").then(res => {
+					if (res.data.code == 200) {
+						uni.showToast({
+							title: "退出登录中..."
+						})
+						uni.removeStorage({
+							key: 'token',
+						});
+						setTimeout(() => {
+							uni.showToast({
+								title: "退出成功"
+							})
+							uni.navigateTo({
+								url: "../index/index"
+							})
+						}, 1000)
+					} else {
+						this.msg.msgType = "error"
+						this.msg.messageText = res.data.message
+						this.$refs.message.open()
+					}
+					this.$refs.alertDialog.close()
+				}).catch(err => {
+					this.msg.msgType = "error"
+					this.msg.messageText = err
+					this.$refs.message.open()
+					setTimeout(() => {
+						this.$refs.alertDialog.close()
+					}, 500)
 				})
 			}
 		}
