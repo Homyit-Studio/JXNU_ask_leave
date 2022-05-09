@@ -90,7 +90,7 @@
 			<!-- 退出登录弹框 -->
 			<uni-popup ref="alertDialog" type="dialog">
 				<uni-popup-dialog type="info" cancelText="取消" confirmText="确认" title="退出登录" content="确认离开嘛"
-					@confirm="signoutConfirm" @close="dialogClose"></uni-popup-dialog>
+					@confirm="signoutConfirm"></uni-popup-dialog>
 			</uni-popup>
 		</view>
 	</view>

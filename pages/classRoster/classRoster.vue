@@ -36,6 +36,9 @@
 				</view>
 			</uni-popup>
 		</view>
+		<view v-if="shownodata">
+			<view class="show-nodata"><text>没有更多数据了</text></view>
+		</view>
 		<view>
 			<!-- 提示信息弹窗 -->
 			<uni-popup ref="message" type="message">
@@ -49,6 +52,8 @@
 	export default {
 		data() {
 			return {
+				//没有更多数据提醒
+				shownodata: false,
 				//节流阀
 				isloading:false,
 				className:null,
@@ -113,15 +118,20 @@
 						});
 						this.endPage = res.data.data.endPage
 						this.studentList = res.data.data.list
+						if (this.rosterRequest.pageNo >= this.endPage) {
+							this.shownodata = true
+						}
 					} else {
 						this.msg.msgType = "error"
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
+						this.shownodata = true
 					}
 				}).catch(err => {
 					this.msg.msgType = "error"
 					this.msg.messageText = err.errMsg
 					this.$refs.message.open()
+					this.shownodata = true
 				})
 			},
 			showStudent(item) {
@@ -131,9 +141,7 @@
 		},
 		onReachBottom(){
 			if(this.rosterRequest.pageNo >= this.endPage){
-				this.msg.msgType = "error"
-				this.msg.messageText = "班级成员已全部显示"
-				this.$refs.message.open()
+				this.shownodata = true
 				return
 			}
 			if(this.isloading) return;
@@ -191,6 +199,10 @@
 			flex-wrap: nowrap;
 			justify-content: space-between;
 			align-items: center;
+		}
+		.show-nodata{
+			text-align: center;
+			padding: 20px;
 		}
 	}
 </style>

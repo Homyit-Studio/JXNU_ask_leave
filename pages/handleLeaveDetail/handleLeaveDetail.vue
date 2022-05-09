@@ -4,7 +4,7 @@
 			<uni-tag v-if="leaveDetails.examine == 'SUCCESS'" text="已同意" type="success"></uni-tag>
 			<uni-tag v-else-if="leaveDetails.examine == 'FAILURE'" text="已拒绝" type="error"></uni-tag>
 			<uni-tag v-else text="审核中" type="primary"></uni-tag>
-<!-- 			<view class="current-time">
+			<!-- 			<view class="current-time">
 				<text class="time-tag">当前时间：2020-12-22 20:11:11</text>
 			</view> -->
 		</view>
@@ -32,7 +32,7 @@
 				</uni-steps>
 			</view>
 		</view>
-		<view class="handle-buttons" v-if="currentStatus == 'NO'">
+		<view class="handle-buttons" v-if="currentStatus == 'NO' && statusCard != 'other'">
 			<button type="warn" class="refuse-button" @click="cancelSubmit">拒绝</button>
 			<button type="primary" class="agree-button" @click="reviseSubmit">同意</button>
 		</view>
@@ -49,9 +49,19 @@
 				<uni-popup-message :type="msg.msgType" :message="msg.messageText" :duration="2000"></uni-popup-message>
 			</uni-popup>
 		</view>
-		<view>
+		<view v-if="currentStatus == 'YES' && leaveDetails.examine == 'SUCCESS'">
 			<uni-card title="销假记录">
-				<view>未进行销假</view>
+				<view v-if="gobackMessage.status == 'SUCCESS'">
+					<view><text decode="true">是否离校:&emsp;{{gobackMessage.depart == 'YES'? '是' :'否'}}</text></view>
+					<view><text decode="true">离开时间:&emsp;{{gobackMessage.departTime}}</text></view>
+					<view><text decode="true">离开方式:&emsp;{{gobackMessage.departWay}}</text></view>
+					<view><text decode="true">是否返校:&emsp;{{gobackMessage.back == 'YES'? '是' :'否'}}</text></view>
+					<view><text decode="true">返回时间:&emsp;{{gobackMessage.backTime}}</text></view>
+					<view><text decode="true">返回方式:&emsp;{{gobackMessage.backWay}}</text></view>
+				</view>
+				<view v-else-if="gobackMessage.status == 'FAILURE'">
+					<view><text>未进行销假</text></view>
+				</view>
 			</uni-card>
 		</view>
 	</view>
@@ -62,7 +72,9 @@
 		data() {
 			return {
 				leaveDetails: {},
+				gobackMessage: {},
 				process: [],
+				statusCard:null,
 				msg: {
 					msgType: 'success',
 					messageText: '这是一条成功提示',
@@ -74,6 +86,7 @@
 		},
 		onLoad(options) {
 			this.showLeaveDetail(options.id, options.current)
+			this.statusCard = options.card
 		},
 		methods: {
 			showLeaveDetail(id, current) {
@@ -111,6 +124,22 @@
 							}
 						} else {
 							this.activeProcess = this.process.length - 1
+						}
+						//销假申请
+						if (this.currentStatus == 'YES' && this.leaveDetails.examine == 'SUCCESS') {
+							uni.$http.get(`/back/selectANote/${id}`).then(res => {
+								if (res.data.code == 200) {
+									this.gobackMessage = res.data.data
+								} else {
+									this.msg.msgType = "error"
+									this.msg.messageText = res.data.message
+									this.$refs.message.open()
+								}
+							}).catch(err => {
+								this.msg.msgType = "error"
+								this.msg.messageText = err.errMsg
+								this.$refs.message.open()
+							})
 						}
 					} else {
 						this.msg.msgType = "error"
