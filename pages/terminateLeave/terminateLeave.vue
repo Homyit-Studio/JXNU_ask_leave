@@ -55,26 +55,61 @@
 			return {
 				id:'',
 				leaveData:{
-					"depart": "true",
+					"depart": true,
 					"leaveTime": "",
 					"departWay": ""
 				},
 				backData:{
-					"back" : "true",
+					"back" : true,
 					"backTime": "",
 					"backWay": "",
 				},
 				leaveDataRules:{
-				},
+						"leaveTime":{
+							rules:[
+								{
+									required: true,
+									errorMessage: "请输入实际离校时间"
+								}]
+						},
+						"departWay":{
+							rules:[
+								{
+									required: true,
+									errorMessage: "请输入交通情况说明"
+								}]
+						},
+					},
 				backDataRules:{
+					"backTime":{
+						rules:[
+							{
+								required: true,
+								errorMessage: "请输入实际返校时间"
+							}]
+					},
+					"backWay":{
+						rules:[
+							{
+								required: true,
+								errorMessage: "请输入交通情况说明"
+							}]
+					},
 				}
 			}
 		},
-		onLoad(item){
-			this.id = item.id;
-			console.log(this.id)
-		},
 		methods: {
+			//补充时间
+			dateAdd(dateStr,flag){
+				if(flag === false){
+					return "";
+				}else if(dateStr.length <= 11 && dateStr.length > 0){
+					return dateStr + '00:00:00'
+				}
+				else{
+					return dateStr;
+				}
+			},
 			switchChange1(e){
 				console.log(e.detail.value)
 				this.leaveData.depart = e.detail.value;
@@ -123,23 +158,80 @@
 					}else{
 						this.backDataRules = {}
 					}
-					
 			},
 			submitForm(){
-					this.$refs.form.validate().then(res => {
-						uni.showToast({
-							title: "提交成功"
+				this.leaveData.leaveTime = this.dateAdd(this.leaveData.leaveTime,this.leaveData.depart);
+				this.backData.backTime = this.dateAdd( this.backData.backTime,this.backData.back)
+				this.$refs.leave_from.validate().then(res => {
+					this.$refs.back_from.validate().then(res => {
+						uni.$http.post('/back/updateNote',{
+							  "id": this.id,
+							  "depart": this.leaveData.depart  === true ? "YES" : "NO",
+							  "departTime": this.leaveData.leaveTime,
+							  "departWay": this.leaveData.departWay,
+							  "back": this.backData.back  === true ? "YES" : "NO",
+							  "backWay": this.backData.backWay,
+							  "backTime": this.backData.backTime
+						}).then(res=>{
+							console.log(res)
+							if(res.data.code === 200){
+								uni.showToast({
+									title: "提交成功",		
+								})
+								setTimeout(function() {
+									uni.redirectTo({
+										url:'/pages/studentHome/studentHome'
+										} 
+									)
+								}, 1000)
+							}
+						}).catch(err=>{
+							console.log(err)
 						})
-						setTimeout(() => {
-							uni.navigateTo({
-								url: '/pages/studentHome/studentHome'
-							})
-						}, 1000);
 					}).catch(err => {
 						console.log('err' + err);
 					})
-				}
-			}
+				}).catch(err => {
+					console.log('err' + err);
+				})
+				},
+				//获取当前格式化时间
+				getFormatDate() {
+					 var date = new Date();
+					 var sign1 = "-";
+					 var sign2 = ":";
+					 var year = date.getFullYear() // 年
+					 var month = date.getMonth() + 1; // 月
+					 var day  = date.getDate(); // 日
+					 var hour = date.getHours(); // 时
+					 var minutes = date.getMinutes(); // 分
+					 var seconds = date.getSeconds() //秒
+					 // 给一位数数据前面加 “0”
+					 if (month >= 1 && month <= 9) {
+					  month = "0" + month;
+					 }
+					 if (day >= 0 && day <= 9) {
+					  day = "0" + day;
+					 }
+					 if (hour >= 0 && hour <= 9) {
+					  hour = "0" + hour;
+					 }
+					 if (minutes >= 0 && minutes <= 9) {
+					  minutes = "0" + minutes;
+					 }
+					 if (seconds >= 0 && seconds <= 9) {
+					  seconds = "0" + seconds;
+					 }
+					 var currentdate = year + sign1 + month + sign1 + day + " " + hour + sign2 + minutes + sign2 + seconds;
+					 return currentdate;
+				},
+			},
+			
+			onLoad(item){
+				this.id = item.id;
+				//console.log(this.id)
+				this.leaveData.leaveTime = this.backData.backTime = this.getFormatDate();
+			},
 		}
 </script>
 

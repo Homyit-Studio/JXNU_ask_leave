@@ -13,10 +13,10 @@
 				<uni-easyinput multiple v-model="formData.destination"  placeholder="请输入目的地" :inputBorder="false"/>
 			</uni-forms-item>
 			<uni-forms-item required name="startTime" label="离校时间" >
-				<uni-datetime-picker type="datetime" v-model="formData.startTime" :border="false" :clear-icon="false"  placeholder="选择离校时间" />
+				<uni-datetime-picker type="datetime" v-model="formData.startTime" :border="false" :clear-icon="false"  placeholder="选择离校日期和时间" />
 			</uni-forms-item>
 			<uni-forms-item required name="endTime" label="返校时间" >
-				<uni-datetime-picker type="datetime" v-model="formData.endTime" :border="false"  :clear-icon="false"  placeholder="选择返校时间"/>
+				<uni-datetime-picker type="datetime" v-model="formData.endTime" :border="false"  :clear-icon="false"  placeholder="选择返校日期和时间"/>
 			</uni-forms-item>
 			<uni-forms-item required name="way" label="交通方式" >
 				<uni-easyinput multiple v-model="formData.way"  placeholder="请输入交通方式" :inputBorder="false"/>
@@ -111,11 +111,11 @@
 		methods:{
 			submitForm(){
 				//console.log(this.formData.leave === true ? "YES" : "NO")
+				console.log(this.formData.startTime)
 				this.formData.startTime = this.dateAdd(this.formData.startTime);
 				this.formData.endTime = this.dateAdd(this.formData.endTime);
 				console.log(this.formData.startTime)
-				this.$refs.form.validate().then(res=>{
-					
+				this.$refs.form.validate().then(res=>{	
 					uni.$http.post('/leave/ask', {
 							"startTime":this.formData.startTime,
 							"endTime": this.formData.endTime,
@@ -150,14 +150,49 @@
 			//补充时间
 			dateAdd(dateStr){
 				if(dateStr.length <= 11){
-					return dateStr + ' 00:00:00'
+					console.log(dateStr + '00:00:00')
+					return dateStr + '00:00:00'
 				}
-				
-			}
+				else{
+					return dateStr
+				}
+			},
+			//获取当前格式化时间
+			getFormatDate() {
+			     var date = new Date();
+			     var sign1 = "-";
+			     var sign2 = ":";
+			     var year = date.getFullYear() // 年
+			     var month = date.getMonth() + 1; // 月
+			     var day  = date.getDate(); // 日
+			     var hour = date.getHours(); // 时
+			     var minutes = date.getMinutes(); // 分
+			     var seconds = date.getSeconds() //秒
+			     // 给一位数数据前面加 “0”
+			     if (month >= 1 && month <= 9) {
+			      month = "0" + month;
+			     }
+			     if (day >= 0 && day <= 9) {
+			      day = "0" + day;
+			     }
+			     if (hour >= 0 && hour <= 9) {
+			      hour = "0" + hour;
+			     }
+			     if (minutes >= 0 && minutes <= 9) {
+			      minutes = "0" + minutes;
+			     }
+			     if (seconds >= 0 && seconds <= 9) {
+			      seconds = "0" + seconds;
+			     }
+			     var currentdate = year + sign1 + month + sign1 + day + " " + hour + sign2 + minutes + sign2 + seconds;
+			     return currentdate;
+		},
 		},
 		onLoad:function(options) {
 			let userData = JSON.parse(uni.getStorageSync('userStr'));
 			this.studentMsg = userData;
+			console.log(this.getFormatDate())
+			this.formData.startTime = this.formData.endTime = this.getFormatDate();
 		},
 	}
 </script>

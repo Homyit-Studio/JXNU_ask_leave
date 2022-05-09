@@ -1,5 +1,5 @@
 <template>
-		<view class="handle-leave-details-page">
+	<view class="handle-leave-details-page">
 		<view class="detail-status">
 			<view  v-if = "types === '0'">
 				<view>
@@ -24,14 +24,23 @@
 					<uni-icons type="minus-filled" size="120" color="#ffaa00" class="icon-style"></uni-icons>
 				</view>
 				<text>审批中</text>
-			</view>
-		
+			</view>		
 		</view>
 		<view class="details-card">
 			<uni-card title="审批情况" :is-shadow="false"  class="details-card">
-				<view><text decode="true">辅导员意见:&emsp;{{leaveDetails.instructorOpinion === null ? '暂无' : leaveDetails.instructorOpinion}}</text></view>
-				<view><text decode="true">学院&emsp;意见:&emsp;{{leaveDetails.instituteOpinion === null ? '暂无' : leaveDetails.instituteOpinion}}</text></view>
-				<view><text decode="true">院长&emsp;意见:&emsp;{{leaveDetails.deanOpinion === null ? '暂无' : leaveDetails.deanOpinion}}</text></view>
+				<view>
+					<text decode="true">辅导员意见:&emsp;</text>
+					<text class="reason-text">{{leaveDetails.instructorOpinion === null ? '暂无' : leaveDetails.instructorOpinion}}</text>
+				</view>
+				
+				<view>
+					<text decode="true">学院&emsp;意见:&emsp;</text>
+					<text class="reason-text">{{leaveDetails.secretaryOpinion === null ? '暂无' : leaveDetails.secretaryOpinion}}</text>
+				</view>
+				<view>
+					<text decode="true">院长&emsp;意见:&emsp;</text>
+					<text class="reason-text">{{leaveDetails.deanOpinion === null ? '暂无' : leaveDetails.deanOpinion}}</text>
+				</view>
 			</uni-card>
 		</view>
 		<view class="details-card">
@@ -43,7 +52,6 @@
 				<view>
 					<view><text decode="true">开始时间:&emsp;{{leaveDetails.startTime}}</text></view>
 					<view><text decode="true">结束时间:&emsp;{{leaveDetails.endTime}}</text></view>
-					<uni-tag>4小时</uni-tag>
 				</view>
 				<view><text decode="true">前往方式:&emsp;{{leaveDetails.way}}</text></view>
 				<view><text decode="true">联系号码:&emsp;{{leaveDetails.phoneNumber}}</text></view>
@@ -53,10 +61,18 @@
 					<text class="reason-text">{{leaveDetails.reason}}</text>
 				</view>
 			</uni-card>
-			<view class="btn-grounps">
-				<button type="default" @click="goToTerminate()">我要销假</button>
+			<view class="btn-grounps" v-if="leaveDetails.examine === 'SUCCESS'">
+				<button type="default" class="withOutBoder" @click="goToTerminate()" v-if="leaveDetails.status ==='FAILURE'">我要销假</button>
+				<button type="default" class="withOutBoder" @click="checkTerminate()" v-else>查看销假</button>
+			</view>
+			<view class="btn-grounps" v-else>
+				<button type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>
 			</view>
 		</view>
+		<!-- 确认删除弹框 -->
+		<uni-popup ref="dialog_up" type="dialog">
+			<uni-popup-dialog type="error" content="确认删除？" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
+		</uni-popup>
 	</view>
 </template>
 
@@ -80,6 +96,8 @@
 				
 			})
 			this.types = item.type;
+			console.log(this.leaveDetails)
+			
 			//console.log(this.leaveDetails.examine)
 			//console.log(this.types == '0')
 		},
@@ -88,9 +106,42 @@
 				uni.navigateTo({
 					url:'/pages/terminateLeave/terminateLeave?id=' + this.leaveDetails.id
 				})
-			}
+			},
+			//查看销假
+			checkTerminate(){
+				uni.navigateTo({
+					url:'/pages/checkTerminateLeave/checkTerminateLeave?id=' + this.leaveDetails.id
+				})
+			},
+			//删除假条
+			deteleLeave(){
+				this.$refs.dialog_up.open()
+			},
+			//弹框操作
+			close() {
+				this.$refs.dialog_up.close()
+			},
+			//确认删除
+			confirm() {
+				console.log(this.leaveDetails.id)
+				uni.$http.get('/leave/deletedANote/' + this.leaveDetails.id).then(res =>{
+					console.log(res)
+					if(res.data.code === 200){
+						uni.showToast({
+							title: "删除成功",		
+						})
+						setTimeout(function() {
+							uni.redirectTo({
+								url:'/pages/allLeaves/allLeaves'
+								} 
+							)
+						}, 1000)
+					}
+				}).catch(err=>{
+					console.log(err)
+				})			
+		}}
 		}
-	}
 </script>
 
 <style lang="scss">
@@ -121,12 +172,19 @@
 			margin: 0rpx auto;
 			button{
 				height: 80rpx;
-				background-color: $uni-bg-color;
-				border: 1px solid $jxnu-bg-color; /* Green */
-				color: $jxnu-bg-color;
 				font-size: $jxnu-font-16;
 			}
 			
+		}
+		.withOutBoder{
+			background-color: $uni-bg-color;
+			border: 1px solid $jxnu-bg-color;
+			color: $jxnu-bg-color;
+		}
+		.deteleWarn{
+			background-color: $uni-bg-color;
+			border: 1px solid $uni-color-error;
+			color: $uni-color-error;
 		}
 
 	}

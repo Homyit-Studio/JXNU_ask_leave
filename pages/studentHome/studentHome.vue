@@ -46,16 +46,17 @@
 				</view>
 				<view class="tools-box">
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/allLeaves/allLeaves" class="tools-btn">
+						<view class="tools-btn" @click="goTerminate()">
 							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-						</navigator>
+						</view>
 						<text>假条销假</text>
 					</view>
 				</view>
 			</uni-card>
 		</view>
+		<!-- 确认退出弹框 -->
 		<uni-popup ref="dialog_up" type="dialog">
-			<uni-popup-dialog type="warn" content="确认退出？" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
+			<uni-popup-dialog type="error" content="确认退出？" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
 		</uni-popup>
 		<!-- 修改密码弹窗 -->
 		<uni-popup ref="popupRevisePassword" background-color="#fff" type="bottom">
@@ -185,6 +186,19 @@
 				}).catch(err=>{
 					console.log(err)
 				})
+			},
+			//销假路上
+			goTerminate(){
+				uni.showToast({
+					title:'请在 查看详情->我要销假 页面进行销假操作',
+					icon:'none',
+				}
+				);
+				setTimeout(()=>{
+					uni.navigateTo({
+						url: '/pages/allLeaves/allLeaves'
+					})
+				},2000)	
 			}
 			
 		}

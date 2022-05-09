@@ -107,6 +107,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/checkTerminateLeave/checkTerminateLeave",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "查看销假",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
