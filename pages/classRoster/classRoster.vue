@@ -3,7 +3,7 @@
 		<uni-card is-full :is-shadow="false" class="remind">
 			<text>右滑显现班级成员操作按钮</text>
 		</uni-card>
-		<view class="student-title"><text>20级计科1班</text></view>
+		<view class="student-title"><text>{{className}}</text></view>
 		<uni-swipe-action>
 			<uni-swipe-action-item v-for="(item, i) in studentList" :key="item.classNumber" :right-options="options"
 				@click="bindClick" @change="swipeChange($event, index)">
@@ -36,6 +36,9 @@
 				</view>
 			</uni-popup>
 		</view>
+		<view v-if="shownodata">
+			<view class="show-nodata"><text>没有更多数据了</text></view>
+		</view>
 		<view>
 			<!-- 提示信息弹窗 -->
 			<uni-popup ref="message" type="message">
@@ -49,8 +52,11 @@
 	export default {
 		data() {
 			return {
+				//没有更多数据提醒
+				shownodata: false,
 				//节流阀
 				isloading:false,
+				className:null,
 				//数据总数
 				endPage : null,
 				msg: {
@@ -90,7 +96,7 @@
 			}
 		},
 		onLoad(options) {
-			console.log(options.id)
+			this.className = options.class
 			this.requestClassRoster(options.id)
 		},
 		methods: {
@@ -112,28 +118,30 @@
 						});
 						this.endPage = res.data.data.endPage
 						this.studentList = res.data.data.list
+						if (this.rosterRequest.pageNo >= this.endPage) {
+							this.shownodata = true
+						}
 					} else {
 						this.msg.msgType = "error"
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
+						this.shownodata = true
 					}
 				}).catch(err => {
 					this.msg.msgType = "error"
-					this.msg.messageText = err
+					this.msg.messageText = err.errMsg
 					this.$refs.message.open()
+					this.shownodata = true
 				})
 			},
 			showStudent(item) {
-				console.log(item)
 				this.studentMessage = item
 				this.$refs.studentPopup.open()
 			}
 		},
 		onReachBottom(){
 			if(this.rosterRequest.pageNo >= this.endPage){
-				this.msg.msgType = "error"
-				this.msg.messageText = "班级成员已全部显示"
-				this.$refs.message.open()
+				this.shownodata = true
 				return
 			}
 			if(this.isloading) return;
@@ -191,6 +199,10 @@
 			flex-wrap: nowrap;
 			justify-content: space-between;
 			align-items: center;
+		}
+		.show-nodata{
+			text-align: center;
+			padding: 20px;
 		}
 	}
 </style>

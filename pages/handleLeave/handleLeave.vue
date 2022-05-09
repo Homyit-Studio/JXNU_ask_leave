@@ -30,6 +30,9 @@
 				</view>
 			</uni-card>
 		</view>
+		<view v-if="shownodata">
+			<view class="show-nodata"><text>没有更多数据了</text></view>
+		</view>
 		<view>
 			<!-- 提示信息弹窗 -->
 			<uni-popup ref="message" type="message">
@@ -43,6 +46,8 @@
 	export default {
 		data() {
 			return {
+				//没有更多数据提醒
+				shownodata: false,
 				isloading: false,
 				//数据总数
 				endPage: null,
@@ -80,10 +85,12 @@
 			onClickChoice(index) {
 				if (index.currentIndex == 0) {
 					this.listRequest.completeEnum = "NO"
+					this.shownodata = false
 					this.listRequest.pageNo = 1
 					this.requestLeaveNotes()
 				} else {
 					this.listRequest.pageNo = 1
+					this.shownodata = false
 					this.listRequest.completeEnum = "YES"
 					this.requestLeaveNotes()
 				}
@@ -98,13 +105,17 @@
 						});
 						this.leaveNoteList = res.data.data.list
 						this.endPage = res.data.data.endPage
+						if (this.listRequest.pageNo >= this.endPage) {
+							this.shownodata = true
+						}
 					} else {
+						this.shownodata = true
 						this.msg.msgType = "error"
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
 					}
 				}).catch(err => {
-
+					this.shownodata = true
 				})
 			},
 			checkDetails(id) {
@@ -117,9 +128,7 @@
 		},
 		onReachBottom() {
 			if (this.listRequest.pageNo >= this.endPage) {
-				this.msg.msgType = "error"
-				this.msg.messageText = "假条已全部显示"
-				this.$refs.message.open()
+				this.shownodata = true
 				return
 			}
 			if (this.isloading) return;
@@ -142,7 +151,7 @@
 				}
 			}).catch(err => {
 				this.msg.msgType = "error"
-				this.msg.messageText = err
+				this.msg.messageText = err.errMsg
 				this.$refs.message.open()
 				this.isloading = false
 			})
@@ -165,6 +174,10 @@
 			justify-content: space-between;
 			margin-top: 10rpx;
 			color: #666;
+		}
+		.show-nodata{
+			text-align: center;
+			padding: 20px;
 		}
 	}
 </style>

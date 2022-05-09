@@ -1,9 +1,9 @@
 <template>
 	<view class="class-list-page">
-		<uni-card v-for="(item, i) in classList" :key="item.id" :title="item.majorAndClass" :thumbnail="avatar"
+		<uni-card v-for="(item, i) in classList" :key="item.id" ellipsis="{{2}}" :title="item.majorAndClass" :thumbnail="avatar"
 			:sub-title="'id号：' + item.id" :extra="'班级人数：' + item.capacity">
 			<view slot="actions" class="card-actions">
-				<view class="card-actions-item" @click="lookRoster(item.id)">
+				<view class="card-actions-item" @click="lookRoster(item.id, item.majorAndClass)">
 					<text class="card-actions-item-text">班级成员名单</text>
 					<uni-icons type="arrow-right" size="18" color="#999"></uni-icons>
 				</view>
@@ -24,10 +24,9 @@
 			this.requestClassList()
 		},
 		methods: {
-			lookRoster(id){
-				console.log(id)
+			lookRoster(id,className){
 				uni.navigateTo({
-					url : `../classRoster/classRoster?id=${id}`,
+					url : `../classRoster/classRoster?id=${id}&class=${className}`,
 					animationType: 'pop-in',
 					animationDuration: 200
 				})
@@ -48,7 +47,7 @@
 					}
 				}).catch(err => {
 					this.msg.msgType = "error"
-					this.msg.messageText = err
+					this.msg.messageText = err.errMsg
 					this.$refs.message.open()
 				})
 			}

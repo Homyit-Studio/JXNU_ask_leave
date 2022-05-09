@@ -105,8 +105,7 @@
                 "navigationBarTitleText": "假条销假",
                 "enablePullDownRefresh": false
             }
-            
-        }
+		}
         ,{
             "path" : "pages/checkTerminateLeave/checkTerminateLeave",
             "style" :                                                                                    
@@ -116,6 +115,15 @@
             }
             
         }
+        },
+		{
+			"path": "pages/showGradeLeave/showGradeLeave",
+			"style": {
+				"navigationBarTitleText": "年级假条",
+				"onReachBottomDistance": 150
+			}
+		
+		}
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
