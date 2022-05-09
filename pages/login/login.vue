@@ -33,6 +33,12 @@
 			</uni-forms>
 			<button type="default" class="button" @click="loginSubmit('teacherForm')">提交</button>
 		</view>
+		<view>
+			<!-- 提示信息弹窗 -->
+			<uni-popup ref="message" type="message">
+				<uni-popup-message :type="msg.msgType" :message="msg.messageText" :duration="2000"></uni-popup-message>
+			</uni-popup>
+		</view>
 	</view>
 </template>
 
@@ -40,6 +46,10 @@
 	export default {
 		data() {
 			return {
+				msg: {
+					msgType: 'success',
+					messageText: '这是一条成功提示',
+				},
 				loginFormData: {},
 				studentRules: {
 					"studentNumber": {
@@ -95,16 +105,15 @@
 				console.log(ref)
 				this.$refs[ref].validate().then(res => {
 					if (ref === "teacherForm") {
-						console.log(this.loginFormData)
 						uni.$http.post("/user/login", this.loginFormData).then(res => {
 							if (res.data.code == 200) {
 								uni.showToast({
-									title: "登录成功，请稍后"
+									title:"登录成功，请稍等.."
 								})
 								uni.setStorage({
 									key: 'token',
 									data: res.data.data.token,
-									success: function () {
+									success: function() {
 										console.log('success');
 									}
 								});
@@ -112,10 +121,14 @@
 									url: '/pages/teacherHome/teacherHome'
 								})
 							} else {
-								uni.showToast({
-									title: res.data.message
-								})
+								this.msg.msgType = "error"
+								this.msg.messageText = res.data.message
+								this.$refs.message.open()
 							}
+						}).catch(err => {
+							this.msg.msgType = "error"
+							this.msg.messageText = err
+							this.$refs.message.open()
 						})
 					}
 					else if(ref === "studentForm"){
@@ -142,7 +155,9 @@
 						})
 					}
 				}).catch(err => {
-					console.log('err' + err);
+					this.msg.msgType = "error"
+					this.msg.messageText = err
+					this.$refs.message.open()
 				})
 			}
 		}

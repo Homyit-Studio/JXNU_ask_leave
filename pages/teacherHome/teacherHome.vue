@@ -3,7 +3,8 @@
 		<view class="backgrond-style">
 		</view>
 		<view class="teacher-message">
-			<uni-card title="老师" :sub-title="teacherMessage.realName" :extra="teacherMessage.teachNumber">
+			<uni-card :title="identity[teacherMessage.role]" :sub-title="teacherMessage.username"
+				:extra="teacherMessage.phoneNumber">
 				<view slot="actions" class="card-actions">
 					<view class="card-actions-item" @click="revisePassword">
 						<uni-icons type="loop" size="20" color="#999"></uni-icons>
@@ -16,8 +17,8 @@
 			<!-- 修改密码弹窗 -->
 			<uni-popup ref="popupRevisePassword" background-color="#fff" type="bottom">
 				<view class="revise-popup-content">
-					<uni-forms class="revise-form" ref="revisePasswordForm" :modelValue="reviseFormData"
-						validateTrigger="submit">
+					<uni-forms class="revise-form" ref="revisePasswordForm" :rules="reviseRules"
+						:modelValue="reviseFormData" validateTrigger="submit">
 						<uni-forms-item name="oldPassword">
 							<uni-easyinput type="password" prefixIcon=".uniui-person-filled"
 								v-model="reviseFormData.oldPassword" placeholder="请输入原密码" />
@@ -41,14 +42,16 @@
 				</view>
 				<view class="tools-box">
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/handleLeave/handleLeave" class="tools-btn">
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/handleLeave/handleLeave"
+							class="tools-btn">
 							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>学生请假</text>
 					</view>
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList" class="tools-btn">
-							<uni-icons type="personadd" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList"
+							class="tools-btn">
+							<uni-icons type="staff" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>管理班级</text>
 					</view>
@@ -61,6 +64,27 @@
 				</view>
 			</uni-card>
 		</view>
+		<view class="teacher-tools">
+			<uni-card>
+				<view>
+					<text>更多</text>
+				</view>
+				<view class="tools-box">
+					<view>
+						<navigator class="tools-btn">
+							<uni-icons type="personadd-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>更多假条</text>
+					</view>
+				</view>
+			</uni-card>
+		</view>
+		<view>
+			<!-- 提示信息弹窗 -->
+			<uni-popup ref="message" type="message">
+				<uni-popup-message :type="msg.msgType" :message="msg.messageText" :duration="2000"></uni-popup-message>
+			</uni-popup>
+		</view>
 	</view>
 </template>
 
@@ -68,13 +92,44 @@
 	export default {
 		data() {
 			return {
-				teacherMessage: {
-					teachNumber: "201020403020",
-					realName: "张老师"
+				msg: {
+					msgType: 'success',
+					messageText: '这是一条成功提示',
 				},
+				teacherMessage: {},
 				reviseFormData: {
 					oldPassword: "",
 					newPassword: ""
+				},
+				identity: {
+					"INSTRUCTOR": "辅导员",
+					"SECRETARY": "副党委书记",
+					"DEAN": "院长"
+				},
+				reviseRules: {
+					oldPassword: {
+						rules: [{
+							validateFunction: function(rule, value, data, callback) {
+								if (value.length < 6) {
+									callback('请输入至少6位数的密码')
+								}
+								return true
+							}
+						}]
+					},
+					newPassword: {
+						rules: [{
+							validateFunction: function(rule, value, data, callback) {
+								if (value == data.oldPassword) {
+									callback('新密码与原密码一致')
+								}
+								if (value.length < 6) {
+									callback('请输入至少6位数的密码')
+								}
+								return true
+							}
+						}]
+					}
 				}
 			}
 		},
@@ -90,9 +145,20 @@
 			//     }
 			// });
 			uni.$http.get("/user/personInfo").then(res => {
-				console.log(res)
+				if (res.data.code == 200) {
+					this.teacherMessage = res.data.data
+				} else {
+					this.msg.msgType = "error"
+					this.msg.messageText = res.data.message
+					this.$refs.message.open()
+				}
 			}).catch(err => {
-				console.log(err)
+				this.msg.msgType = "error"
+				this.msg.messageText = err
+				this.$refs.message.open()
+			})
+			this.$nextTick(() => {
+				console.log(this.$refs)
 			})
 		},
 		methods: {
@@ -103,15 +169,40 @@
 				this.$refs.popupRevisePassword.close()
 			},
 			reviseSubmit() {
-				uni.showToast({
-					title: "正在修改中"
-				})
-				setTimeout(() => {
-					uni.showToast({
-						title: "修改成功"
+				this.$refs.revisePasswordForm.validate().then(res => {
+					uni.$http.post("/user/updatePWD", res).then(res => {
+						if (res.data.code == 200) {
+							uni.showToast({
+								title: "正在修改中"
+							})
+							setTimeout(() => {
+								uni.showToast({
+									title: "修改成功"
+								})
+								this.$refs.popupRevisePassword.close()
+								uni.navigateTo({
+									url: "../login/login"
+								})
+							}, 1000)
+						} else {
+							this.msg.msgType = "error"
+							this.msg.messageText = res.data.message
+							this.$refs.message.open()
+							setTimeout(() => {
+								this.$refs.popupRevisePassword.close()
+							}, 500)
+						}
+					}).catch(err => {
+						this.msg.msgType = "error"
+						this.msg.messageText = err
+						this.$refs.message.open()
+						setTimeout(() => {
+							this.$refs.popupRevisePassword.close()
+						}, 500)
 					})
-					this.$refs.popupRevisePassword.close()
-				}, 1000)
+				}).catch(err => {
+					console.log(err)
+				})
 			}
 		}
 	}
@@ -175,6 +266,7 @@
 			flex-direction: row;
 			justify-content: flex-start;
 			text-align: center;
+
 			.tools-btn {
 				padding: 20rpx;
 				margin: 20rpx;
