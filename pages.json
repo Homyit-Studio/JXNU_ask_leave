@@ -105,6 +105,14 @@
                 "navigationBarTitleText": "假条销假",
                 "enablePullDownRefresh": false
             }
+		}
+        ,{
+            "path" : "pages/checkTerminateLeave/checkTerminateLeave",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "查看销假",
+                "enablePullDownRefresh": false
+            }
             
         },
 		{

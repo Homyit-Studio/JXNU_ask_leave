@@ -1,7 +1,7 @@
 <template>
 	<view class="handle-leave-page">
 		<view class="leave-notes">
-			<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后填写确认离校和返校信息。如未出行，也请在确认离校和确认返校界面中点取消行程。" showIcon></uni-notice-bar>
+			<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中取消行程。" showIcon></uni-notice-bar>
 			<uni-segmented-control :values="current" :current="currentIndex"  @clickItem="onClickItem" active-color="#1b478e" style-type="text"></uni-segmented-control>
 			<view>
 				<view v-show ="currentIndex === 0">
@@ -34,7 +34,7 @@
 					<uni-card v-for="(item, index) in approvedList"
 						:key="item.id" note="true">
 						<view class="card-header">
-							<uni-tag :text="item.examine === 'SUCCESS' ?  '已通过': item.examine === 'FAILURE' ? '已拒绝' : '审核中' " :type="item.examine === 'SUCCESS' ? 'success': item.examine === 'FAILURE' ? 'error':'warning'"></uni-tag>
+							<uni-tag :text="item.status === 'SUCCESS' ? '已销假' : item.examine === 'SUCCESS' ?  '已通过': item.examine === 'FAILURE' ? '已拒绝' : '审核中' " :type="item.status === 'SUCCESS' ? 'primary' : item.examine === 'SUCCESS' ? 'success': item.examine === 'FAILURE' ? 'error':'warning'"></uni-tag>
 							<text class="right">{{item.startTime}}</text>
 						</view>
 						<view><text>姓名: {{item.username}}</text></view>
