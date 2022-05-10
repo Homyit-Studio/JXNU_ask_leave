@@ -62,8 +62,8 @@
 				</view>
 			</uni-card>
 			<view class="btn-grounps" v-if="leaveDetails.examine === 'SUCCESS'">
-				<button type="default" class="withOutBoder" @click="goToTerminate()" v-if="leaveDetails.status ==='FAILURE'">我要销假</button>
-				<button type="default" class="withOutBoder" @click="checkTerminate()" v-else>查看销假</button>
+				<button type="default" class="withOutBoder" @click="checkTerminate()" v-if="leaveDetails.status ==='SUCCESS'">查看销假</button>
+				<button type="default" class="withOutBoder" @click="goToTerminate()" v-else>我要销假</button>
 			</view>
 			<view class="btn-grounps" v-else>
 				<button type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>

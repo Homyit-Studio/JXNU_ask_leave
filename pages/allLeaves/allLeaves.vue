@@ -34,7 +34,7 @@
 					<uni-card v-for="(item, index) in approvedList"
 						:key="item.id" note="true">
 						<view class="card-header">
-							<uni-tag :text="item.examine === 'SUCCESS' ?  '已通过': item.examine === 'FAILURE' ? '已拒绝' : '审核中' " :type="item.examine === 'SUCCESS' ? 'success': item.examine === 'FAILURE' ? 'error':'warning'"></uni-tag>
+							<uni-tag :text="item.status === 'SUCCESS' ? '已销假' : item.examine === 'SUCCESS' ?  '已通过': item.examine === 'FAILURE' ? '已拒绝' : '审核中' " :type="item.status === 'SUCCESS' ? 'primary' : item.examine === 'SUCCESS' ? 'success': item.examine === 'FAILURE' ? 'error':'warning'"></uni-tag>
 							<text class="right">{{item.startTime}}</text>
 						</view>
 						<view><text>姓名: {{item.username}}</text></view>
