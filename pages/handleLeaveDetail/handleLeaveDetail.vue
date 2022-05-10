@@ -32,7 +32,7 @@
 				</uni-steps>
 			</view>
 		</view>
-		<view class="handle-buttons" v-if="currentStatus == 'NO' && statusCard != 'other'">
+		<view class="handle-buttons" v-if="currentStatus == 'NO'">
 			<button type="warn" class="refuse-button" @click="cancelSubmit">拒绝</button>
 			<button type="primary" class="agree-button" @click="reviseSubmit">同意</button>
 		</view>
@@ -238,7 +238,7 @@
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
 						uni.navigateTo({
-							url: "../handleLeave/handleLeave"
+							url: "../showGradeLeave/showGradeLeave"
 						})
 					} else {
 						this.msg.msgType = "error"

@@ -110,7 +110,7 @@
 					newPassword: ""
 				},
 				identity: {
-					"INSTRUCTOR": "辅导员",
+					"INSTRUCTOR": "班主任",
 					"SECRETARY": "副党委书记",
 					"DEAN": "院长"
 				},
