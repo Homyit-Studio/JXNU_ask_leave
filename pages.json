@@ -114,7 +114,6 @@
                 "enablePullDownRefresh": false
             }
             
-        }
         },
 		{
 			"path": "pages/showGradeLeave/showGradeLeave",
