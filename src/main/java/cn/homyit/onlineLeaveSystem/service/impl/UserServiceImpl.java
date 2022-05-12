@@ -59,6 +59,7 @@ public class UserServiceImpl implements UserService {
         redisCache.setCacheObject("login:"+userId,loginUser);
         HashMap<String,String> map = new HashMap<>();
         map.put("token",jwt);
+        map.put("role",loginUser.getUser().getRole().toString());
         return map;
 
     }

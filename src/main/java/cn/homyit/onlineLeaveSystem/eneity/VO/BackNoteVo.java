@@ -1,5 +1,7 @@
 package cn.homyit.onlineLeaveSystem.eneity.VO;
 
+import cn.homyit.onlineLeaveSystem.myEnum.BackEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.BackStatusEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.LeaveEnum;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -26,4 +28,6 @@ public class BackNoteVo {
     private String departWay;
     private LeaveEnum depart;
     private String backWay;
+    private BackEnum back;
+    private BackStatusEnum status;
 }

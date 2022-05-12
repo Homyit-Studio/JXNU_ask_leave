@@ -1,6 +1,7 @@
 package cn.homyit.onlineLeaveSystem.eneity.VO;
 
 
+import cn.homyit.onlineLeaveSystem.myEnum.BackStatusEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.ExamineEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.LeaveEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
@@ -41,7 +42,7 @@ public class LeaveNoteVo implements Serializable {
   private String secretaryOpinion;
   private String deanOpinion;
   private ExamineEnum examine;
-
+  private BackStatusEnum status;
   private LevelEnum level;
   private String days;
 }

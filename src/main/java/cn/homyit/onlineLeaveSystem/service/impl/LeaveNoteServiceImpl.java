@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -75,12 +76,14 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         Page<LeaveNote> page = new Page<>(selectNoteDTO.getPageNo(),selectNoteDTO.getPageSize());
         QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
         wrapper.likeRight("student_number",selectNoteDTO.getGradeNumber())
-                .orderByAsc("start_time");
+                .orderByDesc("start_time");
         CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
         if (completeEnum.equals(CompleteEnum.NO)){
-            wrapper.apply("examine < level");
+            wrapper.ne("examine",ExamineEnum.SUCCESS)
+                    .ne("examine",ExamineEnum.FAILURE);
         }else {
-            wrapper.apply("examine = level");
+            wrapper.in("examine",
+                    Arrays.asList(ExamineEnum.SUCCESS.getValue(),ExamineEnum.FAILURE.getValue()));
         }
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
         return new PageVo<>(iPage.getRecords(),iPage.getTotal(),iPage.getPages());
@@ -103,9 +106,11 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
         CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
         if (completeEnum.equals(CompleteEnum.NO)){
-            wrapper.apply("examine < level");
+            wrapper.ne("examine",ExamineEnum.SUCCESS)
+                    .ne("examine",ExamineEnum.FAILURE);
         }else {
-            wrapper.apply("examine = level");
+            wrapper.in("examine",
+                    Arrays.asList(ExamineEnum.SUCCESS.getValue(),ExamineEnum.FAILURE.getValue()));
         }
 
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
@@ -135,20 +140,39 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         System.out.println("===================================");
         System.out.println(examine);
         CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
-        if (completeEnum.equals(CompleteEnum.NO)){
-            wrapper.eq("examine",examine);
-        }else {
-            wrapper.ne("examine",examine);
-        }
+//        if (completeEnum.equals(CompleteEnum.NO)){
+//            wrapper.eq("examine",examine);
+//        }else {
+//            wrapper.ne("examine",examine);
+//        }
 
         System.out.println(role+"-------------------");
         if (role.equals(LevelEnum.STUDENT)){
             wrapper.eq("student_number",loginUser.getUser().getStudentNumber());
+
+            if (completeEnum.equals(CompleteEnum.NO)){
+                wrapper.ne("examine",ExamineEnum.SUCCESS)
+                        .ne("examine",ExamineEnum.FAILURE);
+            }else {
+                wrapper.in("examine",
+                        Arrays.asList(ExamineEnum.SUCCESS.getValue(),ExamineEnum.FAILURE.getValue()));
+            }
         }else if (role.equals(LevelEnum.INSTRUCTOR)){
             List<Long> allStudentNumber = teacherService.getAllStudentNumber();
             wrapper.in("student_number",allStudentNumber);
+
+            if (completeEnum.equals(CompleteEnum.NO)){
+                wrapper.eq("examine",examine);
+            }else {
+                wrapper.ne("examine",examine);
+            }
         }else{
             //todo 大于辅导员,全看
+            if (completeEnum.equals(CompleteEnum.NO)){
+                wrapper.eq("examine",examine);
+            }else {
+                wrapper.ne("examine",examine);
+            }
         }
 
         wrapper.orderByDesc("start_time");
@@ -192,6 +216,16 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             //往下传递
             if(updateNoteDTO.getLevelEnum().getValue()-1 !=examine){
                 note.setExamine(ExamineEnum.getEumByCode(examineEnum.getValue().intValue()+1));
+                //院长审批后也直接生成请假条
+                if(role.equals(LevelEnum.DEAN)){
+                    //生成销假条
+                    BackNote backNote = MyBeanUtils.copyBean(note, BackNote.class);
+
+                    //创建时学生仍然在学校
+                    backNote.setDepart(LeaveEnum.NO);
+                    //插入销假条表
+                    backNoteService.insertNote(backNote);
+                }
             }else{
                 note.setExamine(ExamineEnum.SUCCESS);
 

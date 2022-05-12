@@ -49,7 +49,8 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
         this.classInfoMapper = classInfoMapper;
         this.sysUserRoleMapper = sysUserRoleMapper;
         roleMap = new HashMap<>();
-        roleMap.put("辅导员",LevelEnum.INSTRUCTOR);
+//        roleMap.put("辅导员",LevelEnum.INSTRUCTOR);
+        roleMap.put("班主任",LevelEnum.INSTRUCTOR);
         roleMap.put("党委副书记",LevelEnum.SECRETARY);
         roleMap.put("院长",LevelEnum.DEAN);
         roleMap.put("学生",LevelEnum.STUDENT);
@@ -68,7 +69,7 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
         }else{
             user.setSex(SexEnum.WOMAN);
         }
-        String rawPWD = data.getStudentNumber().toString().substring(6, 12);
+        String rawPWD = data.getPhoneNumber();
         user.setPassword(passwordEncoder.encode(rawPWD));
         //插入用户表
         LevelEnum role = roleMap.get(data.getRole().trim());

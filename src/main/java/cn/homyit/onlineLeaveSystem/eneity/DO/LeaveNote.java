@@ -1,6 +1,7 @@
 package cn.homyit.onlineLeaveSystem.eneity.DO;
 
 
+import cn.homyit.onlineLeaveSystem.myEnum.BackStatusEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.ExamineEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.LeaveEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
@@ -47,6 +48,8 @@ public class LeaveNote {
   private ExamineEnum examine;
 
   private LevelEnum level;
+
+  private BackStatusEnum status;
 
   private String days;
 

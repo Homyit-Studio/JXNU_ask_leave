@@ -9,7 +9,11 @@ import cn.homyit.onlineLeaveSystem.eneity.VO.Result;
 import cn.homyit.onlineLeaveSystem.service.BackNoteService;
 import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author 州牧
