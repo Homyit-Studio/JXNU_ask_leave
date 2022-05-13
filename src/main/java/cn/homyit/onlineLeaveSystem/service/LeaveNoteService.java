@@ -1,10 +1,14 @@
 package cn.homyit.onlineLeaveSystem.service;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.DownloadNoteDTO;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.SelectNotePageDTO;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
+
+import java.util.List;
+import java.util.Map;
 
 
 public interface LeaveNoteService {
@@ -23,4 +27,11 @@ public interface LeaveNoteService {
     PageVo<LeaveNote> selectNodeByGrade(SelectNotePageDTO selectNoteDTO);
 
     void deletedANote(Long id);
+
+    Map<String,Integer>  allCounts();
+
+
+    void checkExpired();
+
+    List<LeaveNote> selectNoteToDownload(DownloadNoteDTO downloadNoteDTO);
 }

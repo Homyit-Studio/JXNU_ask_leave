@@ -4,6 +4,7 @@ import cn.homyit.onlineLeaveSystem.eneity.DO.BackNote;
 import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
 import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.DownloadNoteDTO;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.SelectNotePageDTO;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
@@ -17,19 +18,23 @@ import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.List;
+import java.sql.Timestamp;
+import java.util.*;
 
 /**
  * @author 州牧
  * @description
  * @since 2022-05-03 21:31
  */
+
+//todo 假条的过期处理
+@Slf4j
 @Service
 public class LeaveNoteServiceImpl implements LeaveNoteService {
 
@@ -69,6 +74,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         }
         leaveNoteMapper.insert(note);
 
+
+
     }
 
     @Override
@@ -79,11 +86,11 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                 .orderByDesc("start_time");
         CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
         if (completeEnum.equals(CompleteEnum.NO)){
-            wrapper.ne("examine",ExamineEnum.SUCCESS)
+            wrapper.ne("examine",ExamineEnum.WAIT_REPORT)
                     .ne("examine",ExamineEnum.FAILURE);
         }else {
             wrapper.in("examine",
-                    Arrays.asList(ExamineEnum.SUCCESS.getValue(),ExamineEnum.FAILURE.getValue()));
+                    Arrays.asList(ExamineEnum.WAIT_REPORT.getValue(),ExamineEnum.FAILURE.getValue()));
         }
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
         return new PageVo<>(iPage.getRecords(),iPage.getTotal(),iPage.getPages());
@@ -94,6 +101,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         //删除假条
         leaveNoteMapper.deleteById(id);
     }
+
+
 
     @Override
     public PageVo<LeaveNote> selectLeaveNote(SelectNotePageDTO selectNoteDTO) {
@@ -106,11 +115,11 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
         CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
         if (completeEnum.equals(CompleteEnum.NO)){
-            wrapper.ne("examine",ExamineEnum.SUCCESS)
+            wrapper.ne("examine",ExamineEnum.WAIT_REPORT)
                     .ne("examine",ExamineEnum.FAILURE);
         }else {
             wrapper.in("examine",
-                    Arrays.asList(ExamineEnum.SUCCESS.getValue(),ExamineEnum.FAILURE.getValue()));
+                    Arrays.asList(ExamineEnum.WAIT_REPORT.getValue(),ExamineEnum.FAILURE.getValue()));
         }
 
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
@@ -134,49 +143,54 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                 .getAuthentication().getPrincipal();
         QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
         Page<LeaveNote> page = new Page<>(selectNoteDTO.getPageNo(),selectNoteDTO.getPageSize());
+        //获取用户角色
         LevelEnum role = loginUser.getUser().getRole();
+        //获取用户审核权限
         ExamineEnum examine = ExamineEnum.getEumByCode(role.getValue() - 1);
         //确定是审核还是未审核
         System.out.println("===================================");
         System.out.println(examine);
-        CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
-//        if (completeEnum.equals(CompleteEnum.NO)){
-//            wrapper.eq("examine",examine);
-//        }else {
-//            wrapper.ne("examine",examine);
-//        }
+//        CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
 
-        System.out.println(role+"-------------------");
+        //只获取一种类型的假条
+        ExamineEnum examineEnum = selectNoteDTO.getExamineEnum();
+        if (!examineEnum.equals(ExamineEnum.PROCESSING)){
+            wrapper.eq("examine",examineEnum);
+        }
+
+
         if (role.equals(LevelEnum.STUDENT)){
             wrapper.eq("student_number",loginUser.getUser().getStudentNumber());
 
-            if (completeEnum.equals(CompleteEnum.NO)){
-                wrapper.ne("examine",ExamineEnum.SUCCESS)
-                        .ne("examine",ExamineEnum.FAILURE);
-            }else {
-                wrapper.in("examine",
-                        Arrays.asList(ExamineEnum.SUCCESS.getValue(),ExamineEnum.FAILURE.getValue()));
-            }
+
+//            if (completeEnum.equals(CompleteEnum.NO)){
+//                wrapper.ne("examine",ExamineEnum.SUCCESS)
+//                        .ne("examine",ExamineEnum.FAILURE);
+//            }else {
+//                wrapper.in("examine",
+//                        Arrays.asList(ExamineEnum.SUCCESS.getValue(),ExamineEnum.FAILURE.getValue()));
+//            }
         }else if (role.equals(LevelEnum.INSTRUCTOR)){
             List<Long> allStudentNumber = teacherService.getAllStudentNumber();
             wrapper.in("student_number",allStudentNumber);
 
-            if (completeEnum.equals(CompleteEnum.NO)){
+//            if (completeEnum.equals(CompleteEnum.NO)){
+
                 wrapper.eq("examine",examine);
-            }else {
-                wrapper.ne("examine",examine);
-            }
+//            }else {
+//                wrapper.ne("examine",examine);
+//            }
         }else{
             //todo 大于辅导员,全看
-            if (completeEnum.equals(CompleteEnum.NO)){
+//            if (completeEnum.equals(CompleteEnum.NO)){
+
                 wrapper.eq("examine",examine);
-            }else {
-                wrapper.ne("examine",examine);
-            }
+//            }else {
+//                wrapper.ne("examine",examine);
+//            }
         }
 
         wrapper.orderByDesc("start_time");
-
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
         return new PageVo<>(iPage.getRecords(),iPage.getTotal(),iPage.getPages());
     }
@@ -227,7 +241,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                     backNoteService.insertNote(backNote);
                 }
             }else{
-                note.setExamine(ExamineEnum.SUCCESS);
+                note.setExamine(ExamineEnum.WAIT_REPORT);
 
                 //生成销假条
                 BackNote backNote = MyBeanUtils.copyBean(note, BackNote.class);
@@ -241,6 +255,92 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
         }
         leaveNoteMapper.updateById(note);
+    }
+
+  //假条分为待处理，已传递，已销假，未销假，假条过期，销假过期
+    @Override
+    public Map<String,Integer>  allCounts() {
+        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        LevelEnum role = loginUser.getUser().getRole();
+        List<Long> allStudentNumber = teacherService.getAllStudentNumber();
+        QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
+        wrapper.in("student_number",allStudentNumber);
+
+        //待本人审核
+        Integer roleCount = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",
+                        ExamineEnum.getEumByCode(role.getValue().intValue()-1))
+                .in("student_number",allStudentNumber)
+        );
+        //待下一级审核
+        Integer transmit = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().apply("examine = "+(role.getValue().intValue()))
+                        .in("student_number",allStudentNumber)
+        );
+        //销假完成
+        Integer process = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.PROCESSED)
+                .in("student_number",allStudentNumber)
+        );
+        //待销假
+        Integer waitReport = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.WAIT_REPORT)
+                .in("student_number",allStudentNumber)
+        );
+        //申请过期
+        Integer applyExpired = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.APPLY_EXPIRED)
+                        .in("student_number",allStudentNumber)
+        );
+        //销假过期
+        Integer reportExpired = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.REPORT_EXPIRED)
+                        .in("student_number",allStudentNumber)
+        );
+
+       log.info(" roleCount{},transmit{},process{},waitReport{},applyExpired{},reportExpired{}",roleCount,transmit,process,waitReport,applyExpired,reportExpired);
+
+        Map<String,Integer> map  = new HashMap<>();
+        map.put("roleCount",roleCount);
+        map.put("transmit",transmit);
+        map.put("process",process);
+        map.put("waitReport",waitReport);
+        map.put("applyExpired",applyExpired);
+        map.put("reportExpired",reportExpired);
+
+        return map;
+
+    }
+
+    @Override
+    public void checkExpired() {
+        QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
+        wrapper.lt("end_time",new Timestamp(new Date().getTime()))
+                .eq("examine",ExamineEnum.WAIT_REPORT);
+        LeaveNote note = new LeaveNote();
+        note.setExamine(ExamineEnum.REPORT_EXPIRED);
+        leaveNoteMapper.update(note,wrapper);
+
+        QueryWrapper<LeaveNote> wrapper1 = new QueryWrapper<>();
+        wrapper1.lt("end_time",new Timestamp(new Date().getTime()))
+                .lt("examine",ExamineEnum.WAIT_REPORT);
+        LeaveNote note1 = new LeaveNote();
+        note1.setExamine(ExamineEnum.APPLY_EXPIRED);
+        leaveNoteMapper.update(note1,wrapper1);
+    }
+
+    @Override
+    public List<LeaveNote> selectNoteToDownload(DownloadNoteDTO downloadNoteDTO) {
+        QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
+        wrapper.gt("start_time",downloadNoteDTO.getStartTime())
+                .lt("end_time",downloadNoteDTO.getEndTime())
+                .eq("student_number",downloadNoteDTO.getStudentNumber());
+        List<LeaveNote> leaveNotes = leaveNoteMapper.selectList(wrapper);
+//        for (LeaveNote leaveNote : leaveNotes) {
+//            log.info("假条如{}",leaveNote);
+//        }
+        return leaveNotes;
     }
 
 

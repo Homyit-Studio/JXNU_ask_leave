@@ -5,6 +5,7 @@ import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public interface UserService {
 
@@ -15,5 +16,7 @@ public interface UserService {
     StudentUserVo personInfo();
 
     void updatePWD(PasswordDTO passwordDTO);
+
+    Map<String, Long> getAllLeaders();
 
 }

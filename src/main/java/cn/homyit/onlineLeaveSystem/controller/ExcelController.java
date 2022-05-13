@@ -1,13 +1,13 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
+import cn.homyit.onlineLeaveSystem.eneity.DTO.DownloadNoteDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.Result;
 import cn.homyit.onlineLeaveSystem.service.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author 州牧
@@ -31,6 +31,12 @@ public class ExcelController {
     public Result uploadTeacher(@RequestPart("file") MultipartFile file){
         excelService.uploadTeacher(file);
         return Result.success();
+    }
+/*不可返回值？很奇怪*/
+    @PostMapping("/downloadNote")
+    public void download(@RequestBody DownloadNoteDTO downloadNoteDTO,HttpServletResponse response){
+        excelService.download(downloadNoteDTO,response);
+
     }
 
 

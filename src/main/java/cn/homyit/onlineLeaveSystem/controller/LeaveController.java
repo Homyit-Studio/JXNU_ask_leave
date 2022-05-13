@@ -11,6 +11,8 @@ import cn.homyit.onlineLeaveSystem.service.LeaveNoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 
 /**
  * @author 州牧
@@ -75,6 +77,16 @@ public class LeaveController {
         leaveNoteService.deletedANote(id);
         return Result.success();
     }
+
+    /*首页报表处理*/
+
+    @GetMapping("/allCounts")
+    public Result allCounts(){
+        Map<String,Integer> map = leaveNoteService.allCounts();
+        return  Result.success(map);
+    }
+
+
 
 
 }

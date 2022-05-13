@@ -1,6 +1,7 @@
 package cn.homyit.onlineLeaveSystem.eneity.DTO;
 
 import cn.homyit.onlineLeaveSystem.myEnum.CompleteEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.ExamineEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class SelectNotePageDTO {
     private Integer pageNo;
     private Integer pageSize;
     private CompleteEnum completeEnum;
+    private ExamineEnum examineEnum;
     private Long studentNumber;
     private Long gradeNumber;
 }

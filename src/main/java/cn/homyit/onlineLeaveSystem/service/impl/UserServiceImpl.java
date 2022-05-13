@@ -5,9 +5,11 @@ import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
 import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
+import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 import cn.homyit.onlineLeaveSystem.service.UserService;
 import cn.homyit.onlineLeaveSystem.util.JwtUtil;
 import cn.homyit.onlineLeaveSystem.util.RedisCache;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,8 +20,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 州牧
@@ -57,6 +59,8 @@ public class UserServiceImpl implements UserService {
         String jwt = JwtUtil.createJWT(userId);
         //authenticate存入redis
         redisCache.setCacheObject("login:"+userId,loginUser);
+        redisCache.setCacheObject("orderCode/10010", "1", 1, TimeUnit.MINUTES);
+        System.out.println("redis存入订单号 key: orderCode/10010,value:1,过期时间一分钟，当前时间"+new Date());
         HashMap<String,String> map = new HashMap<>();
         map.put("token",jwt);
         map.put("role",loginUser.getUser().getRole().toString());
@@ -101,6 +105,22 @@ public class UserServiceImpl implements UserService {
         userMapper.updateById(user);
 
 
+    }
+
+    @Override
+    public Map<String, Long> getAllLeaders() {
+
+        QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("role", LevelEnum.SECRETARY)
+        .select("student_number","username");
+        List<SysStudentUser> sysStudentUsers = userMapper.selectList(wrapper);
+
+        Map<String, Long> map = new HashMap<>();
+        for (SysStudentUser sysStudentUser : sysStudentUsers) {
+            System.out.println(sysStudentUser);
+            map.put(sysStudentUser.getUsername(),sysStudentUser.getStudentNumber());
+        }
+        return map;
     }
 
 

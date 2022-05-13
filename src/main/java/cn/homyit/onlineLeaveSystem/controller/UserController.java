@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author 州牧
@@ -49,6 +50,13 @@ public class UserController {
     public Result updatePWD(@RequestBody PasswordDTO passwordDTO){
         userService.updatePWD(passwordDTO);
         return Result.success();
+    }
+
+    /*获取负责人列表*/
+    @GetMapping("/getAllLeaders")
+    public Result getAllLeaders(){
+        Map<String,Long> map = userService.getAllLeaders();
+        return Result.success(map);
     }
 
 

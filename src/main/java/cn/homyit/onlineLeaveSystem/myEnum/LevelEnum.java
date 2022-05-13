@@ -9,7 +9,7 @@ import lombok.Getter;
 public enum LevelEnum implements IEnum<Integer> {
     STUDENT(0,"学生"),
     INSTRUCTOR(1,"班主任"),
-    SECRETARY(2,"党委副书记"),
+    SECRETARY(2,"负责人"),
     DEAN(3,"院长"),
     LOOK(4,"查看")
     ;

@@ -9,10 +9,15 @@ import com.baomidou.mybatisplus.annotation.IEnum;
  */
 public enum ExamineEnum implements IEnum<Integer> {
     INSTRUCTOR(0,"辅导员审核中"),
-    SECRETARY(1,"副党委书记审核中"),
+    SECRETARY(1,"负责人审核中"),
     DEAN(2,"院长审核中"),
-    FAILURE(-1,"拒绝"),
-    SUCCESS(3,"同意")
+    WAIT_REPORT(3,"待销假"),
+    APPLY_EXPIRED(10,"申请假条已过期"),
+    REPORT_EXPIRED(11,"销假已过期"),
+    PROCESSING(12,"处理中"),
+    PROCESSED(14,"已销假"),
+    FAILURE(-1,"拒绝")
+
     ;
 
 
