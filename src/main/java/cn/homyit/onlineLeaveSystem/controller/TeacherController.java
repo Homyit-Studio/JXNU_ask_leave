@@ -1,5 +1,6 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
+import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageStudentVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.*;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
@@ -35,6 +36,15 @@ public class TeacherController {
         PageVo<StudentUserVo> pageVo =teacherService.getStudentsByClassId(pageStudentVo);
         return Result.success(pageVo);
     }
+
+    /*获取所有班级*/
+    @GetMapping("/getAllClass")
+    public Result<List<ClassInfoVO>> getAllClass(){
+        List<ClassInfoVO> list = teacherService.getAllClass();
+        return Result.success(list);
+    }
+
+
 
 
 

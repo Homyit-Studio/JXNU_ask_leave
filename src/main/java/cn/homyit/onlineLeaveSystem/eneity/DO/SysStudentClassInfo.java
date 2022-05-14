@@ -17,7 +17,7 @@ public class SysStudentClassInfo implements Serializable {
   @TableId(type = IdType.AUTO)
   private Long id;
   private String majorAndClass;
-
+  private Long gradeId;
   private Integer capacity;
   private String highUser;
   @TableLogic

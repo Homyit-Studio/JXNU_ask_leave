@@ -53,6 +53,8 @@ public class LeaveNote {
 
   private String days;
 
+  private Long leaderNumber;
+
 
 
 

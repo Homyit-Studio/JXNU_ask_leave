@@ -59,11 +59,11 @@ public class ExcelServiceImpl implements ExcelService {
 
 
     @Override
-    public void upload(MultipartFile file)  {
+    public void upload(MultipartFile file,Long gradeId)  {
         ExcelReader reader = null;
         try {
             reader = EasyExcel.read(file.getInputStream(), StudentDTO.class,
-                new EastExcelListener(userMapper,passwordEncoder,classInfoMapper,sysClassStudentMapper,sysUserRoleMapper)).build();
+                new EastExcelListener(userMapper,passwordEncoder,classInfoMapper,sysClassStudentMapper,sysUserRoleMapper,gradeId)).build();
         } catch (IOException e) {
             e.printStackTrace();
             throw  new RuntimeException("excel导入错误");
@@ -97,7 +97,7 @@ public class ExcelServiceImpl implements ExcelService {
 
     @Override
     public void download(DownloadNoteDTO downloadNoteDTO, HttpServletResponse response)  {
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); //设置响应内容类型
+//        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"); //设置响应内容类型
         response.setCharacterEncoding("utf-8");//编码
         String fileName = null;//设置文件名
         try {
@@ -110,7 +110,7 @@ public class ExcelServiceImpl implements ExcelService {
         List<LeaveNote> list = leaveNoteService.selectNoteToDownload(downloadNoteDTO);
 
         List<LeaveNoteVo> list1 = MyBeanUtils.copyList(list, LeaveNoteVo.class);
-//        leaveNoteService.
+
         ExcelWriter writer = null;//获取写出流
         try {
             writer = EasyExcel.write(response.getOutputStream(),

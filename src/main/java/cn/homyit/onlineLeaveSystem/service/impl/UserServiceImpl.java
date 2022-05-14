@@ -8,6 +8,7 @@ import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 import cn.homyit.onlineLeaveSystem.service.UserService;
 import cn.homyit.onlineLeaveSystem.util.JwtUtil;
+import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
 import cn.homyit.onlineLeaveSystem.util.RedisCache;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.beans.BeanUtils;
@@ -121,6 +122,15 @@ public class UserServiceImpl implements UserService {
             map.put(sysStudentUser.getUsername(),sysStudentUser.getStudentNumber());
         }
         return map;
+    }
+
+    @Override
+    public List<StudentUserVo> getNoteByStudentName(String username) {
+        QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("username",username);
+        List<SysStudentUser> sysStudentUsers = userMapper.selectList(wrapper);
+        List<StudentUserVo> list = MyBeanUtils.copyList(sysStudentUsers, StudentUserVo.class);
+        return list;
     }
 
 

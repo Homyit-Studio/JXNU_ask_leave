@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateNoteDTO {
-    private Long id;
+    private Long leaderNumber;
     private ExamineEnum examineEnum;
     private OpinionEnum opinionEnum;
     private LevelEnum levelEnum;
@@ -25,4 +25,5 @@ public class UpdateNoteDTO {
     private String instructorOpinion;
     private String secretaryOpinion;
     private String deanOpinion;
+
 }

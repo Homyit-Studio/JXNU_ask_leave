@@ -134,7 +134,6 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
     }
 
-    //todo  根据用户角色来查找请假条
 
     @Override
     public PageVo<LeaveNote> selectNoteByRole(SelectNotePageDTO selectNoteDTO) {
@@ -146,48 +145,23 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         //获取用户角色
         LevelEnum role = loginUser.getUser().getRole();
         //获取用户审核权限
-        ExamineEnum examine = ExamineEnum.getEumByCode(role.getValue() - 1);
-        //确定是审核还是未审核
-        System.out.println("===================================");
-        System.out.println(examine);
-//        CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
-
+        ExamineEnum examineRole = ExamineEnum.getEumByCode(role.getValue() - 1);
         //只获取一种类型的假条
         ExamineEnum examineEnum = selectNoteDTO.getExamineEnum();
-        if (!examineEnum.equals(ExamineEnum.PROCESSING)){
+        if (examineEnum.equals(ExamineEnum.PROCESSING)){
+            wrapper.eq("examine",examineRole);
+        }else {
             wrapper.eq("examine",examineEnum);
         }
-
 
         if (role.equals(LevelEnum.STUDENT)){
             wrapper.eq("student_number",loginUser.getUser().getStudentNumber());
 
-
-//            if (completeEnum.equals(CompleteEnum.NO)){
-//                wrapper.ne("examine",ExamineEnum.SUCCESS)
-//                        .ne("examine",ExamineEnum.FAILURE);
-//            }else {
-//                wrapper.in("examine",
-//                        Arrays.asList(ExamineEnum.SUCCESS.getValue(),ExamineEnum.FAILURE.getValue()));
-//            }
         }else if (role.equals(LevelEnum.INSTRUCTOR)){
             List<Long> allStudentNumber = teacherService.getAllStudentNumber();
             wrapper.in("student_number",allStudentNumber);
-
-//            if (completeEnum.equals(CompleteEnum.NO)){
-
-                wrapper.eq("examine",examine);
-//            }else {
-//                wrapper.ne("examine",examine);
-//            }
-        }else{
-            //todo 大于辅导员,全看
-//            if (completeEnum.equals(CompleteEnum.NO)){
-
-                wrapper.eq("examine",examine);
-//            }else {
-//                wrapper.ne("examine",examine);
-//            }
+        }else if (role.equals(LevelEnum.SECRETARY)){
+            wrapper.eq("leader_number",loginUser.getUser().getStudentNumber());
         }
 
         wrapper.orderByDesc("start_time");
@@ -220,16 +194,19 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         if (level<=examine){
             throw new RuntimeException("您已经同意");
         }
-        System.out.println("===================================");
-        System.out.println(examineEnum);
         //审核人意见
         //拒绝则不往下传递
         if (updateNoteDTO.getOpinionEnum().equals(OpinionEnum.NO)){
             note.setExamine(ExamineEnum.FAILURE);
         }else{
-            //往下传递
+            //同意往下传递
             if(updateNoteDTO.getLevelEnum().getValue()-1 !=examine){
                 note.setExamine(ExamineEnum.getEumByCode(examineEnum.getValue().intValue()+1));
+                if (role.equals(LevelEnum.INSTRUCTOR)){
+                    //手动指定负责人
+                    note.setLeaderNumber(updateNoteDTO.getLeaderNumber());
+                }
+
                 //院长审批后也直接生成请假条
                 if(role.equals(LevelEnum.DEAN)){
                     //生成销假条
@@ -241,6 +218,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                     backNoteService.insertNote(backNote);
                 }
             }else{
+
                 note.setExamine(ExamineEnum.WAIT_REPORT);
 
                 //生成销假条
@@ -335,7 +313,9 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
         wrapper.gt("start_time",downloadNoteDTO.getStartTime())
                 .lt("end_time",downloadNoteDTO.getEndTime())
-                .eq("student_number",downloadNoteDTO.getStudentNumber());
+                .eq("student_number",downloadNoteDTO.getStudentNumber())
+                .eq("grade",downloadNoteDTO.getGrade())
+                .eq("class_id",downloadNoteDTO.getClassId());
         List<LeaveNote> leaveNotes = leaveNoteMapper.selectList(wrapper);
 //        for (LeaveNote leaveNote : leaveNotes) {
 //            log.info("假条如{}",leaveNote);

@@ -14,7 +14,7 @@ import java.util.Date;
  * @since 2022-05-13 09:25
  */
 @Slf4j
-//@Component
+@Component
 public class UpdateNoteStatusScheduler {
 
     @Autowired

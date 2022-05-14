@@ -36,16 +36,20 @@ public class EastExcelListener extends AnalysisEventListener<StudentDTO> {
 
     private HashSet<String> classSet ;
 
+    private final Long gradeId;
+
     public EastExcelListener(SysStudentUserMapper userMapper,
                              PasswordEncoder passwordEncoder,
                              ClassInfoMapper classInfoMapper,
                              SysClassStudentMapper sysClassStudentMapper,
-                             SysUserRoleMapper sysUserRoleMapper){
+                             SysUserRoleMapper sysUserRoleMapper,
+                             Long gradeId){
         this.userMapper =userMapper;
         this.passwordEncoder = passwordEncoder;
         this.classInfoMapper = classInfoMapper;
         this.sysClassStudentMapper = sysClassStudentMapper;
         this.sysUserRoleMapper = sysUserRoleMapper;
+        this.gradeId =gradeId;
         roleMap = new HashMap<>();
         roleMap.put("辅导员",LevelEnum.INSTRUCTOR);
         roleMap.put("党委副书记",LevelEnum.SECRETARY);
@@ -66,6 +70,7 @@ public class EastExcelListener extends AnalysisEventListener<StudentDTO> {
         if(!classSet.contains(majorAndClass)){
             classSet.add(majorAndClass);
             sysStudentClassInfo.setMajorAndClass(data.getMajorAndClass());
+            sysStudentClassInfo.setGradeId(gradeId);
             classInfoMapper.insert(sysStudentClassInfo);
         }
 
@@ -76,7 +81,10 @@ public class EastExcelListener extends AnalysisEventListener<StudentDTO> {
         }else{
             user.setSex(SexEnum.WOMAN);
         }
-        String rawPWD = data.getStudentNumber().toString().substring(6, 12);
+        String rawPWD = data.getPhoneNumber().trim();
+        if(data.getStudentNumber().toString().length()!=12){
+            System.out.println(data.getUsername());
+        }
         user.setPassword(passwordEncoder.encode(rawPWD));
 
 
@@ -87,11 +95,13 @@ public class EastExcelListener extends AnalysisEventListener<StudentDTO> {
                 //获得班级id
         QueryWrapper<SysStudentClassInfo> wrapper = new QueryWrapper<>();
         wrapper.eq("major_and_class",data.getMajorAndClass())
+                .eq("grade_id",gradeId)
                 .select("id");
         Long classId = classInfoMapper.selectOne(wrapper).getId();
 
         //插入用户表
         user.setClassId(classId);
+        user.setGradeId(gradeId);
         userMapper.insert(user);
             //插入用户班级表
         sysClassStudentMapper.insert(new SysClassStudent(classId, data.getStudentNumber()));

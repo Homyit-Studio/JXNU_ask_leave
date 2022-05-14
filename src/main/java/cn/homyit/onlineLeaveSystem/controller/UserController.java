@@ -2,6 +2,7 @@ package cn.homyit.onlineLeaveSystem.controller;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
+import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.Result;
 import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
 import cn.homyit.onlineLeaveSystem.log.ApiLog;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,7 +60,13 @@ public class UserController {
         Map<String,Long> map = userService.getAllLeaders();
         return Result.success(map);
     }
+//todo 返回的字段是否需要减少
+    @GetMapping("/getNoteByStudentName")
+    public Result<List<StudentUserVo>> getNoteByStudentName(String username){
+        List<StudentUserVo> list = userService.getNoteByStudentName(username);
+        return Result.success(list);
 
+    }
 
 
 

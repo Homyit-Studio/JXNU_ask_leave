@@ -5,6 +5,7 @@ import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -19,4 +20,5 @@ public interface UserService {
 
     Map<String, Long> getAllLeaders();
 
+    List<StudentUserVo> getNoteByStudentName(String username);
 }

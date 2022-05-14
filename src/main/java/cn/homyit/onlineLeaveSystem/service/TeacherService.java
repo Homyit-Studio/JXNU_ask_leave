@@ -16,4 +16,6 @@ public interface TeacherService {
     List<Long> getAllStudentNumber();
 
 
+    List<ClassInfoVO> getAllClass();
+
 }

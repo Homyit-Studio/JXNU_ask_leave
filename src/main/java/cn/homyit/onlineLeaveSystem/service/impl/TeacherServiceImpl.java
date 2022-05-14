@@ -1,6 +1,7 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
+import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentClassInfo;
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageStudentVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.ClassInfoVO;
@@ -75,6 +76,16 @@ public class TeacherServiceImpl implements TeacherService {
 
         List<Long> list  = studentUserMapper.selectAllStudentNumber(studentNumber);
         return list;
+    }
+
+    @Override
+    public List<ClassInfoVO> getAllClass() {
+        QueryWrapper<SysStudentClassInfo> wrapper = new QueryWrapper<>();
+        wrapper.orderByAsc("id");
+        List<SysStudentClassInfo> sysStudentClassInfos = classInfoMapper.selectList(wrapper);
+        List<ClassInfoVO> classInfoVOS = MyBeanUtils.copyList(sysStudentClassInfos, ClassInfoVO.class);
+        return classInfoVOS;
+
     }
 
 

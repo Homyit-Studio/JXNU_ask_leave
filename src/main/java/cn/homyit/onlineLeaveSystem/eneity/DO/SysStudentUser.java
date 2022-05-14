@@ -40,6 +40,7 @@ public class SysStudentUser implements Serializable {
   private String parentNumber;
   private String buildingNumber;
   private String dormitoryNumber;
+  private Long gradeId;
   private String password;
   private Date createTime;
   private Date updateTime;
