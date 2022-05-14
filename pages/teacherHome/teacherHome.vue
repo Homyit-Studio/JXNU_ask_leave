@@ -43,8 +43,8 @@
 				<view class="tools-box">
 					<view class="teacher">
 						<view>
-							<navigator animation-type="pop-in" animation-duration="300" url="/pages/handleLeave/handleLeave?choose=0"
-								class="tools-btn">
+							<navigator animation-type="pop-in" animation-duration="300"
+								url="/pages/handleLeave/handleLeave?choose=0" class="tools-btn">
 								<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 							</navigator>
 							<text>审批请假</text>
@@ -57,27 +57,33 @@
 							<text>管理成员</text>
 						</view>
 						<view>
-							<navigator animation-type="pop-in" animation-duration="300" url="../showGradeLeave/showGradeLeave?choose=1"
-								class="tools-btn">
+							<navigator animation-type="pop-in" animation-duration="300"
+								url="../showGradeLeave/showGradeLeave?choose=1" class="tools-btn">
 								<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 							</navigator>
 							<text>跨级审批</text>
 						</view>
 					</view>
-						<view>
-							<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList"
-								class="tools-btn">
-								<uni-icons type="gear" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-							</navigator>
-							<text>下载假条</text>
-						</view>
-						<view>
-							<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
-								url="/pages/classList/classList">
-								<uni-icons type="person" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-							</navigator>
-							<text>查看班级</text>
-						</view>
+					<view>
+						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
+							url="/pages/classList/classList">
+							<uni-icons type="person" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>查看班级</text>
+					</view>
+					<view>
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList"
+							class="tools-btn">
+							<uni-icons type="download-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>下载假条</text>
+					</view>
+					<view>
+						<navigator animation-type="pop-in" animation-duration="300" class="tools-btn">
+							<uni-icons type="upload-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>导入名单</text>
+					</view>
 				</view>
 			</uni-card>
 		</view>
@@ -119,7 +125,8 @@
 				<view class="tools-box">
 					<view @click="lookMessage">
 						<navigator class="tools-btn">
-							<uni-icons type="notification-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+							<uni-icons type="notification-filled" size="35" color="#f0f0f0" class="icon-style">
+							</uni-icons>
 						</navigator>
 						<text>个人信息</text>
 					</view>
@@ -317,7 +324,7 @@
 					}, 500)
 				})
 			},
-			lookMessage(){
+			lookMessage() {
 				this.$refs.peopleMessagePopup.open()
 			}
 		}
@@ -382,9 +389,12 @@
 			flex-wrap: wrap;
 			justify-content: flex-start;
 			text-align: center;
-			.teacher,.other{
+
+			.teacher,
+			.other {
 				display: flex;
 			}
+
 			.tools-btn {
 				padding: 20rpx;
 				margin: 20rpx;
