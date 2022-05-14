@@ -3,9 +3,9 @@
 		<view class="detail-status">
 			<view  v-if = "types === '0'">
 				<view>
-					<uni-icons type="minus-filled" size="120" color="#7f7f7f" class="icon-style"></uni-icons>
+					<uni-icons type="minus-filled" size="120" color="#ffaa00" class="icon-style"></uni-icons>
 				</view>
-				<text>未审批</text>
+				<text>审批中</text>
 			</view>
 			<view  v-else-if="leaveDetails.examine === 'SUCCESS'">
 				<view>
@@ -18,13 +18,7 @@
 					<uni-icons type="clear" size="120" color="#aa0000" class="icon-style"></uni-icons>
 				</view>
 				<text>审批未通过</text>
-			</view>
-			<view  v-else>
-				<view>
-					<uni-icons type="minus-filled" size="120" color="#ffaa00" class="icon-style"></uni-icons>
-				</view>
-				<text>审批中</text>
-			</view>		
+			</view>	
 		</view>
 		<view class="details-card">
 			<uni-card title="审批情况" :is-shadow="false"  class="details-card">

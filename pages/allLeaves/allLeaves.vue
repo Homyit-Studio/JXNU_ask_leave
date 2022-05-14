@@ -1,14 +1,14 @@
 <template>
 	<view class="handle-leave-page">
+		<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中取消行程。" showIcon></uni-notice-bar>
 		<view class="leave-notes">
-			<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中取消行程。" showIcon></uni-notice-bar>
-			<uni-segmented-control :values="current" :current="currentIndex"  @clickItem="onClickItem" active-color="#1b478e" style-type="text"></uni-segmented-control>
+				<uni-segmented-control :values="current" :current="currentIndex"  @clickItem="onClickItem" active-color="#1b478e" style-type="text"></uni-segmented-control>
 			<view>
 				<view v-show ="currentIndex === 0">
 					<uni-card v-for="(item, index) in leaveNoteList" 
 						:key="item.id" note="true">
 						<view class="card-header">
-							<uni-tag type="default" text="未审核" ></uni-tag>
+							<uni-tag text="审核中" type="warning"></uni-tag>
 							<!-- <uni-tag :text="item.type == 0 ? '未审核': item.type == 1 ? '已通过': '已拒绝' " :type="item.type == 0? 'default': item.type == 1 ? 'success': 'error'"></uni-tag> -->
 							<text class="right">{{item.startTime}}</text>
 						</view>
@@ -66,7 +66,7 @@
 		data() {
 			return {
 				currentIndex: 0,
-				current:['未处理','已审核'],
+				current:['审核中','已处理'],
 				showPage:{
 					notaudit:{
 						pageData:{
@@ -117,7 +117,7 @@
 					this.loadMore1.status = 'noMore';
 				}
 			}).catch((err)=>{
-				console.log(err)
+				this.$errShowToast(err);
 			})
 			//获取已审核数据
 			uni.$http.post('/leave/selectNoteByRole', this.showPage.approved.pageData).then((res)=>{
@@ -128,7 +128,7 @@
 					this.loadMore2.status = 'noMore';
 				}
 			}).catch((err)=>{
-				console.log(err)
+				this.$errShowToast(err);
 			})
 		},
 		methods: {
@@ -205,7 +205,7 @@
 </script>
 
 <style lang="scss">
-	.handle-leave-page {
+	.leave-notes {
 		margin: 0 10rpx;
 
 		.card-actions-item {

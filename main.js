@@ -1,8 +1,10 @@
 import App from './App'
 import 'default-passive-events'//谷歌浏览器
+import errShow from'./utils/errShowToast.js'
 
 // #ifndef VUE3
 import Vue from 'vue'
+Vue.prototype.$errShowToast = errShow;
 Vue.config.productionTip = false
 App.mpType = 'app'
 const app = new Vue({
