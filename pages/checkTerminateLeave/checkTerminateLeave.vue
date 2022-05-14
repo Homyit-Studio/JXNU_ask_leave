@@ -59,7 +59,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss">
 	.detail-status {
 			text-align: center;
 			background-color: #fff;

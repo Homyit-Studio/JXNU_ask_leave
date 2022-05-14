@@ -32,15 +32,37 @@
 				</uni-steps>
 			</view>
 		</view>
-		<view class="handle-buttons" v-if="currentStatus == 'NO' && statusCard != 'other'">
+		<view class="handle-buttons" v-if="currentStatus == 'NO'">
 			<button type="warn" class="refuse-button" @click="cancelSubmit">拒绝</button>
 			<button type="primary" class="agree-button" @click="reviseSubmit">同意</button>
 		</view>
 		<view>
-			<!-- 输入框示例 -->
+			<!-- 弹框 -->
 			<uni-popup ref="inputDialog" type="dialog">
-				<uni-popup-dialog ref="inputClose" mode="input" title="审核意见" placeholder="请输入审核意见"
-					@confirm="dialogInputConfirm"></uni-popup-dialog>
+				<template v-slot:default>
+					<view class="confirm-dialog">
+						<view class="uni-px-5 uni-pb-5">
+							<view class="text">
+								<text>选择负责人：{{JSON.stringify(checkbox1)}}</text>
+							</view>
+							<uni-data-checkbox multiple v-model="checkbox1" :localdata="hobby"></uni-data-checkbox>
+						</view>
+						<view>
+							<view>
+								<text>审批意见</text>
+							</view>
+							<view>
+								<view class="uni-textarea">
+									<textarea :cursor="10" placeholder="请输入审批意见" />
+								</view>
+							</view>
+						</view>
+						<view class="confirm-button">
+							<button plain size="mini">取消</button>
+							<button plain  size="mini">同意</button>
+						</view>
+					</view>
+				</template>
 			</uni-popup>
 		</view>
 		<view>
@@ -74,7 +96,18 @@
 				leaveDetails: {},
 				gobackMessage: {},
 				process: [],
-				statusCard:null,
+				checkbox1: [0],
+				hobby: [{
+					text: '足球',
+					value: 0
+				}, {
+					text: '篮球',
+					value: 1
+				}, {
+					text: '游泳',
+					value: 2
+				}],
+				statusCard: null,
 				msg: {
 					msgType: 'success',
 					messageText: '这是一条成功提示',
@@ -160,7 +193,7 @@
 							other: "student"
 						},
 						{
-							title: "辅导员审批",
+							title: "班主任审批",
 							desc: data.instructorOpinion,
 							other: "INSTRUCTOR"
 						}
@@ -172,12 +205,12 @@
 							other: "sutdent"
 						},
 						{
-							title: "辅导员审批",
+							title: "班主任审批",
 							desc: data.instructorOpinion,
 							other: "INSTRUCTOR"
 						},
 						{
-							title: "党委书记审批",
+							title: "负责人审批",
 							desc: data.secretaryOpinion,
 							other: "SECRETARY"
 						}
@@ -189,12 +222,12 @@
 							other: "student"
 						},
 						{
-							title: "辅导员审批",
+							title: "班主任审批",
 							desc: data.instructorOpinion,
 							other: "INSTRUCTOR"
 						},
 						{
-							title: "党委书记审批",
+							title: "负责人审批",
 							desc: data.secretaryOpinion,
 							other: "SECRETARY"
 						},
@@ -237,8 +270,10 @@
 						this.msg.msgType = "success"
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
-						uni.navigateTo({
-							url: "../handleLeave/handleLeave"
+						uni.navigateBack({
+							success() {
+								console.log(45)
+							}
 						})
 					} else {
 						this.msg.msgType = "error"
@@ -258,6 +293,29 @@
 <style lang="scss">
 	.handle-leave-details-page {
 		background-color: #f8f8f8;
+
+		.confirm-dialog {
+			padding: 20px;
+			border-radius: 20px;
+			background-color: #fff;
+			textarea{
+				width: 80%;
+				height: 150rpx;
+			}
+			.confirm-button {
+				display: flex;
+				justify-content: space-around;
+				padding-top: 20rpx;
+
+				button {
+					width: 250rpx;
+					height: 60rpx;
+					border: none;
+					line-height: 60rpx;
+					font-size: $jxnu-font-14;
+				}
+			}
+		}
 
 		.detail-status {
 			text-align: center;

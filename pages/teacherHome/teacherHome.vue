@@ -41,25 +41,48 @@
 					<text>常用工具</text>
 				</view>
 				<view class="tools-box">
+					<view class="teacher">
+						<view>
+							<navigator animation-type="pop-in" animation-duration="300"
+								url="/pages/handleLeave/handleLeave?choose=0" class="tools-btn">
+								<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+							</navigator>
+							<text>审批请假</text>
+						</view>
+						<view>
+							<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList"
+								class="tools-btn">
+								<uni-icons type="staff" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+							</navigator>
+							<text>管理成员</text>
+						</view>
+						<view>
+							<navigator animation-type="pop-in" animation-duration="300"
+								url="../showGradeLeave/showGradeLeave?choose=1" class="tools-btn">
+								<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+							</navigator>
+							<text>跨级审批</text>
+						</view>
+					</view>
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/handleLeave/handleLeave"
-							class="tools-btn">
-							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
+							url="/pages/classList/classList">
+							<uni-icons type="person" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
-						<text>学生请假</text>
+						<text>查看班级</text>
 					</view>
 					<view>
 						<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList"
 							class="tools-btn">
-							<uni-icons type="staff" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+							<uni-icons type="download-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
-						<text>管理班级</text>
+						<text>下载假条</text>
 					</view>
-					<view @click="signout">
-						<navigator class="tools-btn">
-							<uni-icons type="paperplane" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+					<view>
+						<navigator animation-type="pop-in" animation-duration="300" class="tools-btn">
+							<uni-icons type="upload-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
-						<text>退出登录</text>
+						<text>导入名单</text>
 					</view>
 				</view>
 			</uni-card>
@@ -67,15 +90,51 @@
 		<view class="teacher-tools">
 			<uni-card>
 				<view>
-					<text>更多</text>
+					<text>历史记录</text>
 				</view>
 				<view class="tools-box">
 					<view>
 						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
-							url="../showGradeLeave/showGradeLeave">
+							url="../showGradeLeave/showGradeLeave?choose=2">
 							<uni-icons type="personadd-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
-						<text>更多假条</text>
+						<text>请假记录</text>
+					</view>
+					<view>
+						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
+							url="../finishRecord/finishRecord">
+							<uni-icons type="home-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>请假统计</text>
+					</view>
+					<view>
+						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
+							url="../finishRecord/finishRecord">
+							<uni-icons type="checkbox-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>销假统计</text>
+					</view>
+				</view>
+			</uni-card>
+		</view>
+		<view class="teacher-tools">
+			<uni-card>
+				<view>
+					<text>账号管理</text>
+				</view>
+				<view class="tools-box">
+					<view @click="lookMessage">
+						<navigator class="tools-btn">
+							<uni-icons type="notification-filled" size="35" color="#f0f0f0" class="icon-style">
+							</uni-icons>
+						</navigator>
+						<text>个人信息</text>
+					</view>
+					<view @click="signout">
+						<navigator class="tools-btn">
+							<uni-icons type="paperplane" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>退出登录</text>
 					</view>
 				</view>
 			</uni-card>
@@ -91,6 +150,19 @@
 			<uni-popup ref="alertDialog" type="dialog">
 				<uni-popup-dialog type="info" cancelText="取消" confirmText="确认" title="退出登录" content="确认离开嘛"
 					@confirm="signoutConfirm"></uni-popup-dialog>
+			</uni-popup>
+		</view>
+		<view>
+			<!-- 普通弹窗 -->
+			<uni-popup ref="peopleMessagePopup" background-color="#fff" type="bottom">
+				<view class="popup-content">
+					<uni-list>
+						<uni-list-item title="姓名" :rightText="teacherMessage.username"></uni-list-item>
+						<uni-list-item title="工号" :rightText="'' + teacherMessage.studentNumber"></uni-list-item>
+						<uni-list-item title="性别" :rightText="teacherMessage.sex == 'WOMAN'? '女' : '男'"></uni-list-item>
+						<uni-list-item title="联系方式" :rightText="teacherMessage.phoneNumber"></uni-list-item>
+					</uni-list>
+				</view>
 			</uni-popup>
 		</view>
 	</view>
@@ -110,7 +182,7 @@
 					newPassword: ""
 				},
 				identity: {
-					"INSTRUCTOR": "辅导员",
+					"INSTRUCTOR": "班主任",
 					"SECRETARY": "副党委书记",
 					"DEAN": "院长"
 				},
@@ -251,6 +323,9 @@
 						this.$refs.alertDialog.close()
 					}, 500)
 				})
+			},
+			lookMessage() {
+				this.$refs.peopleMessagePopup.open()
 			}
 		}
 	}
@@ -311,9 +386,14 @@
 	.teacher-tools {
 		.tools-box {
 			display: flex;
-			flex-direction: row;
+			flex-wrap: wrap;
 			justify-content: flex-start;
 			text-align: center;
+
+			.teacher,
+			.other {
+				display: flex;
+			}
 
 			.tools-btn {
 				padding: 20rpx;
