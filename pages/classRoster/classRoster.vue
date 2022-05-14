@@ -26,7 +26,7 @@
 						<uni-list-item title="学号" :rightText="'' + studentMessage.studentNumber"></uni-list-item>
 						<uni-list-item title="班级" :rightText="studentMessage.majorAndClass"></uni-list-item>
 						<uni-list-item title="宿舍" :rightText="studentMessage.dormitoryNumber"></uni-list-item>
-						<uni-list-item title="性别" :rightText="studentMessage.sex"></uni-list-item>
+						<uni-list-item title="性别" :rightText="studentMessage.sex  == 'WOMAN'? '女' : '男'"></uni-list-item>
 						<uni-list-item title="民族" :rightText="studentMessage.nation"></uni-list-item>
 						<uni-list-item title="出生地" :rightText="studentMessage.nativePlace"></uni-list-item>
 						<uni-list-item title="联系方式" :rightText="studentMessage.phoneNumber"></uni-list-item>
