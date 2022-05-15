@@ -62,6 +62,9 @@
 			<view class="btn-grounps" v-else>
 				<button type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>
 			</view>
+			<view class="btn-grounps">
+				<button type="default" class="deteleWarn" @click="deteleLeave()">添加附件</button>
+			</view>
 		</view>
 		<!-- 确认删除弹框 -->
 		<uni-popup ref="dialog_up" type="dialog">

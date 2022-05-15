@@ -131,6 +131,24 @@
 			}
 		
 		}
+        ,{
+            "path" : "pages/importList/importList",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "导入名单",
+                "enablePullDownRefresh": false
+            }
+            
+        }
+        ,{
+            "path" : "pages/addAttachment/addAttachment",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "添加附件",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

@@ -1,10 +1,9 @@
 import App from './App'
 import 'default-passive-events'//谷歌浏览器
-import errShow from'./utils/errShowToast.js'
+
 
 // #ifndef VUE3
 import Vue from 'vue'
-Vue.prototype.$errShowToast = errShow;
 Vue.config.productionTip = false
 App.mpType = 'app'
 const app = new Vue({
@@ -37,6 +36,10 @@ $http.beforeRequest = function(options) {
 	if (options.url != "http://101.43.85.67:8081/user/login") {
 		options.header["token"] = uni.getStorageSync('token')
 	}
+	// if (options.url.indexOf('/excel/upload') !== -1) {
+	// 	options.header ["Content-Type"] = "multipart/form-data"
+	//    //console.log(options.url)
+	// }
 	uni.showLoading({
 		title: '正在加载中...',
 	})

@@ -2,7 +2,7 @@
 	<view>
 		<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中取消行程。" showIcon></uni-notice-bar>
 	<view class="apply-leave">
-		<view v-show="current === 0">
+		<view>
 			<uni-forms ref="form" :modelValue="formData" :rules="dataRules" class="form-style" :border="true" validateTrigger="bind" err-show-type="toast">
 				<uni-group>
 					<uni-forms-item required name="leave" label="是否离校" >
@@ -38,35 +38,33 @@
 						</view>
 					</uni-forms-item>
 				</uni-group>
-			</uni-forms>	
+			</uni-forms>
+			<button @click="submitForm">提交</button>
 		</view>
-		<view v-show="current === 1" class="file-picker-box">
+	<!-- 	<view v-show="current === 1" class="file-picker-box">
 			<text>请假凭证(非必填，最多上传3张图片)</text>
 			<uni-file-picker
 				v-model="imageValue" 
+				return-type="array"
 				file-mediatype="image"
 				mode="grid" 
 				file-extname="png,jpg"
 				:limit="3"
 				:auto-upload="false"
 				@select="select" 
-				@progress="progress" 
-				@success="success" 
-				@fail="fail" 
+				 @delete="handleDelete" 
 				class="file-picker"
 			/>
-		</view>
+		</view> -->
 		<view>
-			<button v-show="current === 1" @click="submitForm">提交</button>
-			<view class="segmented-control">
-				<uni-segmented-control :current="current" :values="value" @clickItem="onClickItem" styleType="button" activeColor="#1b478e"></uni-segmented-control>
-			</view>
+			
 		</view>
 	</view>
 	</view>
 </template>
 
 <script>
+	//import errShow from'./utils/errShowToast.js'
 	export default {
 		data() {
 			return {
@@ -146,22 +144,18 @@
 		
 		methods:{
 			// 获取上传状态
-			select(e){
-				console.log('选择文件：',e)
+			select(res){
+				//console.log('选择文件：',e)
+				//this.studentFile.filename = res.tempFiles[0].name;
+				this.imageValue.push(res.tempFilePaths[0])
+				// console.log(res.tempFilePaths[0])
+				console.log(this.imageValue)
 			},
-			// 获取上传进度
-			progress(e){
-				console.log('上传进度：',e)
-			},
-			
-			// 上传成功
-			success(e){
-				console.log('上传成功')
-			},
-			
-			// 上传失败
-			fail(e){
-				console.log('上传失败：',e)
+			//图片删除
+			handleDelete(e){
+				const num = this.imageValue.findIndex(v => v.url === e.tempFilePath);
+				this.imageValue.splice(num, 1);
+				console.log(this.imageValue)
 			},
 			onClickItem(e){
 				this.current = e.currentIndex;
@@ -190,22 +184,50 @@
 							this.formData.phoneNumber = this.studentMsg.phoneNumber;
 							console.log(this.studentMsg)
 							this.formData.leave = this.formData.leave === true ? '是' : '否';
+							//this.uploadImg()
 							uni.navigateTo({
 								url:'../finishLeave/finishLeave?formData=' + encodeURIComponent(JSON.stringify(this.formData))
 							})
 						}else{
-							this.$errShowToast(res.data.message);
+							
 						}
 					}).catch((err)=>{
-						this.$errShowToast(err);
-					})
-					
+						
+					})			
 				}).catch(err =>{
 					this.current = 0;
 				})
 				
-
 			},
+			// async uploadImg(tempFilePaths, token) {
+			//     console.log(token)
+			//     if (!tempFilePaths.length) return;
+			//     const path = tempFilePaths.pop();
+			//     this.filePathsList.push({url:path,name:""})
+			//     const [err, {data}] = await uni.uploadFile({
+			//         url: 'https://localhost/file/api/uploadtemp',
+			//         filePath: path,
+			//         name: 'file',
+			//         header: {
+			//             Authorization: token,
+			//             "Content-Type": "multipart/form-data",
+			//         }
+			//     });
+			//     console.log("err", err)
+			//     console.log("data", data)
+			//     if (!this.isGuid(data)) {
+			//         // upload fail
+			//         this.filePathsList.pop()
+			//         uni.showToast({
+			//             title: "上传失败",
+			//             icon: "none"
+			//         })
+			//     }else{
+			//         // upload success
+			//         this.filePathsList[this.filePathsList.length - 1].name = data
+			//     }
+			//     this.uploadImg(tempFilePaths,token);
+			// },
 			switchChange(e){
 				//console.log(e.detail.value);
 				this.formData.leave = e.detail.value;
@@ -282,8 +304,7 @@
 			width: 350rpx;
 			background-color: $jxnu-bg-color;
 			color: aliceblue;
-			margin-top: 5vh;		
-				
+			margin-top: 5vh;				
 		}
 	}
 	.segmented-control{

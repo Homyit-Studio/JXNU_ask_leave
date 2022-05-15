@@ -72,7 +72,7 @@
 						pageData:{
 							"pageNo": 1,
 							"pageSize": 10,
-							"completeEnum": "NO",
+							"completeEnum": "PROCESSING",
 						},
 						//总页数
 						endPade:""
@@ -117,7 +117,7 @@
 					this.loadMore1.status = 'noMore';
 				}
 			}).catch((err)=>{
-				this.$errShowToast(err);
+				
 			})
 			//获取已审核数据
 			uni.$http.post('/leave/selectNoteByRole', this.showPage.approved.pageData).then((res)=>{
@@ -128,7 +128,7 @@
 					this.loadMore2.status = 'noMore';
 				}
 			}).catch((err)=>{
-				this.$errShowToast(err);
+				
 			})
 		},
 		methods: {
