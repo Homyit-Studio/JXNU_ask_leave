@@ -12,7 +12,7 @@
 		<view class="look-list">
 			<view class="handle-leave">
 				<view class="menu">
-					<uni-data-menu :localdata="localMenus" :unique-opened="true" :active="activeUrl"
+					<uni-data-menu :localdata="localMenus" :unique-opened="true" @select="changeMenu"
 						active-text-color="#409eff">
 					</uni-data-menu>
 				</view>
@@ -49,11 +49,11 @@
 							</view>
 						</template>
 					</uni-list-item>
+					<view v-if="shownodata">
+						<view class="show-nodata"><text>没有更多数据了</text></view>
+					</view>
 				</uni-list>
 			</view>
-		</view>
-		<view v-if="shownodata">
-			<view class="show-nodata"><text>没有更多数据了</text></view>
 		</view>
 		<view>
 			<!-- 提示信息弹窗 -->
@@ -70,18 +70,34 @@
 		data() {
 			return {
 				statuschoose: null,
-				activeUrl: '',
 				localMenus: [{
-						menu_id: "demo",
-						text: '静态',
-						value: "",
+						total: null,
+						text: '等待处理',
+						value: "PROCESSING",
+					},{
+						total: null,
+						text: '销假完成',
+						value: "PROCESSED",
 					},
 					{
-						menu_id: "icons",
-						text: '图标',
-					}, {
-						menu_id: "table",
-						text: '表格',
+						total: null,
+						text: '等待销假',
+						value: "WAIT_REPORT",
+					},
+					{
+						total: null,
+						text: '销假过期',
+						value: "REPORT_EXPIRED",
+					},
+					{
+						total: null,
+						text: '申请过期',
+						value: "APPLY_EXPIRED",
+					},
+					{
+						total: null,
+						text: '被拒假条',
+						value: "FAILURE",
 					}
 				],
 				//没有更多数据提醒
@@ -109,35 +125,54 @@
 				listRequest: {
 					"pageNo": 1,
 					"pageSize": 5,
-					"completeEnum": "NO",
-					"gradeNumber": "2021"
+					"examineEnum": "PROCESSING",
+					"gradeId": "2021"
 				}
 			}
 		},
 		onLoad(options) {
 			this.statuschoose = options.choose;
 			this.requestLeaveNotes()
+			this.requestLeaveCount()
 		},
 		methods: {
 			changeGrade(grade) {
-				this.listRequest.gradeNumber = grade
+				this.listRequest.gradeId = grade
 				this.listRequest.pageNo = 1
 				this.requestLeaveNotes()
+				this.requestLeaveCount()
 			},
 			onClickChoice(index) {
 				if (index.currentIndex == 0) {
-					this.listRequest.completeEnum = "NO"
 					this.listRequest.pageNo = 1
 					this.shownodata = false
 					this.requestLeaveNotes()
 				} else {
 					this.listRequest.pageNo = 1
-					this.listRequest.completeEnum = "YES"
 					this.shownodata = false
 					this.requestLeaveNotes()
 				}
 			},
-			requestLeaveNotes() {
+			requestLeaveCount(){
+				uni.$http.get(`/leave/allCounts/${this.listRequest.gradeId}`).then(res => {
+					if (res.data.code == 200) {
+						let data = res.data.data
+						for (let index in this.localMenus) {
+							console.log(data[this.localMenus[index].value])
+							this.localMenus[index].total = data[this.localMenus[index].value]
+						}
+					} else {
+						this.msg.msgType = "error"
+						this.msg.messageText = res.data.message
+						this.$refs.message.open()
+					}
+				}).catch(err => {
+					this.msg.msgType = "error"
+					this.msg.messageText = err.errMsg
+					this.$refs.message.open()
+				})
+			},
+			requestLeaveNotes(){
 				uni.$http.post("/leave/selectNodeByGrade", this.listRequest).then(res => {
 					if (res.data.code == 200) {
 						uni.showToast({
@@ -169,6 +204,11 @@
 					animationType: 'pop-in',
 					animationDuration: 200
 				})
+			},
+			changeMenu(e) {
+				this.listRequest.pageNo = 1
+				this.listRequest.examineEnum = e.value;
+				this.requestLeaveNotes()
 			}
 		},
 		onReachBottom() {
@@ -210,7 +250,8 @@
 			display: flex;
 			justify-content: center;
 		}
-		.card-title{
+
+		.card-title {
 			text-align: center;
 		}
 

@@ -53,13 +53,14 @@
 							</view>
 							<view>
 								<view class="uni-textarea">
-									<textarea :cursor="10" placeholder="请输入审批意见" />
+									<textarea :cursor="10" placeholder="请输入审批意见"
+										style="border: 1px solid #e2e2e2; width: 100%;border-radius: 5px;padding: 5px;" />
 								</view>
 							</view>
 						</view>
 						<view class="confirm-button">
 							<button plain size="mini">取消</button>
-							<button plain  size="mini">同意</button>
+							<button plain size="mini">同意</button>
 						</view>
 					</view>
 				</template>
@@ -248,6 +249,20 @@
 			reviseSubmit() {
 				this.$refs.inputDialog.open()
 				this.opinionEnum = "YES"
+				this.getLeaders()
+			},
+			//获取负责人
+			getLeaders() {
+				uni.$http.post("/user/getAllLeaders").then(res => {
+					console.log(res)
+					if (res.data.code == 200) {
+						console.log(1)
+					} else {
+						this.msg.msgType = "error"
+						this.msg.messageText = res.data.message
+						this.$refs.message.open()
+					}
+				})
 			},
 			//确认审核提交
 			dialogInputConfirm(val) {
@@ -295,13 +310,15 @@
 		background-color: #f8f8f8;
 
 		.confirm-dialog {
-			padding: 20px;
+			padding: 10px 20px;
 			border-radius: 20px;
 			background-color: #fff;
-			textarea{
+
+			textarea {
 				width: 80%;
 				height: 150rpx;
 			}
+
 			.confirm-button {
 				display: flex;
 				justify-content: space-around;

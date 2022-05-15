@@ -17,10 +17,12 @@
 		data() {
 			return {
 				avatar: "https://bkimg.cdn.bcebos.com/pic/b21c8701a18b87d6473830f5000828381e30fde6",
-				classList: []
+				classList: [],
+				enterChoose:null
 			}
 		},
-		onLoad() {
+		onLoad(options) {
+			this.enterChoose = options.choose
 			this.requestClassList()
 		},
 		methods: {
@@ -32,24 +34,45 @@
 				})
 			},
 			requestClassList(){
-				uni.$http.get("/teacher/getClassInfo").then(res => {
-					if (res.data.code == 200) {
-						uni.showToast({
-							title: '加载中',
-							duration: 500,
-							icon: "loading"
-						});
-						this.classList = res.data.data
-					} else {
+				if(this.enterChoose == 0){
+					uni.$http.get("/teacher/getClassInfo").then(res => {
+						if (res.data.code == 200) {
+							uni.showToast({
+								title: '加载中',
+								duration: 500,
+								icon: "loading"
+							});
+							this.classList = res.data.data
+						} else {
+							this.msg.msgType = "error"
+							this.msg.messageText = res.data.message
+							this.$refs.message.open()
+						}
+					}).catch(err => {
 						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
+						this.msg.messageText = err.errMsg
 						this.$refs.message.open()
-					}
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err.errMsg
-					this.$refs.message.open()
-				})
+					})
+				}else if(this.enterChoose == 1){
+					uni.$http.get("/teacher/getAllClass").then(res => {
+						if (res.data.code == 200) {
+							uni.showToast({
+								title: '加载中',
+								duration: 500,
+								icon: "loading"
+							});
+							this.classList = res.data.data
+						} else {
+							this.msg.msgType = "error"
+							this.msg.messageText = res.data.message
+							this.$refs.message.open()
+						}
+					}).catch(err => {
+						this.msg.msgType = "error"
+						this.msg.messageText = err.errMsg
+						this.$refs.message.open()
+					})
+				}
 			}
 		}
 	}

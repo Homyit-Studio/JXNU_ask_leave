@@ -4,19 +4,14 @@
 			<text>右滑显现班级成员操作按钮</text>
 		</uni-card>
 		<view class="student-title"><text>{{className}}</text></view>
-		<uni-swipe-action>
-			<uni-swipe-action-item v-for="(item, i) in studentList" :key="item.classNumber" :right-options="options"
-				@click="bindClick" @change="swipeChange($event, index)">
-				<uni-card>
-					<view class="message-card" @click="showStudent(item)">
-						<view class="student-message">
-							<image :src="imageSrc"></image><text>{{item.username}}</text>
-						</view>
-						<view><text>学号:{{item.studentNumber}}</text></view>
-					</view>
-				</uni-card>
-			</uni-swipe-action-item>
-		</uni-swipe-action>
+		<uni-card v-for="(item, i) in studentList" :key="item.classNumber">
+			<view class="message-card" @click="showStudent(item)">
+				<view class="student-message">
+					<image :src="imageSrc"></image><text>{{item.username}}</text>
+				</view>
+				<view><text>学号:{{item.studentNumber}}</text></view>
+			</view>
+		</uni-card>
 		<view>
 			<!-- 普通弹窗 -->
 			<uni-popup ref="studentPopup" background-color="#fff" type="bottom">
@@ -26,7 +21,8 @@
 						<uni-list-item title="学号" :rightText="'' + studentMessage.studentNumber"></uni-list-item>
 						<uni-list-item title="班级" :rightText="studentMessage.majorAndClass"></uni-list-item>
 						<uni-list-item title="宿舍" :rightText="studentMessage.dormitoryNumber"></uni-list-item>
-						<uni-list-item title="性别" :rightText="studentMessage.sex  == 'WOMAN'? '女' : '男'"></uni-list-item>
+						<uni-list-item title="性别" :rightText="studentMessage.sex  == 'WOMAN'? '女' : '男'">
+						</uni-list-item>
 						<uni-list-item title="民族" :rightText="studentMessage.nation"></uni-list-item>
 						<uni-list-item title="出生地" :rightText="studentMessage.nativePlace"></uni-list-item>
 						<uni-list-item title="联系方式" :rightText="studentMessage.phoneNumber"></uni-list-item>
@@ -55,10 +51,10 @@
 				//没有更多数据提醒
 				shownodata: false,
 				//节流阀
-				isloading:false,
-				className:null,
+				isloading: false,
+				className: null,
 				//数据总数
-				endPage : null,
+				endPage: null,
 				msg: {
 					msgType: 'success',
 					messageText: '这是一条成功提示',
@@ -139,12 +135,12 @@
 				this.$refs.studentPopup.open()
 			}
 		},
-		onReachBottom(){
-			if(this.rosterRequest.pageNo >= this.endPage){
+		onReachBottom() {
+			if (this.rosterRequest.pageNo >= this.endPage) {
 				this.shownodata = true
 				return
 			}
-			if(this.isloading) return;
+			if (this.isloading) return;
 			this.isloading = true
 			this.rosterRequest.pageNo++;
 			uni.$http.post(`/teacher/getStudentsByClassId`, this.rosterRequest).then(res => {
@@ -175,9 +171,10 @@
 
 <style lang="scss">
 	.class-roster-page {
-		.remind{
+		.remind {
 			text-align: center;
 		}
+
 		.student-title {
 			text-align: center;
 			padding: 10rpx 0;
@@ -200,7 +197,8 @@
 			justify-content: space-between;
 			align-items: center;
 		}
-		.show-nodata{
+
+		.show-nodata {
 			text-align: center;
 			padding: 20px;
 		}
