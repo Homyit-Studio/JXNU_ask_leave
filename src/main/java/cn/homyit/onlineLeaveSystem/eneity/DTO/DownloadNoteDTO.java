@@ -20,6 +20,6 @@ public class DownloadNoteDTO {
     private Date endTime;
 
     private  Long studentNumber;
-    private  Long grade;
+    private  Long gradeId;
     private  Long classId;
 }

@@ -64,7 +64,7 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
     @Override
     public void invoke(TeacherDTO data, AnalysisContext context) {
         SysStudentUser user = MyBeanUtils.copyBean(data, SysStudentUser.class);
-        if (data.equals("男")){
+        if (data.getSex().equals("男")){
             user.setSex(SexEnum.MAN);
         }else{
             user.setSex(SexEnum.WOMAN);

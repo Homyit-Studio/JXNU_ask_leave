@@ -8,6 +8,7 @@ import cn.homyit.onlineLeaveSystem.mapper.BackNoteMapper;
 import cn.homyit.onlineLeaveSystem.mapper.LeaveNoteMapper;
 import cn.homyit.onlineLeaveSystem.myEnum.BackEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.BackStatusEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.ExamineEnum;
 import cn.homyit.onlineLeaveSystem.service.BackNoteService;
 import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,8 @@ public class BackNoteServiceImpl implements BackNoteService {
       LeaveNote note = new LeaveNote();
       note.setId(backNote.getId());
       note.setStatus(BackStatusEnum.SUCCESS);
+      //更新为已消假
+      note.setExamine(ExamineEnum.PROCESSED);
       leaveNoteMapper.updateById(note);
     }else{
       backNote.setStatus(BackStatusEnum.FAILURE);

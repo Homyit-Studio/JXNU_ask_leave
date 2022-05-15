@@ -1,5 +1,6 @@
 package cn.homyit.onlineLeaveSystem.service;
 
+import cn.homyit.onlineLeaveSystem.eneity.DO.ImagesNote;
 import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.DownloadNoteDTO;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.SelectNotePageDTO;
@@ -34,4 +35,11 @@ public interface LeaveNoteService {
     void checkExpired();
 
     List<LeaveNote> selectNoteToDownload(DownloadNoteDTO downloadNoteDTO);
+
+    Map<String, Integer> allCountForGrade();
+
+    Map<String, Integer> allCountForGradeId(Long gradeId);
+
+
+//    List<ImagesNote> selectImageForNote(Long noteId);
 }

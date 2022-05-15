@@ -56,8 +56,6 @@ public class LeaveController {
         return Result.success(leaveNoteVo);
     }
 
-    //todo 根据角色执行更形权限
-    //todo 安全校验枚举值
 
     @PostMapping("/updateNote")
     public Result updateNote(@RequestBody UpdateNoteDTO updateNoteDTO){
@@ -78,13 +76,27 @@ public class LeaveController {
         return Result.success();
     }
 
-    /*首页报表处理*/
+    /*首页个人管理班级报表处理*/
 
-    @GetMapping("/allCounts")
-    public Result allCounts(){
+    @GetMapping("/allCountsForPerson")
+    public Result<Map<String,Integer>> allCounts(){
         Map<String,Integer> map = leaveNoteService.allCounts();
         return  Result.success(map);
     }
+
+    /*年级总览*/
+    @GetMapping("/allCounts")
+    public Result  allCountForGrade(){
+        Map<String,Integer> map = leaveNoteService.allCountForGrade();
+        return Result.success(map);
+    }
+
+    @GetMapping("/allCounts/{gradeId}")
+    public Result  allCountForGradeId(@PathVariable Long gradeId){
+        Map<String,Integer> map = leaveNoteService.allCountForGradeId(gradeId);
+        return Result.success(map);
+    }
+
 
 
 

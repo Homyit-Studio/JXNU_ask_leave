@@ -38,6 +38,7 @@ public class TeacherServiceImpl implements TeacherService {
 
 
 
+    //获取管理班级
     @Override
     public List<ClassInfoVO> getClassInfo() {
 
@@ -48,6 +49,7 @@ public class TeacherServiceImpl implements TeacherService {
         return classInfoMapper.selectClassInfoByNumber(studentNumber);
     }
 
+    //获取一个班级
     @Override
     public  PageVo<StudentUserVo>  getStudentsByClassId(PageStudentVo pageStudentVo) {
         Page<SysStudentUser> page = new Page<>(pageStudentVo.getPageNo(), pageStudentVo.getPageSize());
@@ -78,6 +80,7 @@ public class TeacherServiceImpl implements TeacherService {
         return list;
     }
 
+    //获取所有班级
     @Override
     public List<ClassInfoVO> getAllClass() {
         QueryWrapper<SysStudentClassInfo> wrapper = new QueryWrapper<>();

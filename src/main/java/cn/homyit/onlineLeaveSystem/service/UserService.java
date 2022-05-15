@@ -1,7 +1,9 @@
 package cn.homyit.onlineLeaveSystem.service;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.TeacherUpdaterDTO;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.StudentUpdateDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
 
 import java.util.HashMap;
@@ -21,4 +23,12 @@ public interface UserService {
     Map<String, Long> getAllLeaders();
 
     List<StudentUserVo> getNoteByStudentName(String username);
+
+    void addUser(TeacherUpdaterDTO teacherUpdaterDTO);
+
+    void updateUser(TeacherUpdaterDTO teacherUpdaterDTO);
+
+    void deletedUser(TeacherUpdaterDTO teacherUpdaterDTO);
+
+    void updateUserForStudent(StudentUpdateDTO studentUpdateDTO);
 }

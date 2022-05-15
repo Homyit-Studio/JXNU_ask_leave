@@ -32,6 +32,7 @@ public class LeaveNote {
   @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private Date endTime;
 
+  private Long gradeId;
   private LeaveEnum depart;
 
   private String destination;
@@ -53,7 +54,7 @@ public class LeaveNote {
 
   private String days;
 
-  private Long leaderNumber;
+  private String leaderNumber;
 
 
 

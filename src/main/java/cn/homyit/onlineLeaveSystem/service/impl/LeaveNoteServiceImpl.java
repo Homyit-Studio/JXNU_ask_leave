@@ -1,14 +1,12 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.BackNote;
-import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
-import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.eneity.DO.*;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.DownloadNoteDTO;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.SelectNotePageDTO;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
+import cn.homyit.onlineLeaveSystem.mapper.ImageMapper;
 import cn.homyit.onlineLeaveSystem.mapper.LeaveNoteMapper;
 import cn.homyit.onlineLeaveSystem.myEnum.*;
 import cn.homyit.onlineLeaveSystem.service.BackNoteService;
@@ -41,6 +39,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
     @Autowired
     private LeaveNoteMapper leaveNoteMapper;
 
+    @Autowired
+    private ImageMapper imageMapper;
 
     @Autowired
     private TeacherService teacherService;
@@ -80,30 +80,33 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
     @Override
     public PageVo<LeaveNote> selectNodeByGrade(SelectNotePageDTO selectNoteDTO) {
+
         Page<LeaveNote> page = new Page<>(selectNoteDTO.getPageNo(),selectNoteDTO.getPageSize());
         QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
-        wrapper.likeRight("student_number",selectNoteDTO.getGradeNumber())
-                .orderByDesc("start_time");
-        CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
-        if (completeEnum.equals(CompleteEnum.NO)){
-            wrapper.ne("examine",ExamineEnum.WAIT_REPORT)
-                    .ne("examine",ExamineEnum.FAILURE);
-        }else {
-            wrapper.in("examine",
-                    Arrays.asList(ExamineEnum.WAIT_REPORT.getValue(),ExamineEnum.FAILURE.getValue()));
-        }
+        //学号肯定不行
+
+       wrapper.orderByDesc("start_time")
+               .eq("grade_id",selectNoteDTO.getGradeId());
+
+       if (ExamineEnum.PROCESSING.equals(selectNoteDTO.getExamineEnum())){
+           wrapper.in("examine", Arrays.asList(ExamineEnum.INSTRUCTOR.getValue(),
+               ExamineEnum.SECRETARY.getValue(),ExamineEnum.DEAN.getValue()));
+       }else {
+           wrapper.eq("examine",selectNoteDTO.getExamineEnum());
+       }
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
         return new PageVo<>(iPage.getRecords(),iPage.getTotal(),iPage.getPages());
     }
 
     @Override
     public void deletedANote(Long id) {
-        //删除假条
+        //删除假条，未生成销假条之前
         leaveNoteMapper.deleteById(id);
     }
 
 
 
+    //根据学号获取假条
     @Override
     public PageVo<LeaveNote> selectLeaveNote(SelectNotePageDTO selectNoteDTO) {
         Page<LeaveNote> page = new Page<>(selectNoteDTO.getPageNo(),selectNoteDTO.getPageSize());
@@ -112,15 +115,20 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                 .getAuthentication().getPrincipal();
         wrapper.eq("student_number",loginUser.getUser().getStudentNumber())
                 .orderByAsc("start_time");
-
-        CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
-        if (completeEnum.equals(CompleteEnum.NO)){
-            wrapper.ne("examine",ExamineEnum.WAIT_REPORT)
-                    .ne("examine",ExamineEnum.FAILURE);
-        }else {
-            wrapper.in("examine",
-                    Arrays.asList(ExamineEnum.WAIT_REPORT.getValue(),ExamineEnum.FAILURE.getValue()));
+        if(selectNoteDTO.getExamineEnum().equals(ExamineEnum.PROCESSING)){
+            wrapper.in("examine",Arrays.asList(ExamineEnum.DEAN.getValue(),ExamineEnum.INSTRUCTOR.getValue(),ExamineEnum.SECRETARY.getValue()));
+        }else{
+            wrapper.eq("examine",selectNoteDTO.getExamineEnum());
         }
+//        wrapper.eq()
+//        CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
+//        if (completeEnum.equals(CompleteEnum.NO)){
+//            wrapper.ne("examine",ExamineEnum.WAIT_REPORT)
+//                    .ne("examine",ExamineEnum.FAILURE);
+//        }else {
+//            wrapper.in("examine",
+//                    Arrays.asList(ExamineEnum.WAIT_REPORT.getValue(),ExamineEnum.FAILURE.getValue()));
+//        }
 
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
         List<LeaveNote> list  = null;
@@ -145,12 +153,24 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         //获取用户角色
         LevelEnum role = loginUser.getUser().getRole();
         //获取用户审核权限
-        ExamineEnum examineRole = ExamineEnum.getEumByCode(role.getValue() - 1);
+        ExamineEnum examineRole = ExamineEnum.getEumByCode(role.getValue());
         //只获取一种类型的假条
         ExamineEnum examineEnum = selectNoteDTO.getExamineEnum();
         if (examineEnum.equals(ExamineEnum.PROCESSING)){
-            wrapper.eq("examine",examineRole);
-        }else {
+            //待本人审核
+            //todo 优化，逻辑搞错了
+            if (role.equals(LevelEnum.STUDENT)){
+                wrapper.eq("examine",examineRole);
+            }else {
+                wrapper.eq("examine",role.getValue()-1);
+            }
+
+        }else if(examineEnum.equals(ExamineEnum.TRANSMIT)){
+            //todo 还得记录是谁传递的吗？老子不干了，又要改表
+            wrapper.eq("examine",role.getValue().intValue());
+//            Long studentNumber = loginUser.getUser().getStudentNumber();
+//            String roleId =
+        } else {
             wrapper.eq("examine",examineEnum);
         }
 
@@ -161,7 +181,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             List<Long> allStudentNumber = teacherService.getAllStudentNumber();
             wrapper.in("student_number",allStudentNumber);
         }else if (role.equals(LevelEnum.SECRETARY)){
-            wrapper.eq("leader_number",loginUser.getUser().getStudentNumber());
+            //todo  不太想改了
+            wrapper.like("leader_number",loginUser.getUser().getStudentNumber());
         }
 
         wrapper.orderByDesc("start_time");
@@ -176,7 +197,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         return leaveNoteVo;
     }
 
-    //上级可跨越下级直接通过请求
+    //上级可跨越下级直接通过请求，只限于请假
 
     @Override
     public void updateNote(UpdateNoteDTO updateNoteDTO) {
@@ -241,51 +262,70 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
         LevelEnum role = loginUser.getUser().getRole();
-        List<Long> allStudentNumber = teacherService.getAllStudentNumber();
-        QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
-        wrapper.in("student_number",allStudentNumber);
-
+        if (role.equals(LevelEnum.LOOK)){
+            throw new RuntimeException("您无管理班级");
+        }
         //待本人审核
-        Integer roleCount = leaveNoteMapper.selectCount(
-                new QueryWrapper<LeaveNote>().eq("examine",
-                        ExamineEnum.getEumByCode(role.getValue().intValue()-1))
-                .in("student_number",allStudentNumber)
-        );
-        //待下一级审核
-        Integer transmit = leaveNoteMapper.selectCount(
-                new QueryWrapper<LeaveNote>().apply("examine = "+(role.getValue().intValue()))
-                        .in("student_number",allStudentNumber)
-        );
-        //销假完成
-        Integer process = leaveNoteMapper.selectCount(
-                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.PROCESSED)
-                .in("student_number",allStudentNumber)
-        );
-        //待销假
-        Integer waitReport = leaveNoteMapper.selectCount(
-                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.WAIT_REPORT)
-                .in("student_number",allStudentNumber)
-        );
-        //申请过期
-        Integer applyExpired = leaveNoteMapper.selectCount(
-                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.APPLY_EXPIRED)
-                        .in("student_number",allStudentNumber)
-        );
-        //销假过期
-        Integer reportExpired = leaveNoteMapper.selectCount(
-                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.REPORT_EXPIRED)
-                        .in("student_number",allStudentNumber)
-        );
+        QueryWrapper<LeaveNote> wrapper1 = new QueryWrapper<LeaveNote>().eq("examine",
+                ExamineEnum.getEumByCode(role.getValue().intValue() - 1))
+                .like("leader_number",loginUser.getUser().getStudentNumber());
 
-       log.info(" roleCount{},transmit{},process{},waitReport{},applyExpired{},reportExpired{}",roleCount,transmit,process,waitReport,applyExpired,reportExpired);
+        //待下一级审核
+        QueryWrapper<LeaveNote> wrapper2 = new QueryWrapper<LeaveNote>().
+                apply("examine = " + (role.getValue().intValue()));
+
+        //销假完成
+        QueryWrapper<LeaveNote> wrapper3 = new QueryWrapper<LeaveNote>().
+                eq("examine", ExamineEnum.PROCESSED);
+
+        //待销假
+        QueryWrapper<LeaveNote> wrapper4 = new QueryWrapper<LeaveNote>().
+                eq("examine", ExamineEnum.WAIT_REPORT);
+
+        //申请过期
+        QueryWrapper<LeaveNote> wrapper5 = new QueryWrapper<LeaveNote>().
+                eq("examine", ExamineEnum.APPLY_EXPIRED);
+
+        //销假过期
+        QueryWrapper<LeaveNote> wrapper6 = new QueryWrapper<LeaveNote>().
+                eq("examine", ExamineEnum.REPORT_EXPIRED);
+
+        //已拒绝
+        QueryWrapper<LeaveNote> wrapper7 = new QueryWrapper<LeaveNote>().
+                eq("examine", ExamineEnum.FAILURE);
+
+        if (role.equals(LevelEnum.INSTRUCTOR)){
+            List<Long> allStudentNumber = teacherService.getAllStudentNumber();
+            QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
+            wrapper.in("student_number",allStudentNumber);
+            wrapper1.in("student_number", allStudentNumber);
+            wrapper2.in("student_number", allStudentNumber);
+            wrapper3.in("student_number", allStudentNumber);
+            wrapper4.in("student_number", allStudentNumber);
+            wrapper5.in("student_number", allStudentNumber);
+            wrapper6.in("student_number", allStudentNumber);
+            wrapper7.in("student_number", allStudentNumber);
+        }
+
+        Integer roleCount = leaveNoteMapper.selectCount(wrapper1);
+        Integer transmit = leaveNoteMapper.selectCount(wrapper2);
+        Integer processed = leaveNoteMapper.selectCount(wrapper3);
+        Integer waitReport = leaveNoteMapper.selectCount(wrapper4);
+        Integer applyExpired = leaveNoteMapper.selectCount(wrapper5);
+        Integer reportExpired = leaveNoteMapper.selectCount(wrapper6);
+        Integer failure = leaveNoteMapper.selectCount(wrapper7);
+
+       log.info(" roleCount{},transmit{},process{},waitReport{},applyExpired{},reportExpired{}",roleCount,transmit,processed,waitReport,applyExpired,reportExpired);
 
         Map<String,Integer> map  = new HashMap<>();
-        map.put("roleCount",roleCount);
-        map.put("transmit",transmit);
-        map.put("process",process);
-        map.put("waitReport",waitReport);
-        map.put("applyExpired",applyExpired);
-        map.put("reportExpired",reportExpired);
+        map.put("PROCESSING",roleCount);
+        map.put("TRANSMIT",transmit);
+        map.put("PROCESSED",processed);
+        map.put("WAIT_REPORT",waitReport);
+        map.put("APPLY_EXPIRED",applyExpired);
+        map.put("REPORT_EXPIRED",reportExpired);
+        map.put("FAILURE",failure);
+
 
         return map;
 
@@ -311,16 +351,119 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
     @Override
     public List<LeaveNote> selectNoteToDownload(DownloadNoteDTO downloadNoteDTO) {
         QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
-        wrapper.gt("start_time",downloadNoteDTO.getStartTime())
-                .lt("end_time",downloadNoteDTO.getEndTime())
-                .eq("student_number",downloadNoteDTO.getStudentNumber())
-                .eq("grade",downloadNoteDTO.getGrade())
-                .eq("class_id",downloadNoteDTO.getClassId());
+        if (!Objects.isNull(downloadNoteDTO.getStartTime())){
+            wrapper.gt("start_time",downloadNoteDTO.getStartTime());
+        }
+        if (!Objects.isNull(downloadNoteDTO.getEndTime())){
+            wrapper.lt("end_time",downloadNoteDTO.getEndTime());
+        }
+        if (!Objects.isNull(downloadNoteDTO.getStudentNumber())){
+            wrapper.eq("student_number",downloadNoteDTO.getStudentNumber());
+        }
+        if (!Objects.isNull(downloadNoteDTO.getGradeId())){
+            wrapper.eq("grade_Id",downloadNoteDTO.getGradeId());
+        }
+        if (!Objects.isNull(downloadNoteDTO.getClassId())){
+            wrapper.eq("class_id",downloadNoteDTO.getClassId());
+        }
+
         List<LeaveNote> leaveNotes = leaveNoteMapper.selectList(wrapper);
-//        for (LeaveNote leaveNote : leaveNotes) {
-//            log.info("假条如{}",leaveNote);
-//        }
         return leaveNotes;
+    }
+
+    @Override
+    public Map<String, Integer> allCountForGrade() {
+
+        //待销假
+        Integer waitReport = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.WAIT_REPORT)
+
+        );
+        //申请过期
+        Integer applyExpired = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.APPLY_EXPIRED)
+
+        );
+        //销假过期
+        Integer reportExpired = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.REPORT_EXPIRED)
+        );
+
+        //已拒绝
+        Integer failure = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.FAILURE)
+        );
+
+        //审核中
+        Integer processing = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().in("examine",
+                        Arrays.asList(ExamineEnum.INSTRUCTOR.getValue(),
+                                ExamineEnum.SECRETARY.getValue(),
+                                ExamineEnum.DEAN.getValue()))
+        );
+        Integer processed = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.PROCESSED)
+
+        );
+
+        return getStringIntegerMap(waitReport, applyExpired, reportExpired, failure, processing,processed);
+    }
+
+    @Override
+    public Map<String, Integer> allCountForGradeId(Long gradeId) {
+
+        //待销假
+        Integer waitReport = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.WAIT_REPORT)
+                .eq("grade_id",gradeId)
+
+        );
+        //申请过期
+        Integer applyExpired = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.APPLY_EXPIRED)
+                        .eq("grade_id",gradeId)
+        );
+        //销假过期
+        Integer reportExpired = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.REPORT_EXPIRED)
+                        .eq("grade_id",gradeId)
+        );
+
+        //已拒绝
+        Integer failure = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.FAILURE)
+                        .eq("grade_id",gradeId)
+        );
+
+        //审核中
+        Integer processing = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().in("examine",
+                        Arrays.asList(ExamineEnum.INSTRUCTOR.getValue(),
+                                ExamineEnum.SECRETARY.getValue(),
+                                ExamineEnum.DEAN.getValue()))
+                        .eq("grade_id",gradeId)
+        );
+
+        Integer processed = leaveNoteMapper.selectCount(
+                new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.PROCESSED)
+                        .eq("grade_id",gradeId)
+
+        );
+
+
+        return getStringIntegerMap(waitReport, applyExpired, reportExpired, failure, processing,processed);
+    }
+
+    private Map<String, Integer> getStringIntegerMap(Integer waitReport, Integer applyExpired, Integer reportExpired, Integer failure, Integer processing,Integer processed) {
+        Map<String,Integer> map  = new HashMap<>();
+        map.put("PROCESSING",processing);
+        map.put("PROCESSED",processed);
+        map.put("WAIT_REPORT",waitReport);
+        map.put("APPLY_EXPIRED",applyExpired);
+        map.put("REPORT_EXPIRED",reportExpired);
+        map.put("FAILURE",failure);
+
+        return map;
     }
 
 

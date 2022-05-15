@@ -3,6 +3,7 @@ package cn.homyit.onlineLeaveSystem.service.impl;
 import cn.homyit.onlineLeaveSystem.eneity.DO.ImagesNote;
 import cn.homyit.onlineLeaveSystem.mapper.ImageMapper;
 import cn.homyit.onlineLeaveSystem.service.ImageService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,12 +35,12 @@ public class ImageServiceImpl implements ImageService {
 
 
     @Override
-    public void upload(MultipartFile file) {
+    public void upload(MultipartFile file,Long id) {
         log.info("准备上传到云服务器的{}目录",resourcePath);
         String temp = UUID.randomUUID() + file.getOriginalFilename();
         String uploadUrl = resourcePath+temp;
 
-        System.out.println(uploadUrl);
+        log.info("拼接字符串{}",uploadUrl);
         File uploadFile = new File(uploadUrl);
         try {
             file.transferTo(uploadFile);
@@ -50,8 +52,22 @@ public class ImageServiceImpl implements ImageService {
         String dbUrl = urlPath + temp;
         ImagesNote imagesNote = new ImagesNote();
         imagesNote.setUrl(dbUrl);
+        imagesNote.setNoteId(id);
         imageMapper.insert(imagesNote);
 
 
+    }
+
+    @Override
+    public void upload(MultipartFile[] files,Long id) {
+        for (MultipartFile file : files) {
+            upload(file,id);
+        }
+    }
+
+    @Override
+    public List<ImagesNote> getImagesForNote(Long id) {
+        List<ImagesNote> imagesNotes = imageMapper.selectList(new QueryWrapper<ImagesNote>().eq("note_id", id));
+        return imagesNotes;
     }
 }

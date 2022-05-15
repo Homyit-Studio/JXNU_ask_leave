@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateNoteDTO {
-    private Long leaderNumber;
+    private String leaderNumber;
     private ExamineEnum examineEnum;
     private OpinionEnum opinionEnum;
     private LevelEnum levelEnum;

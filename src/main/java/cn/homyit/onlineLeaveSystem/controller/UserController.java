@@ -1,8 +1,9 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
 import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.TeacherUpdaterDTO;
 import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
+import cn.homyit.onlineLeaveSystem.eneity.DTO.StudentUpdateDTO;
 import cn.homyit.onlineLeaveSystem.eneity.VO.Result;
 import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
 import cn.homyit.onlineLeaveSystem.log.ApiLog;
@@ -65,9 +66,34 @@ public class UserController {
     public Result<List<StudentUserVo>> getNoteByStudentName(String username){
         List<StudentUserVo> list = userService.getNoteByStudentName(username);
         return Result.success(list);
-
     }
 
+    //增加删除更新
+    @PostMapping("/addUser")
+    public Result addUser(@RequestBody TeacherUpdaterDTO teacherUpdaterDTO){
+        userService.addUser(teacherUpdaterDTO);
+        return Result.success();
+    }
+
+    @PostMapping("/updateUser")
+    public Result updateUser(@RequestBody TeacherUpdaterDTO teacherUpdaterDTO){
+
+        userService.updateUser(teacherUpdaterDTO);
+        return Result.success();
+    }
+
+    @PostMapping("/updateUserForStudent")
+    public Result updateUserForStudent(@RequestBody StudentUpdateDTO studentUpdateDTO){
+
+        userService.updateUserForStudent(studentUpdateDTO);
+        return Result.success();
+    }
+
+    @PostMapping("/deletedUser")
+    public Result deletedUser( @RequestBody TeacherUpdaterDTO TeacherUpdaterDTO){
+        userService.deletedUser(TeacherUpdaterDTO);
+        return Result.success();
+    }
 
 
 }
