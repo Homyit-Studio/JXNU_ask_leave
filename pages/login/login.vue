@@ -117,8 +117,9 @@
 					}
 				} else {
 					this.loginFormData = {
-						"studentNumber": "005556",
-						"password": "13361618230"
+						"studentNumber": "113062",
+						"password": "13170918684"
+
 					}
 				}
 			},

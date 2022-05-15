@@ -130,6 +130,12 @@
 				"navigationBarTitleText": "销假记录"
 			}
 		
+		},{
+			"path": "pages/personFinishRecord/personFinishRecord",
+			"style": {
+				"navigationBarTitleText": "审核记录"
+			}
+		
 		}
         ,{
             "path" : "pages/importList/importList",

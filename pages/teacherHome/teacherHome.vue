@@ -41,7 +41,7 @@
 					<text>常用工具</text>
 				</view>
 				<view class="tools-box">
-					<view class="teacher">
+					<view class="teacher" v-if="teacherMessage.role == 'SECRETARY' || teacherMessage.role =='DEAN' ||teacherMessage.role =='INSTRUCTOR'">
 						<view>
 							<navigator animation-type="pop-in" animation-duration="300"
 								url="/pages/handleLeave/handleLeave?choose=0" class="tools-btn">
@@ -50,26 +50,42 @@
 							<text>审批请假</text>
 						</view>
 						<view>
-							<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList"
+							<navigator animation-type="pop-in" animation-duration="300"
+								url="/pages/personFinishRecord/personFinishRecord" class="tools-btn">
+								<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+							</navigator>
+							<text>审批汇总</text>
+						</view>
+						<view v-if="teacherMessage.role == 'INSTRUCTOR'">
+							<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList?choose=0"
 								class="tools-btn">
 								<uni-icons type="staff" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 							</navigator>
-							<text>管理成员</text>
+							<text>管理班级</text>
 						</view>
-						<view>
-							<navigator animation-type="pop-in" animation-duration="300"
-								url="../showGradeLeave/showGradeLeave?choose=1" class="tools-btn">
-								<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-							</navigator>
-							<text>跨级审批</text>
+						<view class="teacher" v-else-if="teacherMessage.role == 'SECRETARY' ||teacherMessage.role == 'DEAN'">
+							<view>
+								<navigator animation-type="pop-in" animation-duration="300"
+									url="../showGradeLeave/showGradeLeave?choose=1" class="tools-btn">
+									<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+								</navigator>
+								<text>管理{{teacherMessage.role == 'SECRETARY' ? '班主任': '负责人'}}</text>
+							</view>
+							<view>
+								<navigator animation-type="pop-in" animation-duration="300"
+									url="../showGradeLeave/showGradeLeave?choose=1" class="tools-btn">
+									<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+								</navigator>
+								<text>跨级审批</text>
+							</view>
 						</view>
 					</view>
 					<view>
 						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
-							url="/pages/classList/classList">
+							url="/pages/classList/classList?choose=1">
 							<uni-icons type="person" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
-						<text>查看班级</text>
+						<text>全院班级</text>
 					</view>
 					<view>
 						<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList"
@@ -103,16 +119,9 @@
 					<view>
 						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
 							url="../finishRecord/finishRecord">
-							<uni-icons type="home-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-						</navigator>
-						<text>请假统计</text>
-					</view>
-					<view>
-						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
-							url="../finishRecord/finishRecord">
 							<uni-icons type="checkbox-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
-						<text>销假统计</text>
+						<text>请假汇总</text>
 					</view>
 				</view>
 			</uni-card>
@@ -158,7 +167,6 @@
 				<view class="popup-content">
 					<uni-list>
 						<uni-list-item title="姓名" :rightText="teacherMessage.username"></uni-list-item>
-						<uni-list-item title="工号" :rightText="'' + teacherMessage.studentNumber"></uni-list-item>
 						<uni-list-item title="性别" :rightText="teacherMessage.sex == 'WOMAN'? '女' : '男'"></uni-list-item>
 						<uni-list-item title="联系方式" :rightText="teacherMessage.phoneNumber"></uni-list-item>
 					</uni-list>
@@ -183,8 +191,9 @@
 				},
 				identity: {
 					"INSTRUCTOR": "班主任",
-					"SECRETARY": "副党委书记",
-					"DEAN": "院长"
+					"SECRETARY": "负责人",
+					"DEAN": "院长",
+					"LOOK": "管理人员"
 				},
 				reviseRules: {
 					oldPassword: {

@@ -20,7 +20,7 @@
 			// 当前激活菜单的 url
 			value: {
 				type: String,
-				default: ''
+				default: 'PROCESSING'
 			},
 			// 当前激活菜单的文字颜色
 			activeTextColor: {

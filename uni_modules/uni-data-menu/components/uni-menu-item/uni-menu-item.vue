@@ -95,8 +95,8 @@
 		display: flex;
 		align-items: center;
 		width: 60px;
-		height: 42px;
-		padding: 10px 15px;
+		height: 60px;
+		padding: 15px 15px;
 		color: #303133;
 		transition: all 0.3s;
 		cursor: pointer;
