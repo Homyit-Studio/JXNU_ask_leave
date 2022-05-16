@@ -41,11 +41,12 @@
 			<uni-popup ref="inputDialog" type="dialog">
 				<template v-slot:default>
 					<view class="confirm-dialog">
-						<view class="uni-px-5 uni-pb-5">
+						<view class="uni-px-5 uni-pb-5" v-if="agree">
 							<view class="text">
-								<text>选择负责人：{{JSON.stringify(checkbox1)}}</text>
+								<text>选择负责人：</text>
 							</view>
-							<uni-data-checkbox multiple v-model="checkbox1" :localdata="hobby"></uni-data-checkbox>
+							<uni-data-checkbox multiple v-model="checkpeople" :localdata="nextPeople">
+							</uni-data-checkbox>
 						</view>
 						<view>
 							<view>
@@ -54,7 +55,7 @@
 							<view>
 								<view class="uni-textarea">
 									<textarea :cursor="10" placeholder="请输入审批意见"
-										style="border: 1px solid #e2e2e2; width: 100%;border-radius: 5px;padding: 5px;" />
+										 />
 								</view>
 							</view>
 						</view>
@@ -94,20 +95,12 @@
 	export default {
 		data() {
 			return {
+				agree:null,
 				leaveDetails: {},
 				gobackMessage: {},
 				process: [],
-				checkbox1: [0],
-				hobby: [{
-					text: '足球',
-					value: 0
-				}, {
-					text: '篮球',
-					value: 1
-				}, {
-					text: '游泳',
-					value: 2
-				}],
+				checkpeople: [],
+				nextPeople: [],
 				statusCard: null,
 				msg: {
 					msgType: 'success',
@@ -121,6 +114,10 @@
 		onLoad(options) {
 			this.showLeaveDetail(options.id, options.current)
 			this.statusCard = options.card
+			this.getLeaders()
+		},
+		onReady() {
+			this.$refs.inputDialog.open()
 		},
 		methods: {
 			showLeaveDetail(id, current) {
@@ -242,21 +239,28 @@
 			},
 			//拒绝申请
 			cancelSubmit() {
+				this.agree = false
 				this.$refs.inputDialog.open()
 				this.opinionEnum = "NO"
 			},
 			//同意申请
 			reviseSubmit() {
-				this.$refs.inputDialog.open()
+				this.agree = true;
 				this.opinionEnum = "YES"
 				this.getLeaders()
+				this.$refs.inputDialog.open()
 			},
 			//获取负责人
 			getLeaders() {
-				uni.$http.post("/user/getAllLeaders").then(res => {
-					console.log(res)
+				uni.$http.get("/user/getAllLeaders").then(res => {
 					if (res.data.code == 200) {
-						console.log(1)
+						for (let item in res.data.data) {
+							let peopleobj = {}
+							peopleobj.text = item;
+							peopleobj.value = res.data.data[item]
+							this.nextPeople.push(peopleobj)
+							// this.$refs.inputDialog.open()
+						}
 					} else {
 						this.msg.msgType = "error"
 						this.msg.messageText = res.data.message
@@ -311,18 +315,25 @@
 
 		.confirm-dialog {
 			padding: 10px 20px;
-			border-radius: 20px;
+			border-radius: 10px;
 			background-color: #fff;
 
 			textarea {
-				width: 80%;
+				border: 1px solid #e2e2e2;
+				width: 95%;
+				border-radius: 5px;
+				padding: 5px;
+				margin-top: 5px;
 				height: 150rpx;
+			}
+			.text{
+				margin-bottom: 5px;
 			}
 
 			.confirm-button {
 				display: flex;
 				justify-content: space-around;
-				padding-top: 20rpx;
+				padding-top: 10rpx;
 
 				button {
 					width: 250rpx;

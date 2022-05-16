@@ -42,7 +42,7 @@
 							<view class="card-actions">
 								<view class="card-actions-item" @click="checkDetails(item.id)">
 									<view class="tag-view">
-										<uni-tag :text="statuschoose == 1? '去审批' : '查看详情'"
+										<uni-tag :text="statuschoose == 1 && currentCatalog == 'PROCESSING' && (identity == item.level || item.level == 'INSTRUCTOR')? '去审批' : '查看详情'"
 											custom-style="background-color: #1b478e; border-color: #1b478e; color: #fff;" />
 									</view>
 								</view>
@@ -69,7 +69,9 @@
 	export default {
 		data() {
 			return {
+				currentCatalog:"PROCESSING",
 				statuschoose: null,
+				identity:null,
 				localMenus: [{
 						total: null,
 						text: '等待处理',
@@ -134,6 +136,9 @@
 			this.statuschoose = options.choose;
 			this.requestLeaveNotes()
 			this.requestLeaveCount()
+		},
+		onReady(){
+			this.identity = uni.getStorageSync("identity")
 		},
 		methods: {
 			changeGrade(grade) {
@@ -208,6 +213,7 @@
 			changeMenu(e) {
 				this.listRequest.pageNo = 1
 				this.listRequest.examineEnum = e.value;
+				this.currentCatalog = e.value
 				this.requestLeaveNotes()
 			}
 		},

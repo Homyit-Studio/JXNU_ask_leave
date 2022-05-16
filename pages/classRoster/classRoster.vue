@@ -29,6 +29,11 @@
 						<uni-list-item title="父母电话" :rightText="studentMessage.parentNumber"></uni-list-item>
 						<uni-list-item title="家庭地址" :note="studentMessage.homeAddress"></uni-list-item>
 					</uni-list>
+					<view class="revise-buttons" v-if="enterChoose == '0'">
+						<button type="default" class="cancel-button" @click="cancelSubmit">取消</button>
+						<button type="default" class="revise-button" @click="reviseSubmit">确认</button>
+						<button type="default" class="revise-button" @click="reviseSubmit">确认</button>
+					</view>
 				</view>
 			</uni-popup>
 		</view>
@@ -50,6 +55,7 @@
 			return {
 				//没有更多数据提醒
 				shownodata: false,
+				enterChoose:null,
 				//节流阀
 				isloading: false,
 				className: null,
@@ -93,6 +99,8 @@
 		},
 		onLoad(options) {
 			this.className = options.class
+			this.enterChoose = options.choose;
+			console.log(options)
 			this.requestClassRoster(options.id)
 		},
 		methods: {
@@ -174,6 +182,22 @@
 		.remind {
 			text-align: center;
 		}
+		.revise-buttons {
+					display: flex;
+					justify-content: center;
+					padding-bottom: 50rpx;
+		
+					button {
+						width: 220rpx;
+						height: 60rpx;
+						line-height: 60rpx;
+						font-size: $jxnu-font-14;
+					}
+		
+					.revise-button {
+						background-color: $jxnu-bg-color;
+					}
+				}
 
 		.student-title {
 			text-align: center;

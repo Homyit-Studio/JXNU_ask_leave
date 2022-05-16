@@ -43,7 +43,7 @@
 								<view class="card-actions">
 									<view class="card-actions-item" @click="checkDetails(item.id)">
 										<view class="tag-view">
-											<uni-tag text="去审批"
+											<uni-tag :text="currentCatalog == 'PROCESSING'? '去审批' : '查看详情'"
 												custom-style="background-color: #1b478e; border-color: #1b478e; color: #fff;" />
 										</view>
 									</view>
@@ -69,6 +69,8 @@
 	export default {
 		data() {
 			return {
+				//当前分类
+				currentCatalog:"PROCESSING",
 				localMenus: [{
 						total: 12,
 						text: '等待处理',
@@ -203,6 +205,8 @@
 				})
 			},
 			changeMenu(e){
+				this.currentCatalog=e.value;
+				this.listRequest.pageNo = 1
 				this.listRequest.examineEnum = e.value;
 				this.requestLeaveNotes()
 			}
