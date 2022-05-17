@@ -21,10 +21,11 @@
 	export default {
 		data() {
 			return {
+				json_array:"",
 				formData:{
 					"startTime": "",
 					"endTime": "",
-					"gradeId": ""	
+					"gradeId": "",	
 				},
 				formDatarules:{
 					"gradeId":{
@@ -72,18 +73,30 @@
 			},
 			//H5环境文件下载
 			platformH5(){
-				uni.$http.post('/excel/downloadNote',{
-					data:this.formData,
-					responseType: "arraybuffer",
-				}).then(res => {
-					// this.getFile(res.data)
-					console.log(res)
-					// if(res.data.code == 200){
+				uni.request({
+					url: 'http://101.43.85.67:8081/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&endTime='+this.formData.endTime,
+					responseType: 'ArrayBuffer',
+					header: {
+						"token" : uni.getStorageSync('token'),
+					},
+					success: (res) => {
+						console.log(res)
+						this.getFile(res.data)
+					}
+				});
+				// uni.$http.post('/excel/downloadNote',{
+				// 	data:this.formData,
+				// 	responseType: "arraybuffer",
+				// }).then(res => {
+				// 	this.getFile(res.data)
+				// 	console.log(res)
+				// 	//this.json_array = res.data
+				// 	// if(res.data.code == 200){
 						
-					// }
-				}).catch(err =>{
+				// 	// }
+				// }).catch(err =>{
 					
-				})
+				// })
 			},
 			//非H5环境下文件下载
 			platformnotH5(){
@@ -163,22 +176,47 @@
 				     return currentdate;
 					},
 				getFile(data){
-			     if (!data) {
-			          return
-			        }
-			        // let url = window.URL.createObjectURL(new Blob([data]))
-			        // let link = document.createElement('a')
-			        // link.style.display = 'none'
-			        // link.href = url
-			        // link.setAttribute('download', 'excel.xlsx')
-			        // document.body.appendChild(link)
-			        // link.click()
-					//console.log("yes")
-
-					
-				}
+				 //  const blob = new Blob([data]); // 通过返回的流数据 手动构建blob 流
+				 //  const reader = new FileReader();
+					// reader.readAsDataURL(blob); // 转换为base64，可以直接放入a标签的href
+					// reader.onload = (e) => {
+				 //   // 转换完成，创建一个a标签用于下载
+				 //   const a = document.createElement("a");
+				 //   a.download = "haha" + ".xls"; // 构建 下载的文件名称以及下载的文件格式（可通过传值输入）
+				 //   if (typeof e.target.result === "string") {
+					//  a.href = e.target.result;
+				 //   }
+				 //   a.click();
+				 // };	
+				 
+				//  if (!data) {
+				//        return
+				//  }
+				//  let url = window.URL.createObjectURL(new Blob([data]))
+				//  let link = document.createElement('a')
+				//  link.style.display = 'none'
+				//  link.href = url
+				//  link.setAttribute('download', 'excel.xlsx')
+				//  document.body.appendChild(link)
+				//  link.click()
+				// }
+				let blob = new Blob([data], {type: `application/xlsx;charset=utf-8`});
+					// 获取heads中的filename文件名
+					let downloadElement = document.createElement('a');
+					// 创建下载的链接
+					let href = window.URL.createObjectURL(blob);
+					downloadElement.href = href;
+					// 下载后文件名
+					downloadElement.download = "假条.xlsx";
+					document.body.appendChild(downloadElement);
+					// 点击下载
+					downloadElement.click();
+					// 下载完成移除元素
+					document.body.removeChild(downloadElement);
+					// 释放掉blob对象
+					window.URL.revokeObjectURL(href);
 			
-		}
+		}}
 		
 	}
 </script>
