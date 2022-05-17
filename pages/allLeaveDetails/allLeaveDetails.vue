@@ -1,24 +1,42 @@
 <template>
 	<view class="handle-leave-details-page">
 		<view class="detail-status">
-			<view  v-if = "types === '0'">
+			<view  v-if = "types === 'PROCESSING'">
 				<view>
 					<uni-icons type="minus-filled" size="120" color="#ffaa00" class="icon-style"></uni-icons>
 				</view>
 				<text>审批中</text>
 			</view>
-			<view  v-else-if="leaveDetails.examine === 'SUCCESS'">
+			<view  v-else-if="types === 'PROCESSED'">
 				<view>
-					<uni-icons type="checkbox-filled" size="120" color="#00aa27" class="icon-style"></uni-icons>
+					<uni-icons type="checkbox-filled" size="120" color="#1b478e" class="icon-style"></uni-icons>
 				</view>
-				<text>审批通过</text>
+				<text>销假完成</text>
 			</view>
-			<view  v-else-if="leaveDetails.examine === 'FAILURE'">
+			<view  v-else-if="types === 'WAIT_REPORT'">
+				<view>
+					<uni-icons type="minus-filled" size="120" color="#1b478e" class="icon-style"></uni-icons>
+				</view>
+				<text>等待销假</text>
+			</view>
+			<view  v-else-if="types === 'REPORT_EXPIRED'">
+				<view>
+					<uni-icons type="minus-filled" size="120" color="#77787f" class="icon-style"></uni-icons>
+				</view>
+				<text>销假过期</text>
+			</view>
+			<view  v-else-if="types === 'APPLY_EXPIRED'">
+				<view>
+					<uni-icons type="minus-filled" size="120" color="#77787f" class="icon-style"></uni-icons>
+				</view>
+				<text>申请过期</text>
+			</view>
+			<view  v-else-if="types === 'FAILURE'">
 				<view>
 					<uni-icons type="clear" size="120" color="#aa0000" class="icon-style"></uni-icons>
 				</view>
-				<text>审批未通过</text>
-			</view>	
+				<text>已拒绝</text>
+			</view>
 		</view>
 		<view class="details-card">
 			<uni-card title="审批情况" :is-shadow="false"  class="details-card">
@@ -53,18 +71,37 @@
 				<view>
 					<text decode="true">请假事由:&emsp;</text>
 					<text class="reason-text">{{leaveDetails.reason}}</text>
+				</view>	
+				<view>
+					<text decode="true">附&emsp;&emsp;件:&emsp;</text>
+					<view>
+						<image v-for="item in imgs" :key="item.id" :src="item.url" mode="aspectFill" @click="preview(item)"></image>
+					</view>
 				</view>
 			</uni-card>
-			<view class="btn-grounps" v-if="leaveDetails.examine === 'SUCCESS'">
-				<button type="default" class="withOutBoder" @click="checkTerminate()" v-if="leaveDetails.status ==='SUCCESS'">查看销假</button>
-				<button type="default" class="withOutBoder" @click="goToTerminate()" v-else>我要销假</button>
-			</view>
-			<view class="btn-grounps" v-else>
-				<button type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>
-			</view>
-			<view class="btn-grounps">
-				<button type="default" class="deteleWarn" @click="deteleLeave()">添加附件</button>
-			</view>
+			<!-- 根据不同状态展示不同按钮 -->
+			<view>
+				<!-- 等待处理 -->
+				<view class="btn-grounps" v-if="types === 'PROCESSING'">
+					<button type="default" class="Boder" @click="addAttachment()">添加附件</button>
+					<button type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>
+				</view>
+				<!-- 已销假 -->
+				<view class="btn-grounps" v-else-if="types === 'PROCESSED'">
+					<button type="default" class="withOutBoder" @click="checkTerminate()">查看销假</button>
+					<!-- <button type="default" class="withOutBoder" @click="goToTerminate()" v-else>我要销假</button> -->
+				</view>
+				<!-- 等待销假 -->
+				<view class="btn-grounps" v-else-if="types === 'WAIT_REPORT'">
+					<button type="default" class="withOutBoder" @click="goToTerminate()">我要销假</button>				
+				</view>
+				<!-- 销假过期 -->
+				<!-- 申请过期 -->
+				<!-- 被拒假条 -->
+				<view class="btn-grounps" v-else>
+					<button type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>
+				</view>	
+			</view>	
 		</view>
 		<!-- 确认删除弹框 -->
 		<uni-popup ref="dialog_up" type="dialog">
@@ -79,26 +116,56 @@
 			return {
 				types:'',
 				leaveDetails: {
-				}
+				},
+				imgs:[],
+				baseUrl:"http://101.43.85.67"
 			}
 		},
 		onLoad(item) {
-			//console.log(item.type)
+			//console.log(item)
 			//console.log(this.leaveDetails.type == '0')
+			//获取假条信息
+			console.log(uni.getStorageSync('token'))
 			uni.$http.get('/leave/selectANote/' + item.id).then(res =>{
 				console.log(res)
 				if(res.data.code === 200){
 					this.leaveDetails = res.data.data
+					uni.showToast({
+						title: '加载中',
+						duration: 500,
+						icon: "loading"
+					});
 				}
 				
 			})
 			this.types = item.type;
-			console.log(this.leaveDetails)
+			//console.log(this.leaveDetails)
 			
+			//获取假条图片
+			uni.$http.get('/image/' + item.id).then(res =>{
+				console.log(res)
+				if(res.data.code === 200){
+					this.imgs = res.data.data
+					for(let item in this.imgs){
+						this.imgs[item].url = this.baseUrl + this.imgs[item].url;
+					}
+					//console.log(this.imgs)
+				}
+				
+			})
+			//console.log(this.imgs)
 			//console.log(this.leaveDetails.examine)
 			//console.log(this.types == '0')
+			
+			
 		},
 		methods: {
+			//添加附件
+			addAttachment(){
+				uni.navigateTo({
+					url:'/pages/addAttachment/addAttachment?id=' + this.leaveDetails.id
+				})
+			},
 			goToTerminate(){
 				uni.navigateTo({
 					url:'/pages/terminateLeave/terminateLeave?id=' + this.leaveDetails.id
@@ -117,6 +184,16 @@
 			//弹框操作
 			close() {
 				this.$refs.dialog_up.close()
+			},
+			//图片预览
+			preview(e){
+				//console.log(e)
+				let array = [];
+				array.push(e.url);
+				uni.previewImage({
+					current: array[0],
+					urls:array
+				});
 			},
 			//确认删除
 			confirm() {
@@ -162,27 +239,37 @@
 					display: inline-block;
 					width: 400rpx;
 				}
+				image{
+					width: 100px;
+					height: 100px;
+				}
 			}
 		}
 		.btn-grounps{
 			width: 700rpx;
 			margin: 0rpx auto;
 			button{
+				margin-top: 5rpx;
 				height: 80rpx;
 				font-size: $jxnu-font-16;
 			}
+			.withOutBoder{
+				background-color: $uni-bg-color;
+				border: 1px solid $jxnu-bg-color;
+				color: $jxnu-bg-color;
+			}
+			.deteleWarn{
+				background-color: $uni-bg-color;
+				border: 1px solid $uni-color-error;
+				color: $uni-color-error;
+			}
+			.Boder{
+				background-color: $jxnu-bg-color;
+				// border: 1px solid $uni-color-error;
+				color: $uni-bg-color;
+			}
 			
 		}
-		.withOutBoder{
-			background-color: $uni-bg-color;
-			border: 1px solid $jxnu-bg-color;
-			color: $jxnu-bg-color;
-		}
-		.deteleWarn{
-			background-color: $uni-bg-color;
-			border: 1px solid $uni-color-error;
-			color: $uni-color-error;
-		}
-
+		
 	}
 </style>

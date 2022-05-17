@@ -3,7 +3,7 @@
 		<uni-group>
 			<text>请假凭证(非必填，最多上传3张图片)</text>
 				<uni-file-picker
-					v-model="imageValue" 
+					:value="imageValue" 
 					return-type="array"
 					file-mediatype="image"
 					mode="grid" 
@@ -24,7 +24,11 @@
 		data() {
 			return {
 				imageValue:[],
+				id:''
 			}
+		},
+		onLoad(item){
+			this.id = item.id;	
 		},
 		methods: {
 			// 获取上传状态
@@ -42,8 +46,54 @@
 				console.log(this.imageValue)
 			},
 			submitForm(){
-				
-			}
+				if(this.imageValue){
+					this.postImg(uni.getStorageSync('token'))
+				}else{
+					uni.showToast({
+						icon:'none',
+						title:"请选择要上传的图片"
+					})
+				}
+			},
+			async postImg(token) {
+			    if (!this.imageValue.length){
+					uni.showToast({
+						icon:'success',
+						title: '附件添加成功'
+					});	
+					return;
+				} 
+			    const path = this.imageValue.pop();
+				//console.log(path)
+				//console.log(this.imageValue[0])
+			    await uni.uploadFile({
+						url: "http://101.43.85.67:8081/image/uploadFiles?id=" + this.id,
+						filePath: path,
+						name: 'files',//后端接收字段名
+						header: {
+							"token" : token,
+							//"Content-Type": "multipart/form-data",
+						},
+						success: (res) => {
+							let obj = JSON.parse(res.data);
+							console.log(obj)
+							if(obj.code === 200){
+							}else{
+								uni.showToast({
+									icon:'error',
+									title: '提交失败'
+								});									
+							}
+						},
+						fail: (err) => {
+							uni.showToast({
+								icon:'error',
+								title: '提交失败'
+							});	
+						},
+					})
+			    this.postImg(token);
+			},
 		}
 	}
 </script>

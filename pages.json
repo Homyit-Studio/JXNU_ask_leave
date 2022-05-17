@@ -155,6 +155,15 @@
             }
             
         }
+        ,{
+            "path" : "pages/downloadNote/downloadNote",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "下载假条",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

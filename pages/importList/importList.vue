@@ -177,27 +177,27 @@
 				}	
 			},
 			//BlobUrl转blob数据
-			objectURLToBlob(blodurl) {
-				uni.showLoading({
-					title: '压缩中...'
-				});
-				return new Promise((resolve, reject) => {
-					var http = new XMLHttpRequest();
-					http.open('GET', blodurl, true);
-					http.responseType = 'blob';
-					http.onload = function(e) {
-					    if (this.status == 200 || this.status === 0) {
-						// console.log('blod数据',this.response);
-						// 在将blod数据转为file
-						let files = new window.File([this.response], 'file', { type: 'xlsx' });
-						// console.log('blod数据转换file',files);
-						resolve(files);
-						uni.hideLoading();
-				        }
-					};
-					http.send();
-				});
-			},
+			// objectURLToBlob(blodurl) {
+			// 	uni.showLoading({
+			// 		title: '压缩中...'
+			// 	});
+			// 	return new Promise((resolve, reject) => {
+			// 		var http = new XMLHttpRequest();
+			// 		http.open('GET', blodurl, true);
+			// 		http.responseType = 'blob';
+			// 		http.onload = function(e) {
+			// 		    if (this.status == 200 || this.status === 0) {
+			// 			// console.log('blod数据',this.response);
+			// 			// 在将blod数据转为file
+			// 			let files = new window.File([this.response], 'file', { type: 'xlsx' });
+			// 			// console.log('blod数据转换file',files);
+			// 			resolve(files);
+			// 			uni.hideLoading();
+			// 	        }
+			// 		};
+			// 		http.send();
+			// 	});
+			// },
 		}
 		}
 </script>

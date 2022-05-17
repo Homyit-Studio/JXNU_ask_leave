@@ -117,7 +117,7 @@
 		methods: {
 			getData(){
 				uni.$http.get('/user/personInfo').then((res)=>{
-					//console.log(res.data.data)
+					console.log(res.data.data)
 					let userData = res.data.data;
 					this.studentMessage = userData;
 					

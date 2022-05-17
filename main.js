@@ -34,12 +34,8 @@ $http.baseUrl = 'http://101.43.85.67:8081'
 
 $http.beforeRequest = function(options) {
 	if (options.url != "http://101.43.85.67:8081/user/login") {
-		options.header["token"] = uni.getStorageSync('token')
+		options.header["token"] = uni.getStorageSync('token');
 	}
-	// if (options.url.indexOf('/excel/upload') !== -1) {
-	// 	options.header ["Content-Type"] = "multipart/form-data"
-	//    //console.log(options.url)
-	// }
 	uni.showLoading({
 		title: '正在加载中...',
 	})
