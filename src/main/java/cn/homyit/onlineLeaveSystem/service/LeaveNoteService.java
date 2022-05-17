@@ -1,12 +1,11 @@
 package cn.homyit.onlineLeaveSystem.service;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.ImagesNote;
-import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.DownloadNoteDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.SelectNotePageDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
-import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
+import cn.homyit.onlineLeaveSystem.entity.DO.LeaveNote;
+import cn.homyit.onlineLeaveSystem.entity.DTO.DownloadNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.SelectNotePageDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.UpdateNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
+import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
 
 import java.util.List;
 import java.util.Map;
@@ -15,9 +14,9 @@ import java.util.Map;
 public interface LeaveNoteService {
     void insertNote(LeaveNote note);
 
-    PageVo<LeaveNote> selectLeaveNote(SelectNotePageDTO selectNoteDTO);
+    PageVo<LeaveNoteVo> selectLeaveNote(SelectNotePageDTO selectNoteDTO);
 
-    PageVo<LeaveNote> selectNoteByRole(SelectNotePageDTO selectNoteDTO);
+    PageVo<LeaveNoteVo> selectNoteByRole(SelectNotePageDTO selectNoteDTO);
 
     /*选出一个假条进行审核*/
 
@@ -25,7 +24,7 @@ public interface LeaveNoteService {
 
     void updateNote(UpdateNoteDTO updateNoteDTO);
 
-    PageVo<LeaveNote> selectNodeByGrade(SelectNotePageDTO selectNoteDTO);
+    PageVo<LeaveNoteVo> selectNodeByGrade(SelectNotePageDTO selectNoteDTO);
 
     void deletedANote(Long id);
 
@@ -34,7 +33,7 @@ public interface LeaveNoteService {
 
     void checkExpired();
 
-    List<LeaveNote> selectNoteToDownload(DownloadNoteDTO downloadNoteDTO);
+    List<LeaveNoteVo> selectNoteToDownload(DownloadNoteDTO downloadNoteDTO);
 
     Map<String, Integer> allCountForGrade();
 

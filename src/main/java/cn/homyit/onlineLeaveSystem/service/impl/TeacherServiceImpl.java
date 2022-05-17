@@ -1,12 +1,14 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentClassInfo;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
-import cn.homyit.onlineLeaveSystem.eneity.VO.PageStudentVo;
-import cn.homyit.onlineLeaveSystem.eneity.VO.ClassInfoVO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
-import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
+import cn.homyit.onlineLeaveSystem.entity.DO.LoginUser;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentClassInfo;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.entity.DTO.PageStudentDTO;
+import cn.homyit.onlineLeaveSystem.entity.VO.ClassInfoVO;
+import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
+import cn.homyit.onlineLeaveSystem.entity.VO.StudentUserVo;
+import cn.homyit.onlineLeaveSystem.exception.BizException;
+import cn.homyit.onlineLeaveSystem.exception.ExceptionCodeEnum;
 import cn.homyit.onlineLeaveSystem.mapper.ClassInfoMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
@@ -18,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 
 import java.util.List;
@@ -45,16 +48,19 @@ public class TeacherServiceImpl implements TeacherService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         Long studentNumber = loginUser.getUser().getStudentNumber();
-
-        return classInfoMapper.selectClassInfoByNumber(studentNumber);
+        List<ClassInfoVO> classInfoVOS = classInfoMapper.selectClassInfoByNumber(studentNumber);
+        if (CollectionUtils.isEmpty(classInfoVOS)){
+            throw new BizException(ExceptionCodeEnum.NO_CLASS);
+        }
+        return classInfoVOS;
     }
 
     //获取一个班级
     @Override
-    public  PageVo<StudentUserVo>  getStudentsByClassId(PageStudentVo pageStudentVo) {
-        Page<SysStudentUser> page = new Page<>(pageStudentVo.getPageNo(), pageStudentVo.getPageSize());
+    public  PageVo<StudentUserVo>  getStudentsByClassId(PageStudentDTO pageStudentDTO) {
+        Page<SysStudentUser> page = new Page<>(pageStudentDTO.getPageNo(), pageStudentDTO.getPageSize());
         QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
-        wrapper.eq("class_id",pageStudentVo.getClassId());
+        wrapper.eq("class_id", pageStudentDTO.getClassId());
         wrapper.orderByAsc("student_number");
         IPage<SysStudentUser> iPage = studentUserMapper.selectPage(page, wrapper);
 

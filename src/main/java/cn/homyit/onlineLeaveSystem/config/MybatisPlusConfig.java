@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * @author 州牧
- * @description
+ * @description 分页拦截器
  * @since 2022-05-04 16:35
  */
 @Configuration

@@ -1,19 +1,14 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.BackNote;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.BackNoteDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.BackNoteVo;
-import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
-import cn.homyit.onlineLeaveSystem.eneity.VO.Result;
+import cn.homyit.onlineLeaveSystem.entity.DTO.BackNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.VO.BackNoteVo;
+import cn.homyit.onlineLeaveSystem.entity.VO.Result;
+import cn.homyit.onlineLeaveSystem.log.ApiLog;
 import cn.homyit.onlineLeaveSystem.service.BackNoteService;
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author 州牧
@@ -22,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/back")
+@PreAuthorize("hasAuthority('student')")
 public class BackController {
 
     @Autowired
@@ -33,8 +29,9 @@ public class BackController {
         return Result.success(backNoteVo);
     }
 
+    @ApiLog
     @PostMapping("/updateNote")
-    public Result updateNote(@RequestBody BackNoteDTO backNoteVoDTO){
+    public Result updateNote(@Validated @RequestBody BackNoteDTO backNoteVoDTO){
         backNoteService.updateNote(backNoteVoDTO);
         return Result.success();
     }

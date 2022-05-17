@@ -1,14 +1,15 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.SelectNotePageDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
-import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
-import cn.homyit.onlineLeaveSystem.eneity.VO.Result;
+import cn.homyit.onlineLeaveSystem.entity.DO.LeaveNote;
+import cn.homyit.onlineLeaveSystem.entity.DTO.SelectNotePageDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.UpdateNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
+import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
+import cn.homyit.onlineLeaveSystem.entity.VO.Result;
 import cn.homyit.onlineLeaveSystem.log.ApiLog;
 import cn.homyit.onlineLeaveSystem.service.LeaveNoteService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -26,10 +27,9 @@ public class LeaveController {
     @Autowired
     private LeaveNoteService leaveNoteService;
 
-    //ok
     @ApiLog
     @PostMapping("/ask")
-    public Result insertNote(@RequestBody LeaveNote note){
+    public Result insertNote(@Validated @RequestBody LeaveNote note){
         leaveNoteService.insertNote(note);
         return Result.success();
     }
@@ -37,16 +37,15 @@ public class LeaveController {
 
     //根据学号获取
     @PostMapping("/selectNote")
-    public Result<PageVo<LeaveNote>> selectLeaveNote(@RequestBody SelectNotePageDTO selectNoteDTO){
-        PageVo<LeaveNote> simpleNoteListVo = leaveNoteService.selectLeaveNote(selectNoteDTO);
+    public Result<PageVo<LeaveNoteVo>> selectLeaveNote(@Validated @RequestBody SelectNotePageDTO selectNoteDTO){
+        PageVo<LeaveNoteVo> simpleNoteListVo = leaveNoteService.selectLeaveNote(selectNoteDTO);
         return Result.success(simpleNoteListVo);
     }
 
     //根据用户角色来执行不同的逻辑
-    @ApiLog
     @PostMapping("/selectNoteByRole")
-    public Result<PageVo<LeaveNote>> selectNoteByRole(@RequestBody SelectNotePageDTO selectNoteDTO){
-        PageVo<LeaveNote> noteListVo = leaveNoteService.selectNoteByRole(selectNoteDTO);
+    public Result<PageVo<LeaveNoteVo>> selectNoteByRole(@Validated @RequestBody SelectNotePageDTO selectNoteDTO){
+        PageVo<LeaveNoteVo> noteListVo = leaveNoteService.selectNoteByRole(selectNoteDTO);
         return Result.success(noteListVo);
     }
 
@@ -56,20 +55,20 @@ public class LeaveController {
         return Result.success(leaveNoteVo);
     }
 
-
+    @ApiLog
     @PostMapping("/updateNote")
-    public Result updateNote(@RequestBody UpdateNoteDTO updateNoteDTO){
+    public Result updateNote(@Validated @RequestBody UpdateNoteDTO updateNoteDTO){
         leaveNoteService.updateNote(updateNoteDTO);
 
         return Result.success();
     }
 
     @PostMapping("/selectNodeByGrade")
-    public Result<PageVo<LeaveNote>> selectNodeByGrade(@RequestBody SelectNotePageDTO selectNoteDTO){
-        PageVo<LeaveNote> pageVo = leaveNoteService.selectNodeByGrade(selectNoteDTO);
+    public Result<PageVo<LeaveNoteVo>> selectNodeByGrade(@RequestBody SelectNotePageDTO selectNoteDTO){
+        PageVo<LeaveNoteVo> pageVo = leaveNoteService.selectNodeByGrade(selectNoteDTO);
         return Result.success(pageVo);
     }
-
+    @ApiLog
     @GetMapping("/deletedANote/{id}")
     public Result deletedANote(@PathVariable Long id){
         leaveNoteService.deletedANote(id);

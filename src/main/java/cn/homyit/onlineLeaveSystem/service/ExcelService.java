@@ -1,6 +1,6 @@
 package cn.homyit.onlineLeaveSystem.service;
 
-import cn.homyit.onlineLeaveSystem.eneity.DTO.DownloadNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.DownloadNoteDTO;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;

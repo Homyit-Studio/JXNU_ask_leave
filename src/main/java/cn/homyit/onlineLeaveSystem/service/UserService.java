@@ -1,10 +1,10 @@
 package cn.homyit.onlineLeaveSystem.service;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.TeacherUpdaterDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.StudentUpdateDTO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherUpdaterDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.PasswordDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.StudentUpdateDTO;
+import cn.homyit.onlineLeaveSystem.entity.VO.StudentUserVo;
 
 import java.util.HashMap;
 import java.util.List;

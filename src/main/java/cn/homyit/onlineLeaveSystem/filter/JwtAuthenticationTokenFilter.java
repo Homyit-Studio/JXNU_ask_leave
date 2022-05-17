@@ -1,6 +1,6 @@
 package cn.homyit.onlineLeaveSystem.filter;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
+import cn.homyit.onlineLeaveSystem.entity.DO.LoginUser;
 import cn.homyit.onlineLeaveSystem.util.JwtUtil;
 import cn.homyit.onlineLeaveSystem.util.RedisCache;
 

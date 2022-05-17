@@ -15,7 +15,7 @@ public enum ExamineEnum implements IEnum<Integer> {
     PROCESSING(12,"处理中"),
 
 
-    WAIT_REPORT(3,"待销假"),
+    WAIT_REPORT(9,"待销假"),
     APPLY_EXPIRED(10,"申请假条已过期"),
     REPORT_EXPIRED(11,"销假已过期"),
     PROCESSED(14,"已销假"),

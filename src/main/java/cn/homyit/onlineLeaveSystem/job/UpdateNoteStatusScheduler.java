@@ -25,6 +25,6 @@ public class UpdateNoteStatusScheduler {
     @Scheduled(cron = "1/59 * * * * ?")
     public void orderCheck(){
         leaveNoteService.checkExpired();
-        log.info("检测失效假条"+new Date());
+//        log.info("检测失效假条"+new Date());
     }
 }

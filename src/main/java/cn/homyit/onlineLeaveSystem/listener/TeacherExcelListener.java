@@ -1,10 +1,10 @@
 package cn.homyit.onlineLeaveSystem.listener;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysClassTeacher;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentClassInfo;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysUserRole;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.TeacherDTO;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysClassTeacher;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentClassInfo;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysUserRole;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherDTO;
 import cn.homyit.onlineLeaveSystem.mapper.ClassInfoMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysClassTeacherMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
@@ -18,7 +18,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 

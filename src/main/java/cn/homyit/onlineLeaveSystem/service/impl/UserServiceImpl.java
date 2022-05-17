@@ -1,13 +1,15 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysClassStudent;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysUserRole;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.TeacherUpdaterDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.PasswordDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.StudentUpdateDTO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.StudentUserVo;
+import cn.homyit.onlineLeaveSystem.entity.DO.LoginUser;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysClassStudent;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysUserRole;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherUpdaterDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.PasswordDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.StudentUpdateDTO;
+import cn.homyit.onlineLeaveSystem.entity.VO.StudentUserVo;
+import cn.homyit.onlineLeaveSystem.exception.BizException;
+import cn.homyit.onlineLeaveSystem.exception.ExceptionCodeEnum;
 import cn.homyit.onlineLeaveSystem.mapper.SysClassStudentMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysUserRoleMapper;
@@ -25,6 +27,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 
@@ -61,9 +64,9 @@ public class UserServiceImpl implements UserService {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(user.getStudentNumber(),user.getPassword());
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
-        if(Objects.isNull(authenticate)){
-            throw new RuntimeException("用户名或密码错误");
-        }
+//        if(Objects.isNull(authenticate)){
+//            throw new BizException(ExceptionCodeEnum.LOGIN_ERROR);
+//        }自动检验了密码和抛出异常，todo 怎么抓service的异常呢，controller怎么抓到异常的
 
         //使用userid生成token
         LoginUser loginUser = (LoginUser) authenticate.getPrincipal();
@@ -107,7 +110,7 @@ public class UserServiceImpl implements UserService {
         boolean matches = passwordEncoder.matches(passwordDTO.getOldPassword(), loginUser.getPassword());
 
         if (!matches){
-            throw new RuntimeException("密码输入错误");
+            throw new BizException(ExceptionCodeEnum.UPDATE_PWD_ERROR);
         }
 
         SysStudentUser user = new SysStudentUser();
@@ -143,6 +146,9 @@ public class UserServiceImpl implements UserService {
         wrapper.eq("username",username);
         List<SysStudentUser> sysStudentUsers = userMapper.selectList(wrapper);
         List<StudentUserVo> list = MyBeanUtils.copyList(sysStudentUsers, StudentUserVo.class);
+        if (CollectionUtils.isEmpty(list)){
+            throw new BizException(ExceptionCodeEnum.NO_USER);
+        }
         return list;
     }
 
@@ -153,9 +159,13 @@ public class UserServiceImpl implements UserService {
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         LevelEnum role = loginUser.getUser().getRole();
         if (role.getValue()<=teacherUpdaterDTO.getRole().getValue()){
-            throw new RuntimeException("角色增加错误，请您重试");
+            throw new BizException(ExceptionCodeEnum.ADD_USER);
         }
-
+        //先查账号是否存在
+        SysStudentUser checkExist = userMapper.selectById(teacherUpdaterDTO.getStudentNumber());
+        if (!Objects.isNull(checkExist)){
+            throw new BizException(ExceptionCodeEnum.USER_EXIST);
+        }
 
         SysStudentUser user = MyBeanUtils.copyBean(teacherUpdaterDTO, SysStudentUser.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -213,7 +223,7 @@ public class UserServiceImpl implements UserService {
         sysUserRoleMapper.delete(wrapper);
 
         QueryWrapper<SysClassStudent> wrapper1 = new QueryWrapper<>();
-        wrapper.eq("student_number", teacherUpdaterDTO.getStudentNumber());
+        wrapper1.eq("student_number", teacherUpdaterDTO.getStudentNumber());
         sysClassStudentMapper.delete(wrapper1);
     }
 

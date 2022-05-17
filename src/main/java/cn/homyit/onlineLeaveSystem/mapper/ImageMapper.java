@@ -1,6 +1,6 @@
 package cn.homyit.onlineLeaveSystem.mapper;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.ImagesNote;
+import cn.homyit.onlineLeaveSystem.entity.DO.ImagesNote;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

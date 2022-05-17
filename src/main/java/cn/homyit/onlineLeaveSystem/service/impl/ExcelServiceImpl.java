@@ -1,16 +1,14 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.DownloadNoteDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.StudentDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.TeacherDTO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
+import cn.homyit.onlineLeaveSystem.entity.DTO.DownloadNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.StudentDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherDTO;
+import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.listener.EastExcelListener;
 import cn.homyit.onlineLeaveSystem.listener.TeacherExcelListener;
 import cn.homyit.onlineLeaveSystem.mapper.*;
 import cn.homyit.onlineLeaveSystem.service.ExcelService;
 import cn.homyit.onlineLeaveSystem.service.LeaveNoteService;
-import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.alibaba.excel.ExcelWriter;
@@ -25,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -107,9 +104,9 @@ public class ExcelServiceImpl implements ExcelService {
         }
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");//设置响应头
 
-        List<LeaveNote> list = leaveNoteService.selectNoteToDownload(downloadNoteDTO);
+        List<LeaveNoteVo> list1  = leaveNoteService.selectNoteToDownload(downloadNoteDTO);
 
-        List<LeaveNoteVo> list1 = MyBeanUtils.copyList(list, LeaveNoteVo.class);
+//        List<LeaveNoteVo> list1 = MyBeanUtils.copyList(list, LeaveNoteVo.class);
 
         ExcelWriter writer = null;//获取写出流
         try {

@@ -1,10 +1,10 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
-import cn.homyit.onlineLeaveSystem.eneity.VO.PageStudentVo;
-import cn.homyit.onlineLeaveSystem.eneity.VO.*;
+import cn.homyit.onlineLeaveSystem.entity.DTO.PageStudentDTO;
+import cn.homyit.onlineLeaveSystem.entity.VO.*;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,6 +16,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/teacher")
+@PreAuthorize("hasAuthority('managing_students')")
 public class TeacherController {
 
     @Autowired
@@ -32,8 +33,8 @@ public class TeacherController {
 
     /*获取某个班级所有学生*/
     @PostMapping("/getStudentsByClassId")
-    public Result<PageVo<StudentUserVo>> getStudentsByClassId(@RequestBody PageStudentVo pageStudentVo){
-        PageVo<StudentUserVo> pageVo =teacherService.getStudentsByClassId(pageStudentVo);
+    public Result<PageVo<StudentUserVo>> getStudentsByClassId(@RequestBody PageStudentDTO pageStudentDTO){
+        PageVo<StudentUserVo> pageVo =teacherService.getStudentsByClassId(pageStudentDTO);
         return Result.success(pageVo);
     }
 

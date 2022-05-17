@@ -1,7 +1,7 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.LoginUser;
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.entity.DO.LoginUser;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
 import cn.homyit.onlineLeaveSystem.mapper.SysMenuMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -32,7 +32,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         SysStudentUser user = studentUserMapper.selectOne(wrapper);
         //如果查询不到数据就通过抛出异常来给出提示
         if(Objects.isNull(user)){
-            throw new RuntimeException("账号输入错误");
+//            throw new BizException(ExceptionCodeEnum.LOGIN_ERROR);
+            throw new RuntimeException("用户名或密码错误");
         }
 
         //封装成UserDetails对象返回 

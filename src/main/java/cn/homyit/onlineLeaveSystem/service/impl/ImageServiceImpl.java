@@ -1,6 +1,8 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.ImagesNote;
+import cn.homyit.onlineLeaveSystem.entity.DO.ImagesNote;
+import cn.homyit.onlineLeaveSystem.exception.BizException;
+import cn.homyit.onlineLeaveSystem.exception.ExceptionCodeEnum;
 import cn.homyit.onlineLeaveSystem.mapper.ImageMapper;
 import cn.homyit.onlineLeaveSystem.service.ImageService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -8,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -46,7 +49,7 @@ public class ImageServiceImpl implements ImageService {
             file.transferTo(uploadFile);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("图片上传失败");
+            throw new BizException(ExceptionCodeEnum.UPLOAD_ERROR);
         }
 
         String dbUrl = urlPath + temp;
@@ -68,6 +71,24 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public List<ImagesNote> getImagesForNote(Long id) {
         List<ImagesNote> imagesNotes = imageMapper.selectList(new QueryWrapper<ImagesNote>().eq("note_id", id));
+        if (CollectionUtils.isEmpty(imagesNotes)){
+            throw new BizException(ExceptionCodeEnum.NO_IMAGES);
+        }
         return imagesNotes;
+    }
+
+    @Override
+    public void deleteByNoteId(Long id) {
+        QueryWrapper<ImagesNote> wrapper = new QueryWrapper<>();
+        wrapper.eq("note_id",id);
+        List<ImagesNote> imagesNotes = imageMapper.selectList(wrapper);
+        for (ImagesNote imagesNote : imagesNotes) {
+            String url = imagesNote.getUrl();
+            String name = new File(url).getName();
+            log.info("删除{}图片",name);
+            new File(resourcePath+name).delete();
+        }
+
+        imageMapper.delete(wrapper);
     }
 }

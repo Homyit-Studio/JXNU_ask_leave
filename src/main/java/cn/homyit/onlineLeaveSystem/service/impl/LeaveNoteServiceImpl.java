@@ -1,15 +1,17 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.*;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.DownloadNoteDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.SelectNotePageDTO;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.UpdateNoteDTO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.LeaveNoteVo;
-import cn.homyit.onlineLeaveSystem.eneity.VO.PageVo;
-import cn.homyit.onlineLeaveSystem.mapper.ImageMapper;
+import cn.homyit.onlineLeaveSystem.entity.DO.*;
+import cn.homyit.onlineLeaveSystem.entity.DTO.DownloadNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.SelectNotePageDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.UpdateNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
+import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
+import cn.homyit.onlineLeaveSystem.exception.BizException;
+import cn.homyit.onlineLeaveSystem.exception.ExceptionCodeEnum;
 import cn.homyit.onlineLeaveSystem.mapper.LeaveNoteMapper;
 import cn.homyit.onlineLeaveSystem.myEnum.*;
 import cn.homyit.onlineLeaveSystem.service.BackNoteService;
+import cn.homyit.onlineLeaveSystem.service.ImageService;
 import cn.homyit.onlineLeaveSystem.service.LeaveNoteService;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
 import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
@@ -31,7 +33,6 @@ import java.util.*;
  * @since 2022-05-03 21:31
  */
 
-//todo 假条的过期处理
 @Slf4j
 @Service
 public class LeaveNoteServiceImpl implements LeaveNoteService {
@@ -40,7 +41,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
     private LeaveNoteMapper leaveNoteMapper;
 
     @Autowired
-    private ImageMapper imageMapper;
+    private ImageService imageService;
 
     @Autowired
     private TeacherService teacherService;
@@ -63,11 +64,12 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         note.setDormitoryNumber(user.getBuildingNumber()+user.getDormitoryNumber());
         note.setUsername(user.getUsername());
         note.setPhoneNumber(user.getPhoneNumber());
+        note.setGradeId(user.getGradeId());
 
         Integer days = Math.toIntExact(diff / (24 * 60 * 60 * 1000));
-        if (days<3){
+        if (days<=3){
             note.setLevel(LevelEnum.INSTRUCTOR);
-        }else if(days>=3&&days<7){
+        }else if(days>3&&days<=7){
             note.setLevel(LevelEnum.SECRETARY);
         }else {
             note.setLevel(LevelEnum.DEAN);
@@ -79,7 +81,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
     }
 
     @Override
-    public PageVo<LeaveNote> selectNodeByGrade(SelectNotePageDTO selectNoteDTO) {
+    public PageVo<LeaveNoteVo> selectNodeByGrade(SelectNotePageDTO selectNoteDTO) {
 
         Page<LeaveNote> page = new Page<>(selectNoteDTO.getPageNo(),selectNoteDTO.getPageSize());
         QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
@@ -95,20 +97,27 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
            wrapper.eq("examine",selectNoteDTO.getExamineEnum());
        }
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
-        return new PageVo<>(iPage.getRecords(),iPage.getTotal(),iPage.getPages());
+        List<LeaveNoteVo> list = MyBeanUtils.copyList(iPage.getRecords(), LeaveNoteVo.class);
+        return new PageVo<>(list,iPage.getTotal(),iPage.getPages());
     }
 
     @Override
     public void deletedANote(Long id) {
+
+        LeaveNote note = leaveNoteMapper.selectById(id);
+        if (note.getExamine().getValue()>=ExamineEnum.WAIT_REPORT.getValue()){
+            throw new BizException(ExceptionCodeEnum.DELETED_NOTE);
+        }
         //删除假条，未生成销假条之前
         leaveNoteMapper.deleteById(id);
+        imageService.deleteByNoteId(id);
     }
 
 
 
     //根据学号获取假条
     @Override
-    public PageVo<LeaveNote> selectLeaveNote(SelectNotePageDTO selectNoteDTO) {
+    public PageVo<LeaveNoteVo> selectLeaveNote(SelectNotePageDTO selectNoteDTO) {
         Page<LeaveNote> page = new Page<>(selectNoteDTO.getPageNo(),selectNoteDTO.getPageSize());
         QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
         LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext()
@@ -120,15 +129,6 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         }else{
             wrapper.eq("examine",selectNoteDTO.getExamineEnum());
         }
-//        wrapper.eq()
-//        CompleteEnum completeEnum = selectNoteDTO.getCompleteEnum();
-//        if (completeEnum.equals(CompleteEnum.NO)){
-//            wrapper.ne("examine",ExamineEnum.WAIT_REPORT)
-//                    .ne("examine",ExamineEnum.FAILURE);
-//        }else {
-//            wrapper.in("examine",
-//                    Arrays.asList(ExamineEnum.WAIT_REPORT.getValue(),ExamineEnum.FAILURE.getValue()));
-//        }
 
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
         List<LeaveNote> list  = null;
@@ -138,13 +138,14 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             e.printStackTrace();
            throw new RuntimeException("深拷贝异常");
         }
-        return new PageVo<>(list,iPage.getTotal(),iPage.getPages());
+        List<LeaveNoteVo> list1 = MyBeanUtils.copyList(list, LeaveNoteVo.class);
+        return new PageVo<>(list1,iPage.getTotal(),iPage.getPages());
 
     }
 
 
     @Override
-    public PageVo<LeaveNote> selectNoteByRole(SelectNotePageDTO selectNoteDTO) {
+    public PageVo<LeaveNoteVo> selectNoteByRole(SelectNotePageDTO selectNoteDTO) {
 
         LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
@@ -187,7 +188,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
         wrapper.orderByDesc("start_time");
         IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
-        return new PageVo<>(iPage.getRecords(),iPage.getTotal(),iPage.getPages());
+        List<LeaveNoteVo> list = MyBeanUtils.copyList(iPage.getRecords(), LeaveNoteVo.class);
+        return new PageVo<>(list,iPage.getTotal(),iPage.getPages());
     }
 
     @Override
@@ -213,7 +215,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
         Integer examine =examineEnum.getValue();
         if (level<=examine){
-            throw new RuntimeException("您已经同意");
+            throw new BizException(ExceptionCodeEnum.ALREADY_AGREE);
         }
         //审核人意见
         //拒绝则不往下传递
@@ -230,6 +232,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
                 //院长审批后也直接生成请假条
                 if(role.equals(LevelEnum.DEAN)){
+                    note.setExamine(ExamineEnum.WAIT_REPORT);
                     //生成销假条
                     BackNote backNote = MyBeanUtils.copyBean(note, BackNote.class);
 
@@ -267,8 +270,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         }
         //待本人审核
         QueryWrapper<LeaveNote> wrapper1 = new QueryWrapper<LeaveNote>().eq("examine",
-                ExamineEnum.getEumByCode(role.getValue().intValue() - 1))
-                .like("leader_number",loginUser.getUser().getStudentNumber());
+                ExamineEnum.getEumByCode(role.getValue().intValue() - 1));
+
 
         //待下一级审核
         QueryWrapper<LeaveNote> wrapper2 = new QueryWrapper<LeaveNote>().
@@ -296,8 +299,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
         if (role.equals(LevelEnum.INSTRUCTOR)){
             List<Long> allStudentNumber = teacherService.getAllStudentNumber();
-            QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
-            wrapper.in("student_number",allStudentNumber);
+
             wrapper1.in("student_number", allStudentNumber);
             wrapper2.in("student_number", allStudentNumber);
             wrapper3.in("student_number", allStudentNumber);
@@ -305,6 +307,14 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             wrapper5.in("student_number", allStudentNumber);
             wrapper6.in("student_number", allStudentNumber);
             wrapper7.in("student_number", allStudentNumber);
+        }else if (role.equals(LevelEnum.SECRETARY)) {
+            wrapper1.like("leader_number", loginUser.getUser().getStudentNumber());
+            wrapper2.like("leader_number", loginUser.getUser().getStudentNumber());
+            wrapper3.like("leader_number", loginUser.getUser().getStudentNumber());
+            wrapper4.like("leader_number", loginUser.getUser().getStudentNumber());
+            wrapper5.like("leader_number", loginUser.getUser().getStudentNumber());
+            wrapper6.like("leader_number", loginUser.getUser().getStudentNumber());
+            wrapper7.like("leader_number", loginUser.getUser().getStudentNumber());
         }
 
         Integer roleCount = leaveNoteMapper.selectCount(wrapper1);
@@ -349,7 +359,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
     }
 
     @Override
-    public List<LeaveNote> selectNoteToDownload(DownloadNoteDTO downloadNoteDTO) {
+    public List<LeaveNoteVo> selectNoteToDownload(DownloadNoteDTO downloadNoteDTO) {
         QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
         if (!Objects.isNull(downloadNoteDTO.getStartTime())){
             wrapper.gt("start_time",downloadNoteDTO.getStartTime());
@@ -368,7 +378,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         }
 
         List<LeaveNote> leaveNotes = leaveNoteMapper.selectList(wrapper);
-        return leaveNotes;
+        List<LeaveNoteVo> list = MyBeanUtils.copyList(leaveNotes, LeaveNoteVo.class);
+        return list;
     }
 
     @Override

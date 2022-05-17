@@ -1,7 +1,7 @@
 package cn.homyit.onlineLeaveSystem.mapper;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysStudentClassInfo;
-import cn.homyit.onlineLeaveSystem.eneity.VO.ClassInfoVO;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentClassInfo;
+import cn.homyit.onlineLeaveSystem.entity.VO.ClassInfoVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;

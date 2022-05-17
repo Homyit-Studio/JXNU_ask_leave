@@ -1,6 +1,6 @@
 package cn.homyit.onlineLeaveSystem.mapper;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.SysClassStudent;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysClassStudent;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

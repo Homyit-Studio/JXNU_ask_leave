@@ -1,9 +1,9 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
-import cn.homyit.onlineLeaveSystem.eneity.DO.BackNote;
-import cn.homyit.onlineLeaveSystem.eneity.DO.LeaveNote;
-import cn.homyit.onlineLeaveSystem.eneity.DTO.BackNoteDTO;
-import cn.homyit.onlineLeaveSystem.eneity.VO.BackNoteVo;
+import cn.homyit.onlineLeaveSystem.entity.DO.BackNote;
+import cn.homyit.onlineLeaveSystem.entity.DO.LeaveNote;
+import cn.homyit.onlineLeaveSystem.entity.DTO.BackNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.VO.BackNoteVo;
 import cn.homyit.onlineLeaveSystem.mapper.BackNoteMapper;
 import cn.homyit.onlineLeaveSystem.mapper.LeaveNoteMapper;
 import cn.homyit.onlineLeaveSystem.myEnum.BackEnum;
@@ -47,14 +47,13 @@ public class BackNoteServiceImpl implements BackNoteService {
       backNote.setStatus(BackStatusEnum.SUCCESS);
       LeaveNote note = new LeaveNote();
       note.setId(backNote.getId());
-      note.setStatus(BackStatusEnum.SUCCESS);
+//      note.setStatus(BackStatusEnum.SUCCESS);
       //更新为已消假
       note.setExamine(ExamineEnum.PROCESSED);
       leaveNoteMapper.updateById(note);
     }else{
       backNote.setStatus(BackStatusEnum.FAILURE);
     }
-    System.out.println(backNote);
     backNoteMapper.updateById(backNote);
   }
 
