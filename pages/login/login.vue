@@ -83,29 +83,21 @@
 			}
 		},
 		onLoad(option) {
-			if(uni.getStorageSync('token') && uni.getStorageSync('role') != '学生' && option.card == "teacher"){
-				uni.redirectTo({
-					url:"../teacherHome/teacherHome",
-					success(){
-						uni.showToast({
-							title:"登录成功",
-							duration:500
-						})
-					}
-				})
-			}else if(uni.getStorageSync('token') && uni.getStorageSync('role') == '学生' && option.card == "student"){
-				uni.redirectTo({
-					url:"../studentHome/studentHome",
-					success(){
-						uni.showToast({
-							title:"登录成功",
-							duration:500
-						})
-					}
-				})
+			if (uni.getStorageSync('token') && uni.getStorageSync('role') != '学生' && option.card == "teacher") {
+				console.log(uni.getStorageSync('teacherMessage'))
+				this.loginFormData = uni.getStorageSync('teacherMessage')
+				console.log(this.loginFormData)
+			} else if (uni.getStorageSync('token') && uni.getStorageSync('role') == '学生' && option.card == "student") {
+				this.loginFormData = uni.getStorageSync('studentMessage')
+				console.log(this.loginFormData)
+			}else{
+				this.loginFormData = {
+					"studentNumber": "",
+					"password": ""
+				}
 			}
 			this.optionChoose = option.card == "student" ? true : false
-			this.cardChoose(option.card)
+			// this.cardChoose(option.card)
 		},
 		computed: {},
 		methods: {
@@ -129,7 +121,7 @@
 						uni.$http.post("/user/login", this.loginFormData).then(res => {
 							if (res.data.code == 200) {
 								uni.showToast({
-									title:"登录成功，请稍等.."
+									title: "登录成功，请稍等.."
 								})
 								uni.setStorage({
 									key: 'token',
@@ -138,6 +130,10 @@
 								uni.setStorage({
 									key: 'role',
 									data: res.data.data.role,
+								});
+								uni.setStorage({
+									key: 'teacherMessage',
+									data: this.loginFormData
 								});
 								uni.navigateTo({
 									url: '/pages/teacherHome/teacherHome'
@@ -152,8 +148,7 @@
 							this.msg.messageText = err.errMsg
 							this.$refs.message.open()
 						})
-					}
-					else if(ref === "studentForm"){
+					} else if (ref === "studentForm") {
 						uni.$http.post("/user/login", this.loginFormData).then(res => {
 							if (res.data.code == 200) {
 								uni.showToast({
@@ -169,6 +164,10 @@
 								uni.setStorage({
 									key: 'role',
 									data: res.data.data.role,
+								});
+								uni.setStorage({
+									key: 'studentMessage',
+									data: this.loginFormData
 								});
 								uni.navigateTo({
 									url: '/pages/studentHome/studentHome'
