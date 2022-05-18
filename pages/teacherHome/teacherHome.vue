@@ -88,14 +88,14 @@
 						<text>全院班级</text>
 					</view>
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList"
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/downloadNote/downloadNote"
 							class="tools-btn">
 							<uni-icons type="download-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>下载假条</text>
 					</view>
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" class="tools-btn">
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/importList/importList" class="tools-btn">
 							<uni-icons type="upload-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>导入名单</text>

@@ -33,7 +33,7 @@ $http.baseUrl = 'http://101.43.85.67:8081'
 
 $http.beforeRequest = function(options) {
 	if (options.url != "http://101.43.85.67:8081/user/login") {
-		options.header["token"] = uni.getStorageSync('token')
+		options.header["token"] = uni.getStorageSync('token');
 	}
 	uni.showLoading({
 		title: '正在加载中...',

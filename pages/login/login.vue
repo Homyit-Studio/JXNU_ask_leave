@@ -104,13 +104,14 @@
 			cardChoose(card) {
 				if (card == "student") {
 					this.loginFormData = {
-						"studentNumber": "202126201001",
-						"password": "201001"
+						"studentNumber": "202026202036",
+						"password": "17309480686"
 					}
 				} else {
 					this.loginFormData = {
 						"studentNumber": "113062",
 						"password": "13170918684"
+
 					}
 				}
 			},

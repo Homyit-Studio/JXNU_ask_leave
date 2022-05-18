@@ -3,7 +3,7 @@
 		<view class="backgrond-style">
 		</view>
 		<view class="teacher-message">
-			<uni-card :title="studentMessage.username" :extra="studentMessage.studentNumber + ''">
+			<uni-card :title="studentMessage.username" :extra="studentMessage.studentNumber + ''" sub-title="学生">
 				<view slot="actions" class="card-actions">
 					<view class="card-actions-item" @click="revisePassword">
 						<uni-icons type="loop" size="20" color="#999"></uni-icons>
@@ -117,7 +117,7 @@
 		methods: {
 			getData(){
 				uni.$http.get('/user/personInfo').then((res)=>{
-					//console.log(res.data.data)
+					uconsole.log(res.data.data)
 					let userData = res.data.data;
 					this.studentMessage = userData;
 					
@@ -157,13 +157,12 @@
 								this.confirm();//相当于退出登录
 							},1500)
 						}else{
-							uni.showToast({
-								icon:'error',
-								title: res.data.message + ''
-							})
+							this.$errShowToast(res.data.message);
 						}
 					})
-				}).catch(err =>{})
+				}).catch(err =>{
+					this.$errShowToast(err);
+				})
 			},
 			//退出登录
 			logOut(){
@@ -179,10 +178,11 @@
 					console.log(res)
 					if(res.data.code === 200){
 						uni.clearStorage();//清理本地缓存
-						uni.navigateTo({
+						uni.redirectTo({
 							url: '/pages/index/index'
 						})	
 					}
+					this.$refs.dialog_up.close();
 				}).catch(err=>{
 					console.log(err)
 				})
@@ -214,56 +214,56 @@
 		border-radius: 0 0 40rpx 40rpx;
 		background: $bgstyle;
 	}
-
+	
 	.backgrond-style {
 		@include bgstyle;
 	}
-
+	
 	.teacher-home {
 		.card-actions-item {
 			display: flex;
 			justify-content: flex-end;
 		}
 	}
-
+	
 	.revise-form {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		padding-top: 50rpx;
-
+	
 		.uni-easyinput {
 			width: 650rpx;
 			border-radius: 100rpx;
 		}
 	}
-
+	
 	.revise-popup-content {
 		.revise-buttons {
 			display: flex;
 			justify-content: center;
 			padding-bottom: 50rpx;
-
+	
 			button {
 				width: 300rpx;
 				height: 60rpx;
 				line-height: 60rpx;
 				font-size: $jxnu-font-14;
 			}
-
+	
 			.revise-button {
-				color:$uni-text-color-inverse;
 				background-color: $jxnu-bg-color;
 			}
 		}
 	}
-
+	
 	.teacher-tools {
 		.tools-box {
 			display: flex;
 			flex-direction: row;
 			justify-content: flex-start;
 			text-align: center;
+	
 			.tools-btn {
 				padding: 20rpx;
 				margin: 20rpx;

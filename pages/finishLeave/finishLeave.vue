@@ -17,11 +17,10 @@
 				<view>
 					<view><text decode="true">开始时间:&emsp;{{leaveDetails.startTime}}</text></view>
 					<view><text decode="true">结束时间:&emsp;{{leaveDetails.endTime}}</text></view>
-					<uni-tag>4小时</uni-tag>
 				</view>
 				<view><text decode="true">前往方式:&emsp;{{leaveDetails.way}}</text></view>
 				<view><text decode="true">联系号码:&emsp;{{leaveDetails.phoneNumber}}</text></view>
-				<view><text decode="true">宿舍楼栋:&emsp;{{leaveDetails.dormitoryNumber}}</text></view>
+				<view><text decode="true">宿舍楼栋:&emsp;{{leaveDetails.buildingNumber+'栋'}}{{leaveDetails.dormitoryNumber}}</text></view>
 				<view>
 					<text decode="true">请假事由:&emsp;</text>
 					<text class="reason-text">{{leaveDetails.reason}}</text>
