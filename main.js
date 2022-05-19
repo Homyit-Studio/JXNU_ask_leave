@@ -29,11 +29,11 @@ import {
 } from '@escook/request-miniprogram'
 uni.$http = $http
 
-$http.baseUrl = 'http://101.43.85.67:8081'
+$http.baseUrl = 'https://www.lovehot.club/api'
 
 $http.beforeRequest = function(options) {
-	if (options.url != "http://101.43.85.67:8081/user/login") {
-		options.header["token"] = uni.getStorageSync('token');
+	if (options.url != "https://www.lovehot.club/api/user/login") {
+		options.header["token"] = uni.getStorageSync('token')
 	}
 	uni.showLoading({
 		title: '正在加载中...',
@@ -43,23 +43,3 @@ $http.beforeRequest = function(options) {
 $http.afterRequest = function() {
 	uni.hideLoading()
 }
-//设置定时器把storage里面的值删除
-setTimeout(() => {
-		if (uni.getStorageSync('token')) {
-			uni.removeStorage({
-				key: 'token',
-			});
-			uni.removeStorage({
-				key: 'role',
-			});
-			uni.showToast({
-				title:"登录生效，请重新登录",
-				icon:"error",
-				duration:800
-			})
-			uni.navigateTo({
-				url:"/pages/index/index",
-			})
-		}
-	},
-	16000000)

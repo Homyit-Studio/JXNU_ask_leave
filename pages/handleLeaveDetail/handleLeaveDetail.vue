@@ -215,10 +215,6 @@
 									this.msg.messageText = res.data.message
 									this.$refs.message.open()
 								}
-							}).catch(err => {
-								this.msg.msgType = "error"
-								this.msg.messageText = err.errMsg
-								this.$refs.message.open()
 							})
 						}
 					} else {
@@ -226,10 +222,6 @@
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
 					}
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err.errMsg
-					this.$refs.message.open()
 				})
 			},
 			pushProcess(data) {
@@ -347,10 +339,6 @@
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
 					}
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err.errMsg
-					this.$refs.message.open()
 				})
 			},
 		}
@@ -408,7 +396,7 @@
 			padding-top: 20rpx;
 
 			.time-tag {
-				padding: 5rpx;
+				font-size: 12px;
 				background-color: #999;
 				border-radius: 10rpx;
 				color: #fff;

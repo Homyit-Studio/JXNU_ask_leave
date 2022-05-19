@@ -50,7 +50,10 @@
 					msgType: 'success',
 					messageText: '这是一条成功提示',
 				},
-				loginFormData: {},
+				loginFormData: {
+					"studentNumber": "",
+					"password": ""
+				},
 				studentRules: {
 					"studentNumber": {
 						rules: [{
@@ -85,16 +88,19 @@
 		onLoad(option) {
 			if (uni.getStorageSync('token') && uni.getStorageSync('role') != '学生' && option.card == "teacher") {
 				console.log(uni.getStorageSync('teacherMessage'))
-				this.loginFormData = uni.getStorageSync('teacherMessage')
-				console.log(this.loginFormData)
+				let message = uni.getStorageSync('teacherMessage')
+				this.loginFormData.studentNumber = message.studentNumber
+				this.loginFormData.password = message.password
+				uni.removeStorageSync('token');
+				uni.removeStorageSync('role');
+				uni.removeStorageSync('teacherMessage');
 			} else if (uni.getStorageSync('token') && uni.getStorageSync('role') == '学生' && option.card == "student") {
-				this.loginFormData = uni.getStorageSync('studentMessage')
-				console.log(this.loginFormData)
-			}else{
-				this.loginFormData = {
-					"studentNumber": "",
-					"password": ""
-				}
+				let message = uni.getStorageSync('studentMessage')
+				this.loginFormData.studentNumber = message.studentNumber
+				this.loginFormData.password = message.password
+				uni.removeStorageSync('token');
+				uni.removeStorageSync('role');
+				uni.removeStorageSync('studentMessage');
 			}
 			this.optionChoose = option.card == "student" ? true : false
 			// this.cardChoose(option.card)
@@ -144,10 +150,6 @@
 								this.msg.messageText = res.data.message
 								this.$refs.message.open()
 							}
-						}).catch(err => {
-							this.msg.msgType = "error"
-							this.msg.messageText = err.errMsg
-							this.$refs.message.open()
 						})
 					} else if (ref === "studentForm") {
 						uni.$http.post("/user/login", this.loginFormData).then(res => {
@@ -180,10 +182,6 @@
 							}
 						})
 					}
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err.errMsg
-					this.$refs.message.open()
 				})
 			}
 		}

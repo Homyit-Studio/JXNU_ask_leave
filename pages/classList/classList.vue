@@ -48,10 +48,6 @@
 							this.msg.messageText = res.data.message
 							this.$refs.message.open()
 						}
-					}).catch(err => {
-						this.msg.msgType = "error"
-						this.msg.messageText = err.errMsg
-						this.$refs.message.open()
 					})
 				}else if(this.enterChoose == 1){
 					uni.$http.get("/teacher/getAllClass").then(res => {
@@ -67,10 +63,6 @@
 							this.msg.messageText = res.data.message
 							this.$refs.message.open()
 						}
-					}).catch(err => {
-						this.msg.msgType = "error"
-						this.msg.messageText = err.errMsg
-						this.$refs.message.open()
 					})
 				}
 			}

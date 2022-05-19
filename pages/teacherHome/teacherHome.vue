@@ -242,10 +242,6 @@
 					this.msg.messageText = res.data.message
 					this.$refs.message.open()
 				}
-			}).catch(err => {
-				this.msg.msgType = "error"
-				this.msg.messageText = err.errMsg
-				this.$refs.message.open()
 			})
 			this.$nextTick(() => {
 				console.log(this.$refs)
@@ -282,18 +278,7 @@
 								this.$refs.popupRevisePassword.close()
 							}, 500)
 						}
-					}).catch(err => {
-						this.msg.msgType = "error"
-						this.msg.messageText = err.errMsg
-						this.$refs.message.open()
-						setTimeout(() => {
-							this.$refs.popupRevisePassword.close()
-						}, 500)
 					})
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err.errMsg
-					this.$refs.message.open()
 				})
 			},
 			signout() {
@@ -325,13 +310,6 @@
 						this.$refs.message.open()
 					}
 					this.$refs.alertDialog.close()
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err
-					this.$refs.message.open()
-					setTimeout(() => {
-						this.$refs.alertDialog.close()
-					}, 500)
 				})
 			},
 			lookMessage() {

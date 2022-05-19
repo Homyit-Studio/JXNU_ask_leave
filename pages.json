@@ -117,7 +117,7 @@
 		{
 			"path": "pages/finishRecord/finishRecord",
 			"style": {
-				"navigationBarTitleText": "销假记录"
+				"navigationBarTitleText": "请假记录"
 			}
 
 		}, {
@@ -151,10 +151,7 @@
 			"path": "pages/downloadNote/downloadNote",
 			"style": {
 				"navigationBarTitleText": "下载假条",
-				>>>
-				>>>
-				>
-				9e23 b17d2450a2df6768b5fb7c80ee674795f706 "enablePullDownRefresh": false
+				"enablePullDownRefresh": false
 			}
 
 		}
