@@ -37,15 +37,11 @@
 					},
 					"startTime":{
 						rules: [{
-							required: true,
-							errorMessage: '请输入起始时间',
 						}
 					]
 					},
 					"endTime":{
 						rules: [{
-							required: true,
-							errorMessage: '请输入结束时间',
 						}
 					]
 					},
@@ -53,20 +49,18 @@
 			}
 		},
 		onLoad(){
-			this.formData.startTime = this.formData.endTime = this.getFormatDate();
+			//this.formData.startTime = this.formData.endTime = this.getFormatDate();
 		},
 		methods: {
 			submitForm(){
-				this.formData.startTime = this.dateAdd(this.formData.startTime);
-				this.formData.endTime = this.dateAdd(this.formData.endTime);
-				this.$refs.form.validate().then(res=>{	
-						// uni.$http.get('/excel/downloadNote1?gradeId=2021&startTime=2022-05-03 13:38:18').then(res=>{
-					// 	console.log(res)
-					// 	//this.getFile(res.data)
-					// }).catch(err=>{
-						
-					// })
-					this.platformH5()
+				// this.formData.startTime = this.dateAdd(this.formData.startTime);
+				// this.formData.endTime = this.dateAdd(this.formData.endTime);
+				this.$refs.form.validate().then(res=>{
+					if(uni.getSystemInfoSync({}).platform.match(/(ios|android|mac)/i)){
+						this.platformnotH5()//移动端
+					}else{
+						this.platformH5()//h5
+					}
 				}).catch(err=>{
 					
 				})
@@ -81,22 +75,11 @@
 					},
 					success: (res) => {
 						console.log(res)
-						this.getFile(res.data)
+						if(res.statusCode === 200){	
+							this.getFile(res.data)
+						}		
 					}
 				});
-				// uni.$http.post('/excel/downloadNote',{
-				// 	data:this.formData,
-				// 	responseType: "arraybuffer",
-				// }).then(res => {
-				// 	this.getFile(res.data)
-				// 	console.log(res)
-				// 	//this.json_array = res.data
-				// 	// if(res.data.code == 200){
-						
-				// 	// }
-				// }).catch(err =>{
-					
-				// })
 			},
 			//非H5环境下文件下载
 			platformnotH5(){
@@ -176,30 +159,6 @@
 				     return currentdate;
 					},
 				getFile(data){
-				 //  const blob = new Blob([data]); // 通过返回的流数据 手动构建blob 流
-				 //  const reader = new FileReader();
-					// reader.readAsDataURL(blob); // 转换为base64，可以直接放入a标签的href
-					// reader.onload = (e) => {
-				 //   // 转换完成，创建一个a标签用于下载
-				 //   const a = document.createElement("a");
-				 //   a.download = "haha" + ".xls"; // 构建 下载的文件名称以及下载的文件格式（可通过传值输入）
-				 //   if (typeof e.target.result === "string") {
-					//  a.href = e.target.result;
-				 //   }
-				 //   a.click();
-				 // };	
-				 
-				//  if (!data) {
-				//        return
-				//  }
-				//  let url = window.URL.createObjectURL(new Blob([data]))
-				//  let link = document.createElement('a')
-				//  link.style.display = 'none'
-				//  link.href = url
-				//  link.setAttribute('download', 'excel.xlsx')
-				//  document.body.appendChild(link)
-				//  link.click()
-				// }
 				let blob = new Blob([data], {type: `application/xlsx;charset=utf-8`});
 					// 获取heads中的filename文件名
 					let downloadElement = document.createElement('a');
@@ -222,12 +181,17 @@
 </script>
 
 <style lang="scss">
-.download-note{
+	.download-note{
 		width: 95vw;
 		margin:0 auto;
 		button{
 			background-color: $jxnu-bg-color;
 			color: aliceblue;		
+		}
+	}
+	@media screen and (min-width:950px){
+		.download-note{
+			width: 900px;
 		}
 	}
 </style>

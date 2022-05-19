@@ -1,14 +1,13 @@
 <template>
 	<view class="file-picker-box">
 		<uni-group>
-			<text>请假凭证(非必填，最多上传3张图片)</text>
+			<text>请假凭证(非必填，上传图片数量无限制)</text>
 				<uni-file-picker
 					:value="imageValue" 
 					return-type="array"
 					file-mediatype="image"
 					mode="grid" 
 					file-extname="png,jpg"
-					:limit="3"
 					:auto-upload="false"
 					@select="select" 
 					@delete="handleDelete" 
@@ -24,11 +23,14 @@
 		data() {
 			return {
 				imageValue:[],
-				id:''
+				id:'',
+			    type:''
 			}
 		},
 		onLoad(item){
-			this.id = item.id;	
+			this.id = item.id;
+			this.type = item.type
+			console.log(item)
 		},
 		methods: {
 			// 获取上传状态
@@ -47,7 +49,20 @@
 			},
 			submitForm(){
 				if(this.imageValue){
-					this.postImg(uni.getStorageSync('token'))
+					uni.$http.get('/image/delete/' + this.id).then(res =>{
+						if(res.data.code === 200){
+							this.postImg(uni.getStorageSync('token'))
+						}else{
+							uni.showToast({
+								title:"网络似乎出现了一些问题"
+							})
+						}
+					}).catch(err =>{
+						uni.showToast({
+							title:"网络似乎出现了一些问题"
+						})
+					})
+					
 				}else{
 					uni.showToast({
 						icon:'none',
@@ -66,7 +81,7 @@
 			    const path = this.imageValue.pop();
 				//console.log(path)
 				//console.log(this.imageValue[0])
-			    await uni.uploadFile({
+				await uni.uploadFile({
 						url: "http://101.43.85.67:8081/image/uploadFiles?id=" + this.id,
 						filePath: path,
 						name: 'files',//后端接收字段名
@@ -76,8 +91,13 @@
 						},
 						success: (res) => {
 							let obj = JSON.parse(res.data);
-							console.log(obj)
+							//console.log(obj)
 							if(obj.code === 200){
+								uni.redirectTo({
+									url: `/pages/allLeaveDetails/allLeaveDetails?id=` + this.id + '&type=' + this.type ,
+									animationType: 'pop-in',
+									animationDuration: 200
+								})
 							}else{
 								uni.showToast({
 									icon:'error',

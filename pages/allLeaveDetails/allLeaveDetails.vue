@@ -83,7 +83,7 @@
 			<view>
 				<!-- 等待处理 -->
 				<view class="btn-grounps" v-if="types === 'PROCESSING'">
-					<button type="default" class="Boder" @click="addAttachment()">添加附件</button>
+					<button type="default" class="Boder" @click="addAttachment()">{{this.btn_text}}</button>
 					<button type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>
 				</view>
 				<!-- 已销假 -->
@@ -114,6 +114,7 @@
 	export default {
 		data() {
 			return {
+				btn_text:"添加附件",
 				types:'',
 				leaveDetails: {
 				},
@@ -122,25 +123,19 @@
 			}
 		},
 		onLoad(item) {
-			//console.log(item)
-			//console.log(this.leaveDetails.type == '0')
-			//获取假条信息
-			console.log(uni.getStorageSync('token'))
+			uni.showLoading({
+				title: '加载中',
+				duration: 500,
+			})
 			uni.$http.get('/leave/selectANote/' + item.id).then(res =>{
 				console.log(res)
 				if(res.data.code === 200){
 					this.leaveDetails = res.data.data
-					uni.showToast({
-						title: '加载中',
-						duration: 500,
-						icon: "loading"
-					});
+					uni.hideLoading();	
 				}
 				
 			})
 			this.types = item.type;
-			//console.log(this.leaveDetails)
-			
 			//获取假条图片
 			uni.$http.get('/image/' + item.id).then(res =>{
 				console.log(res)
@@ -149,23 +144,23 @@
 					for(let item in this.imgs){
 						this.imgs[item].url = this.baseUrl + this.imgs[item].url;
 					}
-					//console.log(this.imgs)
+					//有图片，替换附件
+					if(this.imgs.length){
+						this.btn_text = "替换附件"
+					}
 				}
 				
 			})
-			//console.log(this.imgs)
-			//console.log(this.leaveDetails.examine)
-			//console.log(this.types == '0')
-			
-			
+		
 		},
 		methods: {
 			//添加附件
 			addAttachment(){
 				uni.navigateTo({
-					url:'/pages/addAttachment/addAttachment?id=' + this.leaveDetails.id
+					url:'/pages/addAttachment/addAttachment?id=' + this.leaveDetails.id + '&type=' + this.types ,
 				})
 			},
+			//去销假
 			goToTerminate(){
 				uni.navigateTo({
 					url:'/pages/terminateLeave/terminateLeave?id=' + this.leaveDetails.id
