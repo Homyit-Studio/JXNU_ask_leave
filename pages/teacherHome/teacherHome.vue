@@ -296,6 +296,15 @@
 						uni.removeStorage({
 							key: 'role',
 						});
+						if(uni.getStorageSync("teacherMessage")){
+							uni.removeStorage({
+								key: 'teacherMessage',
+							});
+						}else{
+							uni.removeStorage({
+								key: 'studentMessage',
+							});
+						}
 						setTimeout(() => {
 							uni.showToast({
 								title: "退出成功"

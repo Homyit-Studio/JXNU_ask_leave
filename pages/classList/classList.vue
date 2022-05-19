@@ -9,6 +9,12 @@
 				</view>
 			</view>
 		</uni-card>
+		<view>
+			<!-- 提示信息弹窗 -->
+			<uni-popup ref="message" type="message">
+				<uni-popup-message :type="msg.msgType" :message="msg.messageText" :duration="2000"></uni-popup-message>
+			</uni-popup>
+		</view>
 	</view>
 </template>
 
@@ -18,7 +24,11 @@
 			return {
 				avatar: "https://bkimg.cdn.bcebos.com/pic/b21c8701a18b87d6473830f5000828381e30fde6",
 				classList: [],
-				enterChoose:null
+				enterChoose:null,
+				msg: {
+					msgType: 'success',
+					messageText: '这是一条成功提示',
+				},
 			}
 		},
 		onLoad(options) {
