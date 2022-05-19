@@ -5,6 +5,7 @@ import cn.homyit.onlineLeaveSystem.exception.BizException;
 import cn.homyit.onlineLeaveSystem.exception.ExceptionCodeEnum;
 import cn.homyit.onlineLeaveSystem.mapper.ImageMapper;
 import cn.homyit.onlineLeaveSystem.service.ImageService;
+import cn.homyit.onlineLeaveSystem.util.CheckImageUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -39,6 +41,11 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public void upload(MultipartFile file,Long id) {
+
+        boolean isImage = CheckImageUtil.isImage(file);
+        if (!isImage){
+            throw new BizException(ExceptionCodeEnum.NOT_IMAGE);
+        }
         log.info("准备上传到云服务器的{}目录",resourcePath);
         String temp = UUID.randomUUID() + file.getOriginalFilename();
         String uploadUrl = resourcePath+temp;

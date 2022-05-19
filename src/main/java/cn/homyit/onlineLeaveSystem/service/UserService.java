@@ -1,6 +1,7 @@
 package cn.homyit.onlineLeaveSystem.service;
 
 import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherAddDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherUpdaterDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.PasswordDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.StudentUpdateDTO;
@@ -24,7 +25,7 @@ public interface UserService {
 
     List<StudentUserVo> getNoteByStudentName(String username);
 
-    void addUser(TeacherUpdaterDTO teacherUpdaterDTO);
+    void addUser(TeacherAddDTO teacherAddDTODTO);
 
     void updateUser(TeacherUpdaterDTO teacherUpdaterDTO);
 

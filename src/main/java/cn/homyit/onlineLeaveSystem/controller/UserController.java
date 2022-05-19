@@ -1,6 +1,7 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
 import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherAddDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherUpdaterDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.PasswordDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.StudentUpdateDTO;
@@ -45,7 +46,7 @@ public class UserController {
         return Result.success();
     }
 
-    @PreAuthorize("hasAuthority('managing_students')")
+//    @PreAuthorize("hasAuthority('managing_students')")
     @GetMapping("/personInfo")
     public Result<StudentUserVo> personInfo(){
         StudentUserVo  userInfo = userService.personInfo();
@@ -78,8 +79,8 @@ public class UserController {
     @PreAuthorize("hasAuthority('managing_students')")
     @PostMapping("/addUser")
     @ApiLog
-    public Result addUser(@Validated @RequestBody TeacherUpdaterDTO teacherUpdaterDTO){
-        userService.addUser(teacherUpdaterDTO);
+    public Result addUser(@Validated @RequestBody TeacherAddDTO teacherAddDTO){
+        userService.addUser(teacherAddDTO);
         return Result.success();
     }
 
@@ -93,7 +94,6 @@ public class UserController {
     }
 
 
-    @PreAuthorize("hasAuthority('managing_students')")
     @PostMapping("/updateUserForStudent")
     @ApiLog
     public Result updateUserForStudent( @RequestBody StudentUpdateDTO studentUpdateDTO){

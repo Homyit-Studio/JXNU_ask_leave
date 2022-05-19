@@ -32,7 +32,7 @@ public class ImageNoteController {
     /*
    批量上传
     */
-    @ApiLog
+
     @PostMapping(value = "/uploadFiles")
     public Result uploadFiles(@RequestPart("files") MultipartFile[] files,@RequestParam("id") Long id) {
 

@@ -199,62 +199,36 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         return leaveNoteVo;
     }
 
-    //上级可跨越下级直接通过请求，只限于请假
-
+    //审批
     @Override
     public void updateNote(UpdateNoteDTO updateNoteDTO) {
         LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
         LevelEnum role = loginUser.getUser().getRole();
-        Integer level = role.getValue();
 
-        //根据登录角色获取考核等级（并不是假条此时的等级而是说审核人的等级）
-        ExamineEnum examineEnum =ExamineEnum.
-                getEumByCode(LevelEnum.getEumByCode(level).getValue()-1);
         LeaveNote note = MyBeanUtils.copyBean(updateNoteDTO, LeaveNote.class);
-
-        Integer examine =examineEnum.getValue();
-        if (level<=examine){
+        //角色级别小于审核级别
+        if (role.getValue()<updateNoteDTO.getLevelEnum().getValue()){
             throw new BizException(ExceptionCodeEnum.ALREADY_AGREE);
         }
-        //审核人意见
-        //拒绝则不往下传递
+
         if (updateNoteDTO.getOpinionEnum().equals(OpinionEnum.NO)){
             note.setExamine(ExamineEnum.FAILURE);
         }else{
-            //同意往下传递
-            if(updateNoteDTO.getLevelEnum().getValue()-1 !=examine){
-                note.setExamine(ExamineEnum.getEumByCode(examineEnum.getValue().intValue()+1));
+            //院长审批或最后一级审批生成销假条或者跨级
+            if(role.equals(LevelEnum.DEAN)||updateNoteDTO.getLevelEnum().getValue()<=role.getValue()){
+                note.setExamine(ExamineEnum.WAIT_REPORT);
+
+                BackNote backNote = MyBeanUtils.copyBean(note, BackNote.class);
+                backNote.setDepart(LeaveEnum.NO);
+                backNoteService.insertNote(backNote);
+            }else{
+                note.setExamine(ExamineEnum.getEumByCode(role.getValue()));
                 if (role.equals(LevelEnum.INSTRUCTOR)){
                     //手动指定负责人
                     note.setLeaderNumber(updateNoteDTO.getLeaderNumber());
                 }
-
-                //院长审批后也直接生成请假条
-                if(role.equals(LevelEnum.DEAN)){
-                    note.setExamine(ExamineEnum.WAIT_REPORT);
-                    //生成销假条
-                    BackNote backNote = MyBeanUtils.copyBean(note, BackNote.class);
-
-                    //创建时学生仍然在学校
-                    backNote.setDepart(LeaveEnum.NO);
-                    //插入销假条表
-                    backNoteService.insertNote(backNote);
-                }
-            }else{
-
-                note.setExamine(ExamineEnum.WAIT_REPORT);
-
-                //生成销假条
-                BackNote backNote = MyBeanUtils.copyBean(note, BackNote.class);
-
-                //创建时学生仍然在学校
-                backNote.setDepart(LeaveEnum.NO);
-                //插入销假条表
-                backNoteService.insertNote(backNote);
-
             }
-
         }
         leaveNoteMapper.updateById(note);
     }
@@ -271,7 +245,6 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         //待本人审核
         QueryWrapper<LeaveNote> wrapper1 = new QueryWrapper<LeaveNote>().eq("examine",
                 ExamineEnum.getEumByCode(role.getValue().intValue() - 1));
-
 
         //待下一级审核
         QueryWrapper<LeaveNote> wrapper2 = new QueryWrapper<LeaveNote>().

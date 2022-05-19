@@ -1,14 +1,8 @@
 package cn.homyit.onlineLeaveSystem.listener;
 
-import cn.homyit.onlineLeaveSystem.entity.DO.SysClassTeacher;
-import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentClassInfo;
-import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
-import cn.homyit.onlineLeaveSystem.entity.DO.SysUserRole;
+import cn.homyit.onlineLeaveSystem.entity.DO.*;
 import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherDTO;
-import cn.homyit.onlineLeaveSystem.mapper.ClassInfoMapper;
-import cn.homyit.onlineLeaveSystem.mapper.SysClassTeacherMapper;
-import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
-import cn.homyit.onlineLeaveSystem.mapper.SysUserRoleMapper;
+import cn.homyit.onlineLeaveSystem.mapper.*;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.SexEnum;
 import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
@@ -34,23 +28,29 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
     private ClassInfoMapper classInfoMapper;
     private SysUserRoleMapper sysUserRoleMapper;
     private Map<String,LevelEnum> roleMap;
+    private SysClassStudentMapper sysClassStudentMapper;
+    private static final Long CLASS_ID = 1L;
+
 
 
 
     public TeacherExcelListener(SysStudentUserMapper userMapper,
                              PasswordEncoder passwordEncoder,
                                 SysClassTeacherMapper sysClassTeacherMapper,
+
                                 ClassInfoMapper classInfoMapper,
-                                SysUserRoleMapper sysUserRoleMapper){
+                                SysUserRoleMapper sysUserRoleMapper,
+            SysClassStudentMapper sysClassStudentMapper){
         this.userMapper =userMapper;
         this.passwordEncoder = passwordEncoder;
         this.sysClassTeacherMapper = sysClassTeacherMapper;
+        this.sysClassStudentMapper = sysClassStudentMapper;
         this.classInfoMapper = classInfoMapper;
         this.sysUserRoleMapper = sysUserRoleMapper;
         roleMap = new HashMap<>();
 //        roleMap.put("辅导员",LevelEnum.INSTRUCTOR);
         roleMap.put("班主任",LevelEnum.INSTRUCTOR);
-        roleMap.put("党委副书记",LevelEnum.SECRETARY);
+        roleMap.put("负责人",LevelEnum.SECRETARY);
         roleMap.put("院长",LevelEnum.DEAN);
         roleMap.put("学生",LevelEnum.STUDENT);
         roleMap.put("无",LevelEnum.LOOK);
@@ -63,6 +63,8 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
     @Override
     public void invoke(TeacherDTO data, AnalysisContext context) {
         SysStudentUser user = MyBeanUtils.copyBean(data, SysStudentUser.class);
+
+        user.setGradeId(1L);
         if (data.getSex().equals("男")){
             user.setSex(SexEnum.MAN);
         }else{
@@ -96,7 +98,12 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
             user.setRole(LevelEnum.getEumByCode(roleMap.get("无").getValue()));
             userMapper.insert(user);
             sysUserRoleMapper.insert(new SysUserRole(data.getStudentNumber(),roleMap.get("无").getValue().longValue()));
-        }else{
+        }else if(LevelEnum.INSTRUCTOR.equals(role)){
+          user.setClassId(CLASS_ID);
+          new SysClassStudent(CLASS_ID, data.getStudentNumber());
+
+
+        } else{
             user.setRole(LevelEnum.getEumByCode(role.getValue()));
             userMapper.insert(user);
             sysUserRoleMapper.insert(new SysUserRole(data.getStudentNumber(),role.getValue().longValue() ));
@@ -109,6 +116,12 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-
+        //更新班主任容量
+        Integer count = sysClassStudentMapper.selectCount(
+                new QueryWrapper<SysClassStudent>().eq("class_id",CLASS_ID));
+        SysStudentClassInfo sysStudentClassInfo = new SysStudentClassInfo();
+        sysStudentClassInfo.setId(CLASS_ID);
+        sysStudentClassInfo.setCapacity(count);
+        classInfoMapper.updateById(sysStudentClassInfo);
     }
 }

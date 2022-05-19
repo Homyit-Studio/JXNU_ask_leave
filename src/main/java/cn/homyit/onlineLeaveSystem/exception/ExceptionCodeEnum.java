@@ -21,6 +21,7 @@ public enum ExceptionCodeEnum {
     ALREADY_AGREE(601,"您已经审核"),
     UPLOAD_ERROR(603,"上传失败"),
     NO_IMAGES(604,"此假条未上传图片"),
+    NOT_IMAGE(605,"请上传图片"),
 
     /**
      * 通用结果

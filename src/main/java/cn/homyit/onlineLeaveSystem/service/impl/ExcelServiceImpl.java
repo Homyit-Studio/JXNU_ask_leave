@@ -81,7 +81,9 @@ public class ExcelServiceImpl implements ExcelService {
                              passwordEncoder,
                              sysClassTeacherMapper,
                              classInfoMapper,
-                             sysUserRoleMapper
+                            sysUserRoleMapper,
+                            sysClassStudentMapper
+
                     )).build();
         } catch (IOException e) {
             e.printStackTrace();

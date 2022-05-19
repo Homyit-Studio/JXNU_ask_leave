@@ -4,6 +4,7 @@ import cn.homyit.onlineLeaveSystem.entity.DO.LoginUser;
 import cn.homyit.onlineLeaveSystem.entity.DO.SysClassStudent;
 import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
 import cn.homyit.onlineLeaveSystem.entity.DO.SysUserRole;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherAddDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherUpdaterDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.PasswordDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.StudentUpdateDTO;
@@ -152,30 +153,32 @@ public class UserServiceImpl implements UserService {
         return list;
     }
 
+
+
     //增加下级
     @Override
-    public void addUser(TeacherUpdaterDTO teacherUpdaterDTO) {
+    public void addUser(TeacherAddDTO teacherAddDTODTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         LevelEnum role = loginUser.getUser().getRole();
-        if (role.getValue()<=teacherUpdaterDTO.getRole().getValue()){
+        if (role.getValue()<=teacherAddDTODTO.getRole().getValue()){
             throw new BizException(ExceptionCodeEnum.ADD_USER);
         }
         //先查账号是否存在
-        SysStudentUser checkExist = userMapper.selectById(teacherUpdaterDTO.getStudentNumber());
+        SysStudentUser checkExist = userMapper.selectById(teacherAddDTODTO.getStudentNumber());
         if (!Objects.isNull(checkExist)){
             throw new BizException(ExceptionCodeEnum.USER_EXIST);
         }
 
-        SysStudentUser user = MyBeanUtils.copyBean(teacherUpdaterDTO, SysStudentUser.class);
+        SysStudentUser user = MyBeanUtils.copyBean(teacherAddDTODTO, SysStudentUser.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         //插入用户表
         userMapper.insert(user);
         //插入用户班级表
-        sysClassStudentMapper.insert(new SysClassStudent(teacherUpdaterDTO.getClassId(), teacherUpdaterDTO.getStudentNumber()));
+        sysClassStudentMapper.insert(new SysClassStudent(teacherAddDTODTO.getClassId(), teacherAddDTODTO.getStudentNumber()));
         //插入用户角色表
-        sysUserRoleMapper.insert(new SysUserRole(teacherUpdaterDTO.getStudentNumber(), teacherUpdaterDTO.getRole().getValue().longValue()));
+        sysUserRoleMapper.insert(new SysUserRole(teacherAddDTODTO.getStudentNumber(), teacherAddDTODTO.getRole().getValue().longValue()));
 
     }
 
