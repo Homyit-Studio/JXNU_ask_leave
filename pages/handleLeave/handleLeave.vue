@@ -12,8 +12,8 @@
 			</view> -->
 			<view class="leave-notes">
 				<view>
-					<uni-data-menu :localdata="localMenus" :unique-opened="true"
-						active-text-color="#409eff" @select="changeMenu">
+					<uni-data-menu :localdata="localMenus" :unique-opened="true" active-text-color="#409eff"
+						@select="changeMenu">
 					</uni-data-menu>
 				</view>
 				<view>
@@ -22,9 +22,8 @@
 							:key="item.id">
 							<template v-slot:header>
 								<view class="card-header">
-									<uni-tag v-if="item.examine == 'SUCCESS'" :text=" index+1 + '.已同意'" type="success">
-									</uni-tag>
-									<uni-tag v-else-if="item.examine == 'FAILURE'" :text="index+1+ ',已拒绝'" type="error">
+									<uni-tag v-if="item.examine == 'FAILURE'" :mark="true" :text="index+1+ '.'"
+										type="error">
 									</uni-tag>
 									<uni-tag :mark="true" v-else :text="index+1 + '.'" type="default"></uni-tag>
 									<view>
@@ -41,9 +40,9 @@
 							</template>
 							<template v-slot:footer>
 								<view class="card-actions">
-									<view class="card-actions-item" @click="checkDetails(item.id)">
+									<view class="card-actions-item" @click="checkDetails(item.id,item.examine)">
 										<view class="tag-view">
-											<uni-tag text="去审批"
+											<uni-tag :text="currentCatalog == 'PROCESSING'? '去审批' : '查看详情'"
 												custom-style="background-color: #1b478e; border-color: #1b478e; color: #fff;" />
 										</view>
 									</view>
@@ -69,37 +68,39 @@
 	export default {
 		data() {
 			return {
+				//当前分类
+				currentCatalog: "PROCESSING",
 				localMenus: [{
-						total: 12,
+						total: 0,
 						text: '等待处理',
 						value: "PROCESSING",
 					},
 					{
-						total: 1,
+						total: 0,
 						text: '上级审核',
 						value: "TRANSMIT",
 					}, {
-						total: 2,
+						total: 0,
 						text: '销假完成',
 						value: "PROCESSED",
 					},
 					{
-						total: 1,
+						total: 0,
 						text: '等待销假',
 						value: "WAIT_REPORT",
 					},
 					{
-						total: 1,
+						total: 0,
 						text: '销假过期',
 						value: "REPORT_EXPIRED",
 					},
 					{
-						total: 1,
+						total: 0,
 						text: '申请过期',
 						value: "APPLY_EXPIRED",
 					},
 					{
-						total: 1,
+						total: 0,
 						text: '被拒假条',
 						value: "FAILURE",
 					}
@@ -136,7 +137,8 @@
 		// 		}
 		// 	}
 		// },
-		onLoad() {
+		onShow() {
+			this.listRequest.pageNo = 1
 			this.requestLeaveNotes()
 			this.requestLeaveCount()
 		},
@@ -152,7 +154,7 @@
 					this.requestLeaveNotes()
 				}
 			},
-			requestLeaveCount(){
+			requestLeaveCount() {
 				uni.$http.get("/leave/allCountsForPerson").then(res => {
 					if (res.data.code == 200) {
 						let data = res.data.data
@@ -195,14 +197,16 @@
 					this.shownodata = true
 				})
 			},
-			checkDetails(id) {
+			checkDetails(id, examine) {
 				uni.navigateTo({
-					url: `../handleLeaveDetail/handleLeaveDetail?id=${id}&current=${this.listRequest.completeEnum}`,
+					url: `../handleLeaveDetail/handleLeaveDetail?id=${id}&current=${this.currentCatalog}&card=3`,
 					animationType: 'pop-in',
 					animationDuration: 200
 				})
 			},
-			changeMenu(e){
+			changeMenu(e) {
+				this.currentCatalog = e.value;
+				this.listRequest.pageNo = 1
 				this.listRequest.examineEnum = e.value;
 				this.requestLeaveNotes()
 			}
@@ -267,10 +271,12 @@
 		.leave-remind-title {
 			width: 100vw;
 		}
-		.leave-notes{
+
+		.leave-notes {
 			display: flex;
 			justify-content: flex-start;
 		}
+
 		.leave-list {
 			.leave-list-item {
 				width: 83vw;

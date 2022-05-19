@@ -28,7 +28,7 @@
 		methods: {
 			lookRoster(id,className){
 				uni.navigateTo({
-					url : `../classRoster/classRoster?id=${id}&class=${className}`,
+					url : `../classRoster/classRoster?id=${id}&class=${className}&choose=${this.enterChoose}`,
 					animationType: 'pop-in',
 					animationDuration: 200
 				})

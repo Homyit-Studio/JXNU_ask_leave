@@ -133,10 +133,10 @@
 				</view>
 				<view class="tools-box">
 					<view @click="lookMessage">
-						<navigator class="tools-btn">
+						<view class="tools-btn">
 							<uni-icons type="notification-filled" size="35" color="#f0f0f0" class="icon-style">
 							</uni-icons>
-						</navigator>
+						</view>
 						<text>个人信息</text>
 					</view>
 					<view @click="signout">
@@ -235,6 +235,7 @@
 			// });
 			uni.$http.get("/user/personInfo").then(res => {
 				if (res.data.code == 200) {
+					uni.setStorageSync("identity", res.data.data.role)
 					this.teacherMessage = res.data.data
 				} else {
 					this.msg.msgType = "error"
