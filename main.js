@@ -29,10 +29,11 @@ import {
 } from '@escook/request-miniprogram'
 uni.$http = $http
 
-$http.baseUrl = 'http://101.43.85.67:8081'
+//$http.baseUrl = 'http://101.43.85.67:8081'
+$http.baseUrl = 'https://www.lovehot.club/api'
 
 $http.beforeRequest = function(options) {
-	if (options.url != "http://101.43.85.67:8081/user/login") {
+	if (options.url != "https://www.lovehot.club/user/login") {
 		options.header["token"] = uni.getStorageSync('token');
 	}
 	uni.showLoading({

@@ -1,6 +1,6 @@
 <template>
 		<view class="handle-leave-details-page">
-		<view class="detail-status">、
+		<view class="detail-status">
 			<view>
 				<view>
 					<uni-icons type="checkbox-filled" size="120" color="#00aa27"></uni-icons>
@@ -29,14 +29,11 @@
 		</view>
 		<view class="btn-grounps">
 			<view>
-				<navigator url="/pages/studentHome/studentHome">
-					<button type="default">返回首页</button>
-				</navigator>
+				<!-- <navigator url="/pages/studentHome/studentHome"> -->
+					<button type="default" @click="backHome">返回首页</button>
 			</view>
 			<view class="btn-right">
-				<navigator url="/pages/allLeaves/allLeaves">
-					<button type="default" >查看申请</button>
-				</navigator>
+					<button type="default" @click="backLeaves">查看申请</button>
 			</view>
 		</view>
 	</view>
@@ -65,7 +62,17 @@
 		methods: {
 			getData(formData){
 				this.leaveDetails = formData;
-			}
+			},
+			backHome(){
+				uni.redirectTo({
+					url:"/pages/studentHome/studentHome"
+				})
+			},
+			backLeaves(){
+				uni.redirectTo({
+					url:"/pages/allLeaves/allLeaves"
+				})
+			},
 		},
 		onLoad:function(options) {
 			let obj=JSON.parse(decodeURIComponent(options.formData))

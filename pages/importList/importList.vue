@@ -94,7 +94,7 @@
 				if(this.studentFile.path){
 					//直接使用blob路径上传文件
 						uni.uploadFile({
-							url: "http://101.43.85.67:8081/excel/upload?grade=" + this.formData.grade,
+							url: "https://www.lovehot.club/excel/upload?grade=" + this.formData.grade,
 							filePath: this.studentFile.path,
 							header: {
 								"token" : uni.getStorageSync('token'),
@@ -141,7 +141,7 @@
 				if(this.teacherFile.path){
 					console.log(uni.getStorageSync('token'))
 					uni.uploadFile({
-						url: "http://101.43.85.67:8081/excel/uploadTeacher",
+						url: "https://www.lovehot.club/excel/uploadTeacher",
 						filePath: this.teacherFile.path,
 						header: {
 							"token" : uni.getStorageSync('token'),

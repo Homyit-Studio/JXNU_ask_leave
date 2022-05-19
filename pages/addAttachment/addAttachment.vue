@@ -82,7 +82,7 @@
 				//console.log(path)
 				//console.log(this.imageValue[0])
 				await uni.uploadFile({
-						url: "http://101.43.85.67:8081/image/uploadFiles?id=" + this.id,
+						url: "https://www.lovehot.club/api/image/uploadFiles?id=" + this.id,
 						filePath: path,
 						name: 'files',//后端接收字段名
 						header: {
@@ -91,7 +91,7 @@
 						},
 						success: (res) => {
 							let obj = JSON.parse(res.data);
-							//console.log(obj)
+							console.log(res)
 							if(obj.code === 200){
 								uni.redirectTo({
 									url: `/pages/allLeaveDetails/allLeaveDetails?id=` + this.id + '&type=' + this.type ,

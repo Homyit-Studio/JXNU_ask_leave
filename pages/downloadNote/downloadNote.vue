@@ -68,7 +68,7 @@
 			//H5环境文件下载
 			platformH5(){
 				uni.request({
-					url: 'http://101.43.85.67:8081/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&endTime='+this.formData.endTime,
+					url: 'https://www.lovehot.club/api/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&endTime='+this.formData.endTime,
 					responseType: 'ArrayBuffer',
 					header: {
 						"token" : uni.getStorageSync('token'),
@@ -84,7 +84,7 @@
 			//非H5环境下文件下载
 			platformnotH5(){
 				uni.downloadFile({
-					url: 'http://101.43.85.67:8081/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&endTime='+this.formData.endTime, 
+					url: 'https://www.lovehot.club/api/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&endTime='+this.formData.endTime, 
 					header: {
 						"token" : uni.getStorageSync('token'),
 						//"Content-Type": "multipart/form-data",
@@ -166,7 +166,7 @@
 					let href = window.URL.createObjectURL(blob);
 					downloadElement.href = href;
 					// 下载后文件名
-					downloadElement.download = "假条.xlsx";
+					downloadElement.download = "下载假条.xlsx";
 					document.body.appendChild(downloadElement);
 					// 点击下载
 					downloadElement.click();

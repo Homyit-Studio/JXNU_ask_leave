@@ -119,7 +119,7 @@
 				leaveDetails: {
 				},
 				imgs:[],
-				baseUrl:"http://101.43.85.67"
+				baseUrl:"https://www.lovehot.club"
 			}
 		},
 		onLoad(item) {
