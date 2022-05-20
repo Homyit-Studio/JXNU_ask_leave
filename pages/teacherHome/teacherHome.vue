@@ -67,14 +67,14 @@
 							<view v-if="teacherMessage.role == 'SECRETARY'">
 								<navigator animation-type="pop-in" animation-duration="300"
 									url="../adminTeacher/adminTeacher?choose=0" class="tools-btn">
-									<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+									<uni-icons type="link" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 								</navigator>
 								<text>管理教师</text>
 							</view>
 							<view v-else-if="teacherMessage.role == 'DEAN'">
 								<navigator animation-type="pop-in" animation-duration="300"
 									url="../adminTeacher/adminTeacher?choose=1" class="tools-btn">
-									<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+									<uni-icons type="link" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 								</navigator>
 								<text>管理教师</text>
 							</view>

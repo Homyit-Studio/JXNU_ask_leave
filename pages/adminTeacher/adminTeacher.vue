@@ -7,7 +7,7 @@
 						:src="item.sex  == 'WOMAN'? 'https://img.tukuppt.com/png_preview/00/05/38/DCoSdpcUVs.jpg!/fw/780' : 'https://img.tukuppt.com/png_preview/00/05/28/LjhCsodQxt.jpg!/fw/780'">
 					</image><text>{{item.username}}</text>
 				</view>
-				<view><text>工号:{{item.studentNumber}}</text></view>
+				<view><text>工号:{{"00" + item.studentNumber}}</text></view>
 			</view>
 		</uni-card>
 		<view>
@@ -17,7 +17,7 @@
 					<view class="remind-tol"><text>点击灰色遮罩层，隐藏教师信息</text></view>
 					<uni-list>
 						<uni-list-item title="姓名" :rightText="teacherMessage.username"></uni-list-item>
-						<uni-list-item title="工号" :rightText="'' + teacherMessage.studentNumber"></uni-list-item>
+						<uni-list-item title="工号" :rightText="'00' + teacherMessage.studentNumber"></uni-list-item>
 						<uni-list-item title="性别" :rightText="teacherMessage.sex  == 'WOMAN'? '女' : '男'">
 						</uni-list-item>
 						<uni-list-item title="联系方式" :rightText="teacherMessage.phoneNumber"></uni-list-item>
