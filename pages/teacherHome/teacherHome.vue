@@ -64,12 +64,19 @@
 							<text>管理班级</text>
 						</view>
 						<view class="teacher" v-else-if="teacherMessage.role == 'SECRETARY' ||teacherMessage.role == 'DEAN'">
-							<view>
+							<view v-if="teacherMessage.role == 'SECRETARY'">
 								<navigator animation-type="pop-in" animation-duration="300"
-									url="../showGradeLeave/showGradeLeave?choose=1" class="tools-btn">
+									url="../adminTeacher/adminTeacher?choose=0" class="tools-btn">
 									<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 								</navigator>
-								<text>管理{{teacherMessage.role == 'SECRETARY' ? '班主任': '负责人'}}</text>
+								<text>管理教师</text>
+							</view>
+							<view v-else-if="teacherMessage.role == 'DEAN'">
+								<navigator animation-type="pop-in" animation-duration="300"
+									url="../adminTeacher/adminTeacher?choose=1" class="tools-btn">
+									<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+								</navigator>
+								<text>管理教师</text>
 							</view>
 							<view>
 								<navigator animation-type="pop-in" animation-duration="300"

@@ -154,6 +154,14 @@
 				"enablePullDownRefresh": false
 			}
 
+		},
+		{
+			"path": "pages/adminTeacher/adminTeacher",
+			"style": {
+				"navigationBarTitleText": "管理教师",
+				"enablePullDownRefresh": false
+			}
+		
 		}
 	],
 	"globalStyle": {
