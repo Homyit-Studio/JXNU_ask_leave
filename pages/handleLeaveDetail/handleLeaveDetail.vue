@@ -51,25 +51,19 @@
 			<uni-popup ref="inputDialog" type="dialog">
 				<template v-slot:default>
 					<view class="confirm-dialog">
-						<view class="uni-px-5 uni-pb-5" v-if="agree && identity == 'INSTRUCTOR' ">
-							<view class="text">
-								<text>选择负责人：</text>
-							</view>
-							<uni-data-checkbox multiple v-model="checkpeople" :localdata="nextPeople">
-							</uni-data-checkbox>
-						</view>
-						<view>
-							<view>
-								<text>审批意见</text>
-							</view>
-							<view>
-								<view class="uni-textarea">
-									<textarea :cursor="10" placeholder="请输入审批意见" v-model="teacherOpinion" />
-								</view>
-							</view>
-						</view>
+						<uni-forms :modelValue="processMessage" label-position="top" label-width="90" :rules="commitRules">
+								<uni-forms-item label="选择负责人" name="checkpeople" required  v-if="agree && identity == 'INSTRUCTOR'">
+									<uni-data-checkbox multiple v-model="processMessage.checkpeople"
+										:localdata="nextPeople"/>
+								</uni-forms-item>
+						
+							<uni-forms-item required name="advice" label="审批建议">
+								<uni-easyinput type="textarea" v-model="processMessage.teacherOpinion"
+									placeholder="请输入自我介绍" />
+							</uni-forms-item>
+						</uni-forms>
 						<view class="confirm-button">
-							<button plain size="mini">取消</button>
+							<button plain size="mini" @click="cancelConfirm">取消</button>
 							<button plain size="mini" @click="dialogInputConfirm">确认</button>
 						</view>
 					</view>
@@ -113,10 +107,26 @@
 				leaveDetails: {},
 				gobackMessage: {},
 				process: [],
-				teacherOpinion: "",
-				checkpeople: [],
+				processMessage: {
+					teacherOpinion: "",
+					checkpeople: [],
+				},
 				nextPeople: [],
 				statusCard: null,
+				commitRules: {
+					"checkpeople": {
+						rules: [{
+							required: true,
+							errorMessage: "负责人不能为空"
+						}]
+					},
+					"advice": {
+						rules: [{
+							required: true,
+							errorMessage: "审核意见不能为空"
+						}]
+					}
+				},
 				msg: {
 					msgType: 'success',
 					messageText: '这是一条成功提示',
@@ -209,16 +219,14 @@
 						if (this.leaveDetails.examine == 'PROCESSED') {
 							uni.$http.get(`/back/selectANote/${id}`).then(res => {
 								if (res.data.code == 200) {
+									console.log(234)
 									this.gobackMessage = res.data.data
 								} else {
+									console.log(45)
 									this.msg.msgType = "error"
 									this.msg.messageText = res.data.message
 									this.$refs.message.open()
 								}
-							}).catch(err => {
-								this.msg.msgType = "error"
-								this.msg.messageText = err.errMsg
-								this.$refs.message.open()
 							})
 						}
 					} else {
@@ -226,10 +234,6 @@
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
 					}
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err.errMsg
-					this.$refs.message.open()
 				})
 			},
 			pushProcess(data) {
@@ -319,16 +323,21 @@
 					})
 				}
 			},
+			cancelConfirm(){
+				this.$refs.inputDialog.close()
+			},
 			//确认审核提交
 			dialogInputConfirm() {
 				let status = this.identity.toLowerCase() + "Opinion"
 				let requestMessage = {
 					"id": this.leaveDetails.id,
 					"levelEnum": this.leaveDetails.level,
-					"opinionEnum": this.opinionEnum,
-					"leaderNumber": this.checkpeople.join()
+					"opinionEnum": this.opinionEnum
 				}
-				requestMessage[status] = this.teacherOpinion
+				requestMessage[status] = this.processMessage.teacherOpinion
+				if(this.opinionEnum == 'YES'){
+					requestMessage['leaderNumber']= this.processMessage.checkpeople.join()
+				}
 				console.log(requestMessage)
 				uni.$http.post("/leave/updateNote", requestMessage).then(res => {
 					console.log(res)
@@ -347,10 +356,6 @@
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
 					}
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err.errMsg
-					this.$refs.message.open()
 				})
 			},
 		}
@@ -397,23 +402,12 @@
 
 		.detail-status {
 			text-align: center;
-			background-color: #fff;
-			color: #378d8c;
-			padding: 10rpx 0;
+			background-color: $jxnu-bg-color;
+			color: #fff;
+			padding: 20rpx 0;
+			font-size: 14px;
 		}
 
-		.current-time {
-			font-size: 12rpx;
-			text-align: center;
-			padding-top: 20rpx;
-
-			.time-tag {
-				padding: 5rpx;
-				background-color: #999;
-				border-radius: 10rpx;
-				color: #fff;
-			}
-		}
 
 		.cofirm-image {
 			cover-view {
@@ -432,8 +426,9 @@
 					.time-tag {
 						position: absolute;
 						right: 0;
-						top: 20rpx;
-						padding: 20rpx;
+						top: 12rpx;
+						font-size: 12px;
+						padding: 10rpx;
 						color: #fff;
 						background-color: #1b478e;
 					}

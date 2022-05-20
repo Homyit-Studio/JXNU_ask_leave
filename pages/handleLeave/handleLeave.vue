@@ -167,10 +167,6 @@
 						this.msg.messageText = res.data.message
 						this.$refs.message.open()
 					}
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err.errMsg
-					this.$refs.message.open()
 				})
 			},
 			requestLeaveNotes() {
@@ -193,8 +189,6 @@
 						this.msg.messageText = "请求失败"
 						this.$refs.message.open()
 					}
-				}).catch(err => {
-					this.shownodata = true
 				})
 			},
 			checkDetails(id, examine) {
@@ -234,11 +228,6 @@
 					this.$refs.message.open()
 					this.isloading = false
 				}
-			}).catch(err => {
-				this.msg.msgType = "error"
-				this.msg.messageText = err.errMsg
-				this.$refs.message.open()
-				this.isloading = false
 			})
 		}
 	}

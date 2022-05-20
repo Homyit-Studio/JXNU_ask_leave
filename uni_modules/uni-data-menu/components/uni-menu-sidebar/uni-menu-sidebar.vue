@@ -2,15 +2,18 @@
 	<view class="pointer">
 		<template v-for="(item,index) in data" :key="item.value">
 			<template v-if="!item.children || !item.children.length">
-				<uni-menu-item :index="item">
-					<text :class="{title: item.icon}">{{item.text}}</text>
-					<view class="item-icon">{{item.total}}</view>
-				</uni-menu-item>
+				<view class="menu-item">
+					<uni-menu-item :index="item">
+						<view>
+							<text>{{item.text}}</text>
+						</view>
+					</uni-menu-item>
+					<view class="menu-total">{{item.total}}</view>
+				</view>
 			</template>
 			<uni-sub-menu v-else :index="item">
 				<template v-slot:title>
-					<text :class="{title: item.icon}">{{item.text}}</text>
-					<view class="item-icon">{{item.total}}</view>
+					<text>{{item.text}}</text>
 				</template>
 				<uni-menu-sidebar class="item-bg" :data="item.children" :key="item._id" />
 			</uni-sub-menu>
@@ -45,21 +48,21 @@
 <style lang="scss">
 	@import url("uni-icons.css");
 
-	.uni-menu-item {
+	.menu-item {
 		position: relative;
-	}
-
-	.item-icon {
-		min-width: 15px;
-		height: 15px;
-		text-align: center;
-		font-size: 12px;
-		box-sizing: border-box;
-		position: absolute;
-		right: 10px;
-		top: 0;
-		background-color: #1b478e;
-		color: #fff;
-		border-radius: 50%;
+		.menu-total {
+			position: absolute;
+			right: 10px;
+			top: 2px;
+			width: 15px;
+			height: 15px;
+			text-align: center;
+			font-size: 12px;
+			box-sizing: border-box;
+			background-color: #1b478e;
+			color: #fff;
+			border-radius: 50%;
+			z-index: 100;
+		}
 	}
 </style>
