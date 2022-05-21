@@ -134,6 +134,7 @@
 									key: 'token',
 									data: res.data.data.token,
 								});
+								//console.log(res.data.data.role)
 								uni.setStorage({
 									key: 'role',
 									data: res.data.data.role,

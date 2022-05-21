@@ -259,7 +259,9 @@
 						}
 					});
 				}).catch((err)=>{
-					console.log(err)
+					uni.showToast({
+						title: "网络似乎出现了一些问题",
+					})
 				})
 			},
 			revisePassword() {
@@ -286,11 +288,17 @@
 								this.confirm();//相当于退出登录
 							},1500)
 						}else{
-							this.$errShowToast(res.data.message);
+							//this.$errShowToast(res.data.message);
+							uni.showToast({
+								title: "请求错误",
+							})
 						}
 					})
 				}).catch(err =>{
-					this.$errShowToast(err);
+					//this.$errShowToast(err);
+					uni.showToast({
+						title: "网络似乎出现了一些问题",
+					})
 				})
 			},
 			//退出登录
