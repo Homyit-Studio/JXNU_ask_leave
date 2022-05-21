@@ -134,7 +134,7 @@
 									key: 'token',
 									data: res.data.data.token,
 								});
-								//console.log(res.data.data.role)
+								console.log(res.data.data.token)
 								uni.setStorage({
 									key: 'role',
 									data: res.data.data.role,
@@ -178,6 +178,7 @@
 								})
 							} else {
 								uni.showToast({
+									icon:"none",
 									title: res.data.message
 								})
 							}

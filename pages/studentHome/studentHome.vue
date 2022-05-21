@@ -20,20 +20,20 @@
 				<view class="tools-box">
 					<view>
 						<navigator animation-type="pop-in" animation-duration="300" url="/pages/applyLeave/applyLeave" class="tools-btn">
-							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+							<image src="../../static/stu_icon/woyaoqingjia.png" mode="" class="tools-img"></image>
 						</navigator>
 						<text>请假申请</text>
 					</view>
 					<view>
 						<navigator animation-type="pop-in" animation-duration="300" url="/pages/allLeaves/allLeaves" class="tools-btn">
-							<uni-icons type="personadd" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+							<image src="../../static/stu_icon/qingjiajilu.png" mode="" class="tools-img"></image>
 						</navigator>
-						<text>查看申请</text>
+						<text>申请记录</text>
 					</view>
 					<view class="tools-box">
 						<view>
 							<view class="tools-btn" @click="goTerminate()">
-								<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+								<image src="../../static/stu_icon/qingjiaxiaojia.png" mode="" class="tools-img"></image>
 							</view>
 							<text>假条销假</text>
 						</view>
@@ -49,13 +49,13 @@
 				<view class="tools-box">
 					<view>
 						<view class="tools-btn" @click="showInfo()">
-							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-						</view>
+							<image src="../../static/stu_icon/wodegerenxinxi.png" mode="" class="tools-img"></image>	
+						</view>		
 						<text>个人信息</text>
 					</view>
 					<view>
 						<view class="tools-btn" @click="logOut()">
-							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+							<image src="../../static/stu_icon/tuichudenglu.png" mode="" class="tools-img"></image>
 						</view>
 						<text>退出登录</text>
 					</view>
@@ -290,7 +290,8 @@
 						}else{
 							//this.$errShowToast(res.data.message);
 							uni.showToast({
-								title: "请求错误",
+								icon:"none",
+								title: res.data.message,
 							})
 						}
 					})
@@ -327,7 +328,7 @@
 			//销假路上
 			goTerminate(){
 				uni.showToast({
-					title:'请在 查看详情->我要销假 页面进行销假操作',
+					title:'请在 申请记录->我要销假 页面进行销假操作',
 					icon:'none',
 				}
 				);
@@ -402,11 +403,18 @@
 			text-align: center;
 	
 			.tools-btn {
+				display: block;
+				height: 35px;
+				width: 35px;
 				padding: 20rpx;
 				margin: 20rpx;
 				background-color: $jxnu-bg-color;
 				color: $uni-text-color;
 				border-radius: 30rpx;
+			}
+			.tools-img{
+				height: 35px;
+				width: 35px;
 			}
 		}
 	}

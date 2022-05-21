@@ -179,7 +179,7 @@
 					if (res.data.code == 200) {
 						uni.showToast({
 							title: '加载中',
-							duration: 1000,
+							duration: 500,
 							icon: "loading"
 						});
 						console.log(res.data.data.total)
