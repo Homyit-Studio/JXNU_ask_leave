@@ -13,8 +13,8 @@
 		</uni-card>
 		<view>
 			<!-- 普通弹窗 -->
-			<uni-popup ref="studentPopup" background-color="#fff" type="bottom">
-				<view class="popup-content">
+			<uni-popup ref="studentPopup" background-color="#fff" type="bottom" @maskClick="cancelmark">
+				<view class="popup-content" v-if="modify == 0">
 					<view class="remind-tol"><text>点击灰色遮罩层，隐藏学生信息</text></view>
 					<uni-list>
 						<uni-list-item title="姓名" :rightText="studentMessage.username"></uni-list-item>
@@ -33,6 +33,49 @@
 						<button type="default" class="cancel-button" @click="modifyStudent">修改信息</button>
 						<button type="warn" class="revise-button" @click="deleteStudent">删除学生</button>
 					</view>
+				</view>
+				<view v-else class="modify-member">
+					<view class="remind-tol"><text>点击灰色遮罩层，取消修改</text></view>
+					<uni-forms ref="form" :modelValue="peopleformData" class="form-style" :border="true"
+						validateTrigger="bind" err-show-type="toast">
+						<uni-forms-item required label="姓名" name="username">
+							<uni-easyinput multiple v-model="peopleformData.username" placeholder="请输入学生的姓名"
+								:inputBorder="false" />
+						</uni-forms-item>
+						<uni-forms-item required label="学号" name="studentnumber">
+							<uni-easyinput multiple v-model="peopleformData.studentNumber" placeholder="请输入学号"
+								:inputBorder="false" />
+						</uni-forms-item>
+						<uni-forms-item required label="电话" name="phonenumber">
+							<uni-easyinput multiple v-model="peopleformData.phoneNumber" placeholder="请输入学生联系方式"
+								:inputBorder="false" />
+						</uni-forms-item>
+						<uni-forms-item label="民族">
+							<uni-easyinput multiple v-model="peopleformData.nation" placeholder="请输入学生民族民族"
+								:inputBorder="false" />
+						</uni-forms-item>
+						<uni-forms-item label="班级">
+							<uni-easyinput multiple v-model="peopleformData.majorAndClass" placeholder="请输入学生所在班级"
+								:inputBorder="false" />
+						</uni-forms-item>
+						<uni-forms-item label="父母电话">
+							<uni-easyinput multiple v-model="peopleformData.parentNumber" placeholder="请输入学生所在班级"
+								:inputBorder="false" />
+						</uni-forms-item>
+						<uni-forms-item label="楼栋">
+							<uni-easyinput multiple v-model="peopleformData.buildingNumber" placeholder="请输入学生宿舍如3栋S142"
+								:inputBorder="false" />
+						</uni-forms-item>
+						<uni-forms-item label="出生地">
+							<uni-easyinput multiple v-model="peopleformData.nativePlace" placeholder="请输入学生生源地"
+								:inputBorder="false" />
+						</uni-forms-item>
+						<uni-forms-item label="家庭地址">
+							<uni-easyinput multiple v-model="peopleformData.homeAddress" placeholder="请输入学生家庭地址"
+								:inputBorder="false" />
+						</uni-forms-item>
+						<button @click="submitForm" class="confirm-button">确认</button>
+					</uni-forms>
 				</view>
 			</uni-popup>
 		</view>
@@ -104,13 +147,17 @@
 					"pageSize": 10,
 					"classId": null
 				},
-				classId:null
+				classId: null,
+				gradeId: null,
+				modify: 0,
+				peopleformData: {}
 			}
 		},
 		onLoad(options) {
 			this.className = options.class
 			this.enterChoose = options.choose;
 			this.classId = options.id
+			this.gradeId = options.gradeId
 			this.requestClassRoster(options.id)
 		},
 		computed: {
@@ -142,7 +189,7 @@
 						}
 					} else {
 						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
+						this.msg.messageText = "请求错误"
 						this.$refs.message.open()
 						this.shownodata = true
 					}
@@ -155,7 +202,35 @@
 			//添加成员
 			triggerAdd(e) {
 				uni.navigateTo({
-					url:`../addMember/addMember?people=0&id=${this.classId}`
+					url: `../addMember/addMember?people=STUDENT&id=${this.classId}&gradeId=${this.gradeId}`
+				})
+			},
+			//修改信息
+			modifyStudent() {
+				this.modify = 1
+				this.peopleformData = JSON.parse(JSON.stringify(this.studentMessage))
+			},
+			cancelmark() {
+				this.modify = 0
+			},
+			submitForm() {
+				uni.$http.post("/user/updateUser",
+					this.peopleformData).then(res => {
+					if (res.data.code == 200) {
+						console.log(res)
+						this.msg.msgType = "success"
+						this.msg.messageText = "修改成功"
+						this.rosterRequest.pageNo = 1
+						this.modify = 0
+						this.$refs.message.open()
+						this.$refs.studentPopup.close()
+						this.requestClassRoster(this.classId)
+					} else {
+						this.msg.msgType = "error"
+						this.msg.messageText = "修改信息错误"
+						this.$refs.message.open()
+						this.$refs.studentPopup.close()
+					}
 				})
 			},
 			//删除学生
@@ -174,7 +249,7 @@
 						this.requestClassRoster(this.classId)
 					} else {
 						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
+						this.msg.messageText = "请求错误"
 						this.$refs.message.open()
 						this.$refs.studentPopup.close()
 					}
@@ -253,6 +328,20 @@
 				width: 100rpx;
 				height: 100rpx;
 				border-radius: 50%;
+			}
+		}
+
+		.modify-member {
+			width: 90vw;
+			margin: 0 auto;
+
+			.confirm-button {
+				width: 400rpx;
+				height: 30px;
+				line-height: 30px;
+				margin-bottom: 10px;
+				background-color: $jxnu-bg-color;
+				color: #fff;
 			}
 		}
 

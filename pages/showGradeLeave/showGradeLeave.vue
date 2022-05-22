@@ -162,7 +162,17 @@
 				}
 			},
 			requestLeaveCount() {
-				uni.$http.get(`/leave/allCounts/${this.listRequest.gradeId}`).then(res => {
+				console.log({
+					startTime: this.getFormatDate(2),
+					endTime: this.getFormatDate(),
+					gradeId: this.listRequest.gradeId
+				})
+				uni.$http.post(`/leave/allCountsFroGradeId`, {
+					startTime: "2021-07-26 03:34:26",
+					endTime: this.getFormatDate(),
+					gradeId: this.listRequest.gradeId
+				}).then(res => {
+					console.log(res)
 					if (res.data.code == 200) {
 						let data = res.data.data
 						for (let index in this.localMenus) {
@@ -171,7 +181,7 @@
 						}
 					} else {
 						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
+						this.msg.messageText = "请求假条数据错误"
 						this.$refs.message.open()
 					}
 				}).catch(err => {
@@ -201,6 +211,39 @@
 					this.shownodata = true
 				})
 			},
+			//格式化时间
+			getFormatDate(choose) {
+				var date = new Date();
+				var sign1 = "-";
+				var sign2 = ":";
+				var year = date.getFullYear() // 年
+				var month = date.getMonth() + 1; // 月
+				var day = date.getDate(); // 日
+				var hour = date.getHours(); // 时
+				var minutes = date.getMinutes(); // 分
+				var seconds = date.getSeconds() //秒
+				// 给一位数数据前面加 “0”
+				if (month >= 1 && month <= 9) {
+					month = "0" + month;
+				}
+				if(choose == 2){
+					day -= 7
+				}
+				if (day >= 0 && day <= 9) {
+					day = "0" + day;
+				}
+				if (hour >= 0 && hour <= 9) {
+					hour = "0" + hour;
+				}
+				if (minutes >= 0 && minutes <= 9) {
+					minutes = "0" + minutes;
+				}
+				if (seconds >= 0 && seconds <= 9) {
+					seconds = "0" + seconds;
+				}
+				var currentdate = year + sign1 + month + sign1 + day + " " + hour + sign2 + minutes + sign2 + seconds;
+				return currentdate;
+			},
 			checkDetails(id, examine) {
 				uni.navigateTo({
 					url: `../handleLeaveDetail/handleLeaveDetail?id=${id}&current=${this.currentCatalog}&card=${this.statuschoose}`,
@@ -229,15 +272,10 @@
 					this.isloading = false
 				} else {
 					this.msg.msgType = "error"
-					this.msg.messageText = res.data.message
+					this.msg.messageText = "请求错误"
 					this.$refs.message.open()
 					this.isloading = false
 				}
-			}).catch(err => {
-				this.msg.msgType = "error"
-				this.msg.messageText = err.errMsg
-				this.$refs.message.open()
-				this.isloading = false
 			})
 		}
 	}

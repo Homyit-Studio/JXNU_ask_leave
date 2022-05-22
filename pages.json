@@ -163,7 +163,22 @@
 			}
 		
 		}
-	],
+	    ,{
+            "path" : "pages/modifyMember/modifyMember",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "修改成员信息"
+            }
+            
+        },{
+            "path" : "pages/contactUs/contactUs",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "联系我们"
+            }
+            
+        }
+    ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "请假系统",

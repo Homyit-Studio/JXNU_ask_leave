@@ -66,14 +66,14 @@
 						<view class="teacher" v-else-if="teacherMessage.role == 'SECRETARY' ||teacherMessage.role == 'DEAN'">
 							<view v-if="teacherMessage.role == 'SECRETARY'">
 								<navigator animation-type="pop-in" animation-duration="300"
-									url="../adminTeacher/adminTeacher?choose=0" class="tools-btn">
+									url="../adminTeacher/adminTeacher?choose=INSTRUCTOR" class="tools-btn">
 									<uni-icons type="link" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 								</navigator>
 								<text>管理教师</text>
 							</view>
 							<view v-else-if="teacherMessage.role == 'DEAN'">
 								<navigator animation-type="pop-in" animation-duration="300"
-									url="../adminTeacher/adminTeacher?choose=1" class="tools-btn">
+									url="../adminTeacher/adminTeacher?choose=INSTRUCTOR" class="tools-btn">
 									<uni-icons type="link" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 								</navigator>
 								<text>管理教师</text>
@@ -151,6 +151,12 @@
 							<uni-icons type="paperplane" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>退出登录</text>
+					</view>
+					<view @click="contactus">
+						<navigator class="tools-btn" url="../contactUs/contactUs">
+							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>联系我们</text>
 					</view>
 				</view>
 			</uni-card>
@@ -246,7 +252,7 @@
 					this.teacherMessage = res.data.data
 				} else {
 					this.msg.msgType = "error"
-					this.msg.messageText = res.data.message
+					this.msg.messageText = "请求错误"
 					this.$refs.message.open()
 				}
 			})
@@ -279,7 +285,7 @@
 							}, 1000)
 						} else {
 							this.msg.msgType = "error"
-							this.msg.messageText = res.data.message
+							this.msg.messageText = "请求错误"
 							this.$refs.message.open()
 							setTimeout(() => {
 								this.$refs.popupRevisePassword.close()
