@@ -1,9 +1,22 @@
 <template>
 	<view class="download-note">
 		<uni-group>
-			<uni-forms ref="form" :modelValue="formData" :rules="formDatarules" validateTrigger="submit">
-					<uni-forms-item required label="选择年级" name="gradeId">
+			<uni-forms ref="form" :modelValue="formData" :rules="formDatarules" validateTrigger="submit" class="download-form">
+					<uni-forms-item required label="范围选择" name="gradeId">
+						<picker @change="bindPickerChange" :value="index" :range="array">
+							<view class="uni-input">
+								<uni-tag :text="array[index]" type="primary" />	
+							</view>
+						</picker>	
+					</uni-forms-item>
+					<uni-forms-item required label="选择年级" name="gradeId" v-if="index == 0">
 						<uni-easyinput  type="text" v-model="formData.gradeId" placeholder="请输入年级数字(如:2018)" />
+					</uni-forms-item>
+					<uni-forms-item required label="选择班级" name="gradeId" v-else-if="index == 1">
+						<uni-easyinput  type="text" v-model="formData.gradeId" placeholder="请选择班级" />
+					</uni-forms-item>
+					<uni-forms-item required label="选择个人" name="gradeId" v-else-if="index == 2">
+						<uni-easyinput  type="text" v-model="formData.gradeId" placeholder="请输入学生学号" />
 					</uni-forms-item>
 					<uni-forms-item required name="startTime" label="选择起始时间" >
 						<uni-datetime-picker type="datetime" v-model="formData.startTime" :border="false"  :clear-icon="false"  placeholder="选择起始日期和时间"/>		
@@ -21,7 +34,8 @@
 	export default {
 		data() {
 			return {
-				json_array:"",
+				index: 0,
+				array:["年级","班级","个人"],
 				formData:{
 					"startTime": "",
 					"endTime": "",
@@ -52,6 +66,10 @@
 			//this.formData.startTime = this.formData.endTime = this.getFormatDate();
 		},
 		methods: {
+			bindPickerChange(e){
+				console.log(e)
+				this.index = e.detail.value
+			},
 			submitForm(){
 				// this.formData.startTime = this.dateAdd(this.formData.startTime);
 				// this.formData.endTime = this.dateAdd(this.formData.endTime);
@@ -101,6 +119,7 @@
 								  fail:(e)=>{
 									  console.log(e)
 									uni.showToast({
+									  icon:"error",
 									  title: `打开失败`
 									})
 								  }
@@ -109,7 +128,8 @@
 							  fail:(e)=>{
 								  console.log(e)
 								uni.showToast({
-								  title: `保存失败`
+									title: `保存失败`,
+									icon:"error"
 								})
 							  }
 							})
@@ -184,10 +204,16 @@
 	.download-note{
 		width: 95vw;
 		margin:0 auto;
-		button{
-			background-color: $jxnu-bg-color;
-			color: aliceblue;		
+		text-align: center;
+		.download-form{
+			button{
+				background-color: $jxnu-bg-color;
+				color: aliceblue;		
+			}
 		}
+	}
+	.uni-input{
+		margin-top: 8px;
 	}
 	@media screen and (min-width:950px){
 		.download-note{

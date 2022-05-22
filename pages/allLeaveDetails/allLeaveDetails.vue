@@ -56,7 +56,7 @@
 			</uni-card>
 		</view>
 		<view class="details-card">
-			<uni-card title="请假详情" :extra="'申请时间'+ leaveDetails.startTime" :is-shadow="false" >
+			<uni-card title="请假详情" :is-shadow="false" >
 				<view><text decode="true">学&emsp;&emsp;号:&emsp;{{leaveDetails.studentNumber}}</text></view>
 				<view><text decode="true">班&emsp;&emsp;级:&emsp;{{leaveDetails.majorAndClass}}</text></view>
 				<view><text decode="true">目的地点:&emsp;{{leaveDetails.destination}}</text></view>
@@ -132,6 +132,7 @@
 				if(res.data.code === 200){
 					this.leaveDetails = res.data.data
 					uni.hideLoading();	
+					//console.log(this.leaveDetails)
 				}
 				
 			})
@@ -156,7 +157,7 @@
 		methods: {
 			//添加附件
 			addAttachment(){
-				uni.navigateTo({
+				uni.redirectTo({
 					url:'/pages/addAttachment/addAttachment?id=' + this.leaveDetails.id + '&type=' + this.types ,
 				})
 			},
@@ -194,7 +195,7 @@
 			confirm() {
 				console.log(this.leaveDetails.id)
 				uni.$http.get('/leave/deletedANote/' + this.leaveDetails.id).then(res =>{
-					console.log(res)
+					//console.log(res)
 					if(res.data.code === 200){
 						uni.showToast({
 							title: "删除成功",		
@@ -205,9 +206,16 @@
 								} 
 							)
 						}, 1000)
+					}else{
+						uni.showToast({
+							icon:"none",
+							title: res.data.message,
+						})
 					}
 				}).catch(err=>{
-					console.log(err)
+					uni.showToast({
+						title: "网络似乎出现了一些问题",
+					})
 				})			
 		}}
 		}
