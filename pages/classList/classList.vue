@@ -3,7 +3,7 @@
 		<uni-card v-for="(item, i) in classList" :key="item.id" ellipsis="{{2}}" :title="item.majorAndClass" :thumbnail="avatar"
 			:sub-title="'id号：' + item.id" :extra="'班级人数：' + item.capacity">
 			<view slot="actions" class="card-actions">
-				<view class="card-actions-item" @click="lookRoster(item.id, item.majorAndClass)">
+				<view class="card-actions-item" @click="lookRoster(item.id, item.majorAndClass,item.gradeId)">
 					<text class="card-actions-item-text">班级成员名单</text>
 					<uni-icons type="arrow-right" size="18" color="#999"></uni-icons>
 				</view>
@@ -36,9 +36,9 @@
 			this.requestClassList()
 		},
 		methods: {
-			lookRoster(id,className){
+			lookRoster(id,className, gradeId){
 				uni.navigateTo({
-					url : `../classRoster/classRoster?id=${id}&class=${className}&choose=${this.enterChoose}`,
+					url : `../classRoster/classRoster?id=${id}&class=${className}&choose=${this.enterChoose}&gradeId=${gradeId}`,
 					animationType: 'pop-in',
 					animationDuration: 200
 				})
@@ -55,7 +55,7 @@
 							this.classList = res.data.data
 						} else {
 							this.msg.msgType = "error"
-							this.msg.messageText = res.data.message
+							this.msg.messageText = "请求错误"
 							this.$refs.message.open()
 						}
 					})
@@ -70,7 +70,7 @@
 							this.classList = res.data.data
 						} else {
 							this.msg.msgType = "error"
-							this.msg.messageText = res.data.message
+							this.msg.messageText = "请求错误"
 							this.$refs.message.open()
 						}
 					})

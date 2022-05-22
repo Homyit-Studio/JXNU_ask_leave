@@ -140,21 +140,18 @@
 					text: '女',
 					value: 'WOMAN'
 				}],
-				classId: null,
 				msg: {
 					msgType: 'success',
 					messageText: '这是一条成功提示',
 				},
-				peoplestatus:""
+				peoplestatus:"",
+				username:null
 			}
 		},
 		onLoad(options) {
-			if(options.gradeId){
-				this.formData.classId = options.id
-				this.formData.gradeId = options.gradeId
-				this.formData.role="STUDENT"
-			}
+			console.log(options.message.gradeId)
 			this.peoplestatus = options.people
+			this.username = options.username
 		},
 		methods: {
 			submitForm(ref) {

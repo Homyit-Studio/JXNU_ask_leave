@@ -164,7 +164,7 @@
 						}
 					} else {
 						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
+						this.msg.messageText = "请求错误"
 						this.$refs.message.open()
 					}
 				})
@@ -224,7 +224,7 @@
 					this.isloading = false
 				} else {
 					this.msg.msgType = "error"
-					this.msg.messageText = res.data.message
+					this.msg.messageText = "请求错误"
 					this.$refs.message.open()
 					this.isloading = false
 				}

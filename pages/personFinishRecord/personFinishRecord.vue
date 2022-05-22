@@ -64,13 +64,9 @@
 						}
 					} else {
 						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
+						this.msg.messageText = "请求错误"
 						this.$refs.message.open()
 					}
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err.errMsg
-					this.$refs.message.open()
 				})
 			}
 		}

@@ -28,8 +28,10 @@
 					<!-- <text>未上传凭证</text> -->
 					<text v-if="confirmImg == null">学生未上传请假凭证</text>
 					<cover-view v-else>
-						<cover-image src="https://img.tukuppt.com/png_preview/00/05/38/DCoSdpcUVs.jpg!/fw/780">
-						</cover-image>
+						<view v-for="item in confirmImg" :key="item.id">
+							<cover-image :src="item.url">
+							</cover-image>
+						</view>
 					</cover-view>
 				</view>
 			</uni-card>
@@ -51,15 +53,17 @@
 			<uni-popup ref="inputDialog" type="dialog">
 				<template v-slot:default>
 					<view class="confirm-dialog">
-						<uni-forms :modelValue="processMessage" label-position="top" label-width="90" :rules="commitRules">
-								<uni-forms-item label="选择负责人" name="checkpeople" required  v-if="agree && identity == 'INSTRUCTOR'">
-									<uni-data-checkbox multiple v-model="processMessage.checkpeople"
-										:localdata="nextPeople"/>
-								</uni-forms-item>
-						
+						<uni-forms :modelValue="processMessage" label-position="top" label-width="90"
+							:rules="commitRules">
+							<uni-forms-item label="选择负责人" name="checkpeople" required
+								v-if="agree && identity == 'INSTRUCTOR'">
+								<uni-data-checkbox multiple v-model="processMessage.checkpeople"
+									:localdata="nextPeople" />
+							</uni-forms-item>
+
 							<uni-forms-item required name="advice" label="审批建议">
 								<uni-easyinput type="textarea" v-model="processMessage.teacherOpinion"
-									placeholder="请输入自我介绍" />
+									placeholder="请输入审核意见" />
 							</uni-forms-item>
 						</uni-forms>
 						<view class="confirm-button">
@@ -210,6 +214,7 @@
 						//获取销假凭证
 						uni.$http.get(`/image/${id}`).then(res => {
 							if (res.data.code == 200) {
+								console.log(res.data.data)
 								this.confirmImg = res.data.data
 							} else {
 								this.confirmImg = null
@@ -222,16 +227,15 @@
 									console.log(234)
 									this.gobackMessage = res.data.data
 								} else {
-									console.log(45)
 									this.msg.msgType = "error"
-									this.msg.messageText = res.data.message
+									this.msg.messageText = "请求销假错误"
 									this.$refs.message.open()
 								}
 							})
 						}
 					} else {
 						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
+						this.msg.messageText = "请求假条错误"
 						this.$refs.message.open()
 					}
 				})
@@ -305,6 +309,7 @@
 			},
 			//获取负责人
 			getLeaders() {
+				console.log(getFormatDate())
 				if (this.nextPeople.length == 0) {
 					uni.$http.get("/user/getAllLeaders").then(res => {
 						if (res.data.code == 200) {
@@ -317,13 +322,13 @@
 							}
 						} else {
 							this.msg.msgType = "error"
-							this.msg.messageText = res.data.message
+							this.msg.messageText = "请求负责人错误"
 							this.$refs.message.open()
 						}
 					})
 				}
 			},
-			cancelConfirm(){
+			cancelConfirm() {
 				this.$refs.inputDialog.close()
 			},
 			//确认审核提交
@@ -335,8 +340,8 @@
 					"opinionEnum": this.opinionEnum
 				}
 				requestMessage[status] = this.processMessage.teacherOpinion
-				if(this.opinionEnum == 'YES'){
-					requestMessage['leaderNumber']= this.processMessage.checkpeople.join()
+				if (this.opinionEnum == 'YES') {
+					requestMessage['leaderNumber'] = this.processMessage.checkpeople.join()
 				}
 				console.log(requestMessage)
 				uni.$http.post("/leave/updateNote", requestMessage).then(res => {
@@ -358,6 +363,36 @@
 					}
 				})
 			},
+			//格式化时间
+			getFormatDate() {
+				var date = new Date();
+				var sign1 = "-";
+				var sign2 = ":";
+				var year = date.getFullYear() // 年
+				var month = date.getMonth() + 1; // 月
+				var day = date.getDate(); // 日
+				var hour = date.getHours(); // 时
+				var minutes = date.getMinutes(); // 分
+				var seconds = date.getSeconds() //秒
+				// 给一位数数据前面加 “0”
+				if (month >= 1 && month <= 9) {
+					month = "0" + month;
+				}
+				if (day >= 0 && day <= 9) {
+					day = "0" + day;
+				}
+				if (hour >= 0 && hour <= 9) {
+					hour = "0" + hour;
+				}
+				if (minutes >= 0 && minutes <= 9) {
+					minutes = "0" + minutes;
+				}
+				if (seconds >= 0 && seconds <= 9) {
+					seconds = "0" + seconds;
+				}
+				var currentdate = year + sign1 + month + sign1 + day + " " + hour + sign2 + minutes + sign2 + seconds;
+				return currentdate;
+			}
 		}
 	}
 </script>
