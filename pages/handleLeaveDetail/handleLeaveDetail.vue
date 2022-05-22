@@ -53,10 +53,10 @@
 			<uni-popup ref="inputDialog" type="dialog">
 				<template v-slot:default>
 					<view class="confirm-dialog">
-						<uni-forms :modelValue="processMessage" label-position="top" label-width="90"
+						<uni-forms :modelValue="processMessage" ref="reviceMessage" label-position="top" label-width="90"
 							:rules="commitRules">
 							<uni-forms-item label="选择负责人" name="checkpeople" required
-								v-if="agree && identity == 'INSTRUCTOR'">
+								v-if="agree && identity == 'INSTRUCTOR' && leaveDetails.level != 'INSTRUCTOR'">
 								<uni-data-checkbox multiple v-model="processMessage.checkpeople"
 									:localdata="nextPeople" />
 							</uni-forms-item>
@@ -67,8 +67,8 @@
 							</uni-forms-item>
 						</uni-forms>
 						<view class="confirm-button">
-							<button plain size="mini" @click="cancelConfirm">取消</button>
-							<button plain size="mini" @click="dialogInputConfirm">确认</button>
+							<button plain size="mini" @click="cancelConfirm('reviceMessage')">取消</button>
+							<button plain size="mini" @click="dialogInputConfirm('reviceMessage')">确认</button>
 						</view>
 					</view>
 				</template>
@@ -118,12 +118,6 @@
 				nextPeople: [],
 				statusCard: null,
 				commitRules: {
-					"checkpeople": {
-						rules: [{
-							required: true,
-							errorMessage: "负责人不能为空"
-						}]
-					},
 					"advice": {
 						rules: [{
 							required: true,
@@ -309,7 +303,6 @@
 			},
 			//获取负责人
 			getLeaders() {
-				console.log(getFormatDate())
 				if (this.nextPeople.length == 0) {
 					uni.$http.get("/user/getAllLeaders").then(res => {
 						if (res.data.code == 200) {
@@ -332,66 +325,38 @@
 				this.$refs.inputDialog.close()
 			},
 			//确认审核提交
-			dialogInputConfirm() {
-				let status = this.identity.toLowerCase() + "Opinion"
-				let requestMessage = {
-					"id": this.leaveDetails.id,
-					"levelEnum": this.leaveDetails.level,
-					"opinionEnum": this.opinionEnum
-				}
-				requestMessage[status] = this.processMessage.teacherOpinion
-				if (this.opinionEnum == 'YES') {
-					requestMessage['leaderNumber'] = this.processMessage.checkpeople.join()
-				}
-				console.log(requestMessage)
-				uni.$http.post("/leave/updateNote", requestMessage).then(res => {
-					console.log(res)
-					if (res.data.code == 200) {
-						uni.hideLoading()
-						this.msg.msgType = "success"
-						this.msg.messageText = res.data.message
-						this.$refs.message.open()
-						uni.navigateBack({
-							complete() {
-								console.log(1)
-							}
-						})
-					} else {
-						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
-						this.$refs.message.open()
+			dialogInputConfirm(ref) {
+				this.$refs[ref].validate().then(res => {
+					let status = this.identity.toLowerCase() + "Opinion"
+					let requestMessage = {
+						"id": this.leaveDetails.id,
+						"levelEnum": this.leaveDetails.level,
+						"opinionEnum": this.opinionEnum
 					}
+					requestMessage[status] = this.processMessage.teacherOpinion
+					if (this.opinionEnum == 'YES') {
+						requestMessage['leaderNumber'] = this.processMessage.checkpeople.join()
+					}
+					console.log(requestMessage)
+					uni.$http.post("/leave/updateNote", requestMessage).then(res => {
+						console.log(res)
+						if (res.data.code == 200) {
+							uni.hideLoading()
+							this.msg.msgType = "success"
+							this.msg.messageText = res.data.message
+							this.$refs.message.open()
+							uni.navigateBack({
+								complete() {
+									console.log(1)
+								}
+							})
+						} else {
+							this.msg.msgType = "error"
+							this.msg.messageText = res.data.message
+							this.$refs.message.open()
+						}
+					})
 				})
-			},
-			//格式化时间
-			getFormatDate() {
-				var date = new Date();
-				var sign1 = "-";
-				var sign2 = ":";
-				var year = date.getFullYear() // 年
-				var month = date.getMonth() + 1; // 月
-				var day = date.getDate(); // 日
-				var hour = date.getHours(); // 时
-				var minutes = date.getMinutes(); // 分
-				var seconds = date.getSeconds() //秒
-				// 给一位数数据前面加 “0”
-				if (month >= 1 && month <= 9) {
-					month = "0" + month;
-				}
-				if (day >= 0 && day <= 9) {
-					day = "0" + day;
-				}
-				if (hour >= 0 && hour <= 9) {
-					hour = "0" + hour;
-				}
-				if (minutes >= 0 && minutes <= 9) {
-					minutes = "0" + minutes;
-				}
-				if (seconds >= 0 && seconds <= 9) {
-					seconds = "0" + seconds;
-				}
-				var currentdate = year + sign1 + month + sign1 + day + " " + hour + sign2 + minutes + sign2 + seconds;
-				return currentdate;
 			}
 		}
 	}
