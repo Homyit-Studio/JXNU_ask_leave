@@ -109,9 +109,10 @@
 					},
 					success: (res) => {
 						console.log(res)
+						const path = res.tempFilePath;
 						if (res.statusCode === 200) {
 							uni.saveFile({
-								empFilePath:res.tempFilePath,//下载成功之后返回的临时路径
+								tempFilePath:res.path,//下载成功之后返回的临时路径
 								success:(e)=>{
 								//保存成功之后 打开文件
 								uni.openDocument({
@@ -126,7 +127,7 @@
 								})
 							  },
 							  fail:(e)=>{
-								  console.log(e)
+								console.log(e)
 								uni.showToast({
 									title: `保存失败`,
 									icon:"error"
