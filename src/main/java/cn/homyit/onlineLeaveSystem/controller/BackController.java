@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/back")
-@PreAuthorize("hasAuthority('student')")
+//@PreAuthorize("hasAuthority('student')")
 public class BackController {
 
     @Autowired

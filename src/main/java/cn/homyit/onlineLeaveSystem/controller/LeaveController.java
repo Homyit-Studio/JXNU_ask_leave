@@ -2,6 +2,7 @@ package cn.homyit.onlineLeaveSystem.controller;
 
 import cn.homyit.onlineLeaveSystem.entity.DO.LeaveNote;
 import cn.homyit.onlineLeaveSystem.entity.DTO.SelectNotePageDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TableTimeDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.UpdateNoteDTO;
 import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
@@ -84,15 +85,15 @@ public class LeaveController {
     }
 
     /*年级总览*/
-    @GetMapping("/allCounts")
-    public Result  allCountForGrade(){
-        Map<String,Integer> map = leaveNoteService.allCountForGrade();
+    @PostMapping("/allCounts")
+    public Result  allCountForGrade(@RequestBody TableTimeDTO tableTimeDTO){
+        Map<String,Integer> map = leaveNoteService.allCountForGrade(tableTimeDTO);
         return Result.success(map);
     }
 
-    @GetMapping("/allCounts/{gradeId}")
-    public Result  allCountForGradeId(@PathVariable Long gradeId){
-        Map<String,Integer> map = leaveNoteService.allCountForGradeId(gradeId);
+    @PostMapping("/allCountsFroGradeId")
+    public Result  allCountForGradeId(@RequestBody TableTimeDTO tableTimeDTO){
+        Map<String,Integer> map = leaveNoteService.allCountForGradeId(tableTimeDTO);
         return Result.success(map);
     }
 

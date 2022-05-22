@@ -3,7 +3,7 @@
 <mapper namespace="cn.homyit.onlineLeaveSystem.mapper.ClassInfoMapper">
 
 
-    <select id="selectClassInfoByNumber" resultType="cn.homyit.onlineLeaveSystem.eneity.VO.ClassInfoVO">
+    <select id="selectClassInfoByNumber" resultType="cn.homyit.onlineLeaveSystem.entity.VO.ClassInfoVO">
         SELECT
                *
         FROM

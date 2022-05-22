@@ -22,6 +22,7 @@ public enum ExceptionCodeEnum {
     UPLOAD_ERROR(603,"上传失败"),
     NO_IMAGES(604,"此假条未上传图片"),
     NOT_IMAGE(605,"请上传图片"),
+    NO_CLASS_ID(606,"请添加学生对应班级或年级"),
 
     /**
      * 通用结果

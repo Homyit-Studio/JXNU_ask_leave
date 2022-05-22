@@ -42,10 +42,10 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void upload(MultipartFile file,Long id) {
 
-        boolean isImage = CheckImageUtil.isImage(file);
-        if (!isImage){
-            throw new BizException(ExceptionCodeEnum.NOT_IMAGE);
-        }
+//        boolean isImage = CheckImageUtil.isImage(file);
+//        if (!isImage){
+//            throw new BizException(ExceptionCodeEnum.NOT_IMAGE);
+//        }
         log.info("准备上传到云服务器的{}目录",resourcePath);
         String temp = UUID.randomUUID() + file.getOriginalFilename();
         String uploadUrl = resourcePath+temp;

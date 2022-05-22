@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
  * @since 2022-05-06 21:36
  */
 @Data
-public class TeacherUpdaterDTO {
+public class UserUpdaterDTO {
     @NotNull(message = "id不能为空")
     private Long id;
     private Long classId;

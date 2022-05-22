@@ -12,8 +12,8 @@ import javax.validation.constraints.NotNull;
  * @since 2022-05-06 21:36
  */
 @Data
-public class TeacherAddDTO {
-    @NotNull(message = "班级或所属集体不能为空")
+public class UserAddDTO {
+
     private Long classId;
     private Long gradeId;
     @NotNull(message = "密码不能为空")
@@ -30,6 +30,7 @@ public class TeacherAddDTO {
     private String nativePlace;
     private String homeAddress;
     private String majorAndClass;
+    @NotNull(message = "手机号不能为空")
     private String phoneNumber;
     private String parentNumber;
     private String buildingNumber;

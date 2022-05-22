@@ -1,7 +1,7 @@
 package cn.homyit.onlineLeaveSystem.listener;
 
 import cn.homyit.onlineLeaveSystem.entity.DO.*;
-import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherExcelDTO;
 import cn.homyit.onlineLeaveSystem.mapper.*;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.SexEnum;
@@ -20,7 +20,7 @@ import java.util.Objects;
  * @description
  * @since 2022-05-06 17:11
  */
-public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
+public class TeacherExcelListener extends AnalysisEventListener<TeacherExcelDTO> {
 
     private SysClassTeacherMapper sysClassTeacherMapper;
     private PasswordEncoder passwordEncoder;
@@ -61,7 +61,7 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
 
 
     @Override
-    public void invoke(TeacherDTO data, AnalysisContext context) {
+    public void invoke(TeacherExcelDTO data, AnalysisContext context) {
         SysStudentUser user = MyBeanUtils.copyBean(data, SysStudentUser.class);
 
         user.setGradeId(1L);
@@ -74,8 +74,6 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
         user.setPassword(passwordEncoder.encode(rawPWD));
         //插入用户表
         LevelEnum role = roleMap.get(data.getRole().trim());
-
-
 
         //插入用户班级表
         String[] allClass = data.getManageClass().split("-");
@@ -90,27 +88,21 @@ public class TeacherExcelListener extends AnalysisEventListener<TeacherDTO> {
                 sysClassTeacherMapper.insert(new SysClassTeacher(sysStudentClassInfo.getId(), data.getStudentNumber()));
             }
 
-
         }
 
         //插入用户角色表
         if(Objects.isNull(role)){
             user.setRole(LevelEnum.getEumByCode(roleMap.get("无").getValue()));
-            userMapper.insert(user);
             sysUserRoleMapper.insert(new SysUserRole(data.getStudentNumber(),roleMap.get("无").getValue().longValue()));
         }else if(LevelEnum.INSTRUCTOR.equals(role)){
+          user.setRole(role);
           user.setClassId(CLASS_ID);
-          new SysClassStudent(CLASS_ID, data.getStudentNumber());
-
-
+          sysUserRoleMapper.insert(new SysUserRole(data.getStudentNumber(),role.getValue().longValue() ));
         } else{
-            user.setRole(LevelEnum.getEumByCode(role.getValue()));
-            userMapper.insert(user);
+            user.setRole(role);
             sysUserRoleMapper.insert(new SysUserRole(data.getStudentNumber(),role.getValue().longValue() ));
         }
-
-
-
+        userMapper.insert(user);
 
     }
 

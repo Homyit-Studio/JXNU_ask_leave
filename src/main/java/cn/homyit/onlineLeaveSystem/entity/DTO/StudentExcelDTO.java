@@ -11,7 +11,7 @@ import lombok.Data;
 
 
 @Data
-public class StudentDTO {
+public class StudentExcelDTO {
 
     @ExcelProperty(index = 1)
     private String username;

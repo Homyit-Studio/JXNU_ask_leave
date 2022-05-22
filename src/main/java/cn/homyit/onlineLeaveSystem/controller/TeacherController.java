@@ -16,7 +16,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/teacher")
-@PreAuthorize("hasAuthority('managing_students')")
+//@PreAuthorize("hasAuthority('managing_students')")
 public class TeacherController {
 
     @Autowired

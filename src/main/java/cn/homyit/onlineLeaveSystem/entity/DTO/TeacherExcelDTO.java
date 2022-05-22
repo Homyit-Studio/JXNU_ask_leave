@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeacherDTO {
+public class TeacherExcelDTO {
     @ExcelProperty(index = 1)
     private String username;
     @ExcelProperty(index = 2)

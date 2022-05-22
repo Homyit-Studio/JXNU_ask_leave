@@ -1,8 +1,8 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
 import cn.homyit.onlineLeaveSystem.entity.DTO.DownloadNoteDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.StudentDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.StudentExcelDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherExcelDTO;
 import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.listener.EastExcelListener;
 import cn.homyit.onlineLeaveSystem.listener.TeacherExcelListener;
@@ -59,7 +59,7 @@ public class ExcelServiceImpl implements ExcelService {
     public void upload(MultipartFile file,Long gradeId)  {
         ExcelReader reader = null;
         try {
-            reader = EasyExcel.read(file.getInputStream(), StudentDTO.class,
+            reader = EasyExcel.read(file.getInputStream(), StudentExcelDTO.class,
                 new EastExcelListener(userMapper,passwordEncoder,classInfoMapper,sysClassStudentMapper,sysUserRoleMapper,gradeId)).build();
         } catch (IOException e) {
             e.printStackTrace();
@@ -75,7 +75,7 @@ public class ExcelServiceImpl implements ExcelService {
     public void uploadTeacher(MultipartFile file) {
         ExcelReader reader = null;
         try {
-            reader = EasyExcel.read(file.getInputStream(), TeacherDTO.class,
+            reader = EasyExcel.read(file.getInputStream(), TeacherExcelDTO.class,
                     new TeacherExcelListener(
                              userMapper,
                              passwordEncoder,

@@ -3,6 +3,7 @@ package cn.homyit.onlineLeaveSystem.service.impl;
 import cn.homyit.onlineLeaveSystem.entity.DO.*;
 import cn.homyit.onlineLeaveSystem.entity.DTO.DownloadNoteDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.SelectNotePageDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.TableTimeDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.UpdateNoteDTO;
 import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
@@ -288,6 +289,15 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             wrapper5.like("leader_number", loginUser.getUser().getStudentNumber());
             wrapper6.like("leader_number", loginUser.getUser().getStudentNumber());
             wrapper7.like("leader_number", loginUser.getUser().getStudentNumber());
+        } else if(role.equals(LevelEnum.STUDENT)){
+            Long studentNumber = loginUser.getUser().getStudentNumber();
+            wrapper1.eq("student_number", studentNumber);
+            wrapper2.eq("student_number", studentNumber);
+            wrapper3.eq("student_number", studentNumber);
+            wrapper4.eq("student_number", studentNumber);
+            wrapper5.eq("student_number", studentNumber);
+            wrapper6.eq("student_number", studentNumber);
+            wrapper7.eq("student_number", studentNumber);
         }
 
         Integer roleCount = leaveNoteMapper.selectCount(wrapper1);
@@ -356,26 +366,34 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
     }
 
     @Override
-    public Map<String, Integer> allCountForGrade() {
+    public Map<String, Integer> allCountForGrade(TableTimeDTO tableTimeDTO) {
 
         //待销假
         Integer waitReport = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.WAIT_REPORT)
+                .gt("start_time",tableTimeDTO.getStartTime())
+                .lt("end_time",tableTimeDTO.getEndTime())
 
         );
         //申请过期
         Integer applyExpired = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.APPLY_EXPIRED)
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
 
         );
         //销假过期
         Integer reportExpired = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.REPORT_EXPIRED)
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
         );
 
         //已拒绝
         Integer failure = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.FAILURE)
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
         );
 
         //审核中
@@ -384,39 +402,51 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                         Arrays.asList(ExamineEnum.INSTRUCTOR.getValue(),
                                 ExamineEnum.SECRETARY.getValue(),
                                 ExamineEnum.DEAN.getValue()))
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
         );
         Integer processed = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.PROCESSED)
-
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
         );
 
         return getStringIntegerMap(waitReport, applyExpired, reportExpired, failure, processing,processed);
     }
 
     @Override
-    public Map<String, Integer> allCountForGradeId(Long gradeId) {
+    public Map<String, Integer> allCountForGradeId(TableTimeDTO tableTimeDTO) {
+        Long gradeId = tableTimeDTO.getGradeId();
 
         //待销假
         Integer waitReport = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.WAIT_REPORT)
                 .eq("grade_id",gradeId)
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
 
         );
         //申请过期
         Integer applyExpired = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.APPLY_EXPIRED)
                         .eq("grade_id",gradeId)
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
         );
         //销假过期
         Integer reportExpired = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.REPORT_EXPIRED)
                         .eq("grade_id",gradeId)
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
         );
 
         //已拒绝
         Integer failure = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.FAILURE)
                         .eq("grade_id",gradeId)
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
         );
 
         //审核中
@@ -426,11 +456,15 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                                 ExamineEnum.SECRETARY.getValue(),
                                 ExamineEnum.DEAN.getValue()))
                         .eq("grade_id",gradeId)
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
         );
 
         Integer processed = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.PROCESSED)
                         .eq("grade_id",gradeId)
+                        .gt("start_time",tableTimeDTO.getStartTime())
+                        .lt("end_time",tableTimeDTO.getEndTime())
 
         );
 

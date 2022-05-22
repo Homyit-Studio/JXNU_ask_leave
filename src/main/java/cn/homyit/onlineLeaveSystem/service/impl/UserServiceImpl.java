@@ -4,11 +4,12 @@ import cn.homyit.onlineLeaveSystem.entity.DO.LoginUser;
 import cn.homyit.onlineLeaveSystem.entity.DO.SysClassStudent;
 import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
 import cn.homyit.onlineLeaveSystem.entity.DO.SysUserRole;
-import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherAddDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherUpdaterDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.UserAddDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.UserUpdaterDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.PasswordDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.StudentUpdateDTO;
 import cn.homyit.onlineLeaveSystem.entity.VO.StudentUserVo;
+import cn.homyit.onlineLeaveSystem.entity.VO.TeacherUserVo;
 import cn.homyit.onlineLeaveSystem.exception.BizException;
 import cn.homyit.onlineLeaveSystem.exception.ExceptionCodeEnum;
 import cn.homyit.onlineLeaveSystem.mapper.SysClassStudentMapper;
@@ -157,56 +158,59 @@ public class UserServiceImpl implements UserService {
 
     //增加下级
     @Override
-    public void addUser(TeacherAddDTO teacherAddDTODTO) {
+    public void addUser(UserAddDTO userAddDTODTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
         LevelEnum role = loginUser.getUser().getRole();
-        if (role.getValue()<=teacherAddDTODTO.getRole().getValue()){
+        if (role.getValue()<= userAddDTODTO.getRole().getValue()){
             throw new BizException(ExceptionCodeEnum.ADD_USER);
         }
+        if(role.equals(LevelEnum.INSTRUCTOR)&&Objects.isNull(userAddDTODTO.getClassId())&&Objects.isNull(userAddDTODTO.getGradeId())){
+            throw new BizException(ExceptionCodeEnum.NO_CLASS_ID);
+        }
         //先查账号是否存在
-        SysStudentUser checkExist = userMapper.selectById(teacherAddDTODTO.getStudentNumber());
+        SysStudentUser checkExist = userMapper.selectById(userAddDTODTO.getStudentNumber());
         if (!Objects.isNull(checkExist)){
             throw new BizException(ExceptionCodeEnum.USER_EXIST);
         }
 
-        SysStudentUser user = MyBeanUtils.copyBean(teacherAddDTODTO, SysStudentUser.class);
+        SysStudentUser user = MyBeanUtils.copyBean(userAddDTODTO, SysStudentUser.class);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         //插入用户表
         userMapper.insert(user);
         //插入用户班级表
-        sysClassStudentMapper.insert(new SysClassStudent(teacherAddDTODTO.getClassId(), teacherAddDTODTO.getStudentNumber()));
+        sysClassStudentMapper.insert(new SysClassStudent(userAddDTODTO.getClassId(), userAddDTODTO.getStudentNumber()));
         //插入用户角色表
-        sysUserRoleMapper.insert(new SysUserRole(teacherAddDTODTO.getStudentNumber(), teacherAddDTODTO.getRole().getValue().longValue()));
+        sysUserRoleMapper.insert(new SysUserRole(userAddDTODTO.getStudentNumber(), userAddDTODTO.getRole().getValue().longValue()));
 
     }
 
     //更新学生信息
     @Override
-    public void updateUser(TeacherUpdaterDTO teacherUpdaterDTO) {
-        SysStudentUser user = MyBeanUtils.copyBean(teacherUpdaterDTO, SysStudentUser.class);
+    public void updateUser(UserUpdaterDTO userUpdaterDTO) {
+        SysStudentUser user = MyBeanUtils.copyBean(userUpdaterDTO, SysStudentUser.class);
 
-        SysStudentUser oldUser = userMapper.selectById(teacherUpdaterDTO.getId());
+        SysStudentUser oldUser = userMapper.selectById(userUpdaterDTO.getId());
         //更新学号信息
-        if (!Objects.isNull(teacherUpdaterDTO.getStudentNumber())){
+        if (!Objects.isNull(userUpdaterDTO.getStudentNumber())){
             QueryWrapper<SysUserRole> wrapper = new QueryWrapper<>();
             wrapper.eq("student_number",oldUser.getStudentNumber());
-            SysUserRole sysUserRole = new SysUserRole(teacherUpdaterDTO.getStudentNumber(), null);
+            SysUserRole sysUserRole = new SysUserRole(userUpdaterDTO.getStudentNumber(), null);
             sysUserRoleMapper.update(sysUserRole,wrapper);
 
             QueryWrapper<SysClassStudent> wrapper1 = new QueryWrapper<>();
             wrapper1.eq("student_number",oldUser.getStudentNumber());
-            SysClassStudent sysClassStudent = new SysClassStudent(null, teacherUpdaterDTO.getStudentNumber());
+            SysClassStudent sysClassStudent = new SysClassStudent(null, userUpdaterDTO.getStudentNumber());
             sysClassStudentMapper.update(sysClassStudent,wrapper1);
 
 
         }
         //更新班级信息
-        if (!Objects.isNull(teacherUpdaterDTO.getClassId())){
+        if (!Objects.isNull(userUpdaterDTO.getClassId())){
             QueryWrapper<SysClassStudent> wrapper1 = new QueryWrapper<>();
-            wrapper1.eq("student_number", teacherUpdaterDTO.getStudentNumber());
-            SysClassStudent sysClassStudent = new SysClassStudent(teacherUpdaterDTO.getClassId(), null);
+            wrapper1.eq("student_number", userUpdaterDTO.getStudentNumber());
+            SysClassStudent sysClassStudent = new SysClassStudent(userUpdaterDTO.getClassId(), null);
             sysClassStudentMapper.update(sysClassStudent,wrapper1);
         }
 
@@ -218,15 +222,15 @@ public class UserServiceImpl implements UserService {
     //删除学生信息
     //todo 为什么联合主键不是逻辑删除
     @Override
-    public void deletedUser(TeacherUpdaterDTO teacherUpdaterDTO) {
-        userMapper.deleteById(teacherUpdaterDTO.getId());
+    public void deletedUser(UserUpdaterDTO userUpdaterDTO) {
+        userMapper.deleteById(userUpdaterDTO.getId());
 
         QueryWrapper<SysUserRole> wrapper = new QueryWrapper<>();
-        wrapper.eq("student_number", teacherUpdaterDTO.getStudentNumber());
+        wrapper.eq("student_number", userUpdaterDTO.getStudentNumber());
         sysUserRoleMapper.delete(wrapper);
 
         QueryWrapper<SysClassStudent> wrapper1 = new QueryWrapper<>();
-        wrapper1.eq("student_number", teacherUpdaterDTO.getStudentNumber());
+        wrapper1.eq("student_number", userUpdaterDTO.getStudentNumber());
         sysClassStudentMapper.delete(wrapper1);
     }
 
@@ -242,6 +246,21 @@ public class UserServiceImpl implements UserService {
         userMapper.update(user,new QueryWrapper<SysStudentUser>().
                         eq("student_number", studentNumber));
 
+    }
+
+    @Override
+    public List<TeacherUserVo> getUserByRole(LevelEnum role) {
+        QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<SysStudentUser>().eq("role", role);
+        List<SysStudentUser> sysStudentUsers = userMapper.selectList(wrapper);
+        List<TeacherUserVo> list = MyBeanUtils.copyList(sysStudentUsers, TeacherUserVo.class);
+        return list;
+    }
+
+    @Override
+    public StudentUserVo getNoteByStudentNumber(Long studentNumber) {
+        SysStudentUser sysStudentUser = userMapper.selectById(studentNumber);
+        StudentUserVo studentUserVo = MyBeanUtils.copyBean(sysStudentUser, StudentUserVo.class);
+        return studentUserVo;
     }
 
 

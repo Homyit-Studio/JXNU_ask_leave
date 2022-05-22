@@ -40,6 +40,7 @@ public class CheckImageUtil {
             is = new FileInputStream(file);
             is.read(bt);
             img = ImageIO.read(file);
+
         } catch (IOException e) {
             return false;
         }

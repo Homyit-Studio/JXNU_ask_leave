@@ -1,11 +1,13 @@
 package cn.homyit.onlineLeaveSystem.service;
 
 import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
-import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherAddDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherUpdaterDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.UserAddDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.UserUpdaterDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.PasswordDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.StudentUpdateDTO;
 import cn.homyit.onlineLeaveSystem.entity.VO.StudentUserVo;
+import cn.homyit.onlineLeaveSystem.entity.VO.TeacherUserVo;
+import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,11 +27,15 @@ public interface UserService {
 
     List<StudentUserVo> getNoteByStudentName(String username);
 
-    void addUser(TeacherAddDTO teacherAddDTODTO);
+    void addUser(UserAddDTO userAddDTODTO);
 
-    void updateUser(TeacherUpdaterDTO teacherUpdaterDTO);
+    void updateUser(UserUpdaterDTO userUpdaterDTO);
 
-    void deletedUser(TeacherUpdaterDTO teacherUpdaterDTO);
+    void deletedUser(UserUpdaterDTO userUpdaterDTO);
 
     void updateUserForStudent(StudentUpdateDTO studentUpdateDTO);
+
+    List<TeacherUserVo> getUserByRole(LevelEnum role);
+
+    StudentUserVo getNoteByStudentNumber(Long studentNumber);
 }
