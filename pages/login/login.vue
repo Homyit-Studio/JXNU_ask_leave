@@ -163,9 +163,6 @@
 						uni.$http.post("/user/login", this.loginFormData).then(res => {
 							if (res.data.code == 200) {
 								if(res.data.data.role == "学生"){
-									uni.showToast({
-											title: "登录成功，请稍后"
-										})
 										uni.setStorage({
 											key: 'token',
 											data: res.data.data.token,
@@ -184,17 +181,7 @@
 										uni.navigateTo({
 											url: '/pages/studentHome/studentHome'
 										})
-									}else{
-										uni.showToast({
-											icon:"error",
-											title:"身份验证失败,请从教师端登录"
-										})
-									} 
-								}else {
-									uni.showToast({
-										icon:"none",
-										title: res.data.message
-									})
+									}
 								}
 								
 						})

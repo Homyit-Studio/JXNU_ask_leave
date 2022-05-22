@@ -174,6 +174,11 @@
 				}).then(res => {
 					console.log(res)
 					if (res.data.code == 200) {
+						uni.showToast({
+							title: '加载中',
+							duration: 1000,
+							icon: "loading"
+						});
 						let data = res.data.data
 						for (let index in this.localMenus) {
 							console.log(data[this.localMenus[index].value])
@@ -191,6 +196,11 @@
 				})
 			},
 			requestLeaveNotes() {
+				uni.showToast({
+					title: '加载中',
+					duration: 1000,
+					icon: "loading"
+				});
 				uni.$http.post("/leave/selectNodeByGrade", this.listRequest).then(res => {
 					if (res.data.code == 200) {
 						this.leaveNoteList = res.data.data.list

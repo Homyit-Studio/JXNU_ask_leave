@@ -53,8 +53,8 @@
 			<uni-popup ref="inputDialog" type="dialog">
 				<template v-slot:default>
 					<view class="confirm-dialog">
-						<uni-forms :modelValue="processMessage" ref="reviceMessage" label-position="top" label-width="90"
-							:rules="commitRules">
+						<uni-forms :modelValue="processMessage" ref="reviceMessage" label-position="top"
+							label-width="90" :rules="commitRules">
 							<uni-forms-item label="选择负责人" name="checkpeople" required
 								v-if="agree && identity == 'INSTRUCTOR' && leaveDetails.level != 'INSTRUCTOR'">
 								<uni-data-checkbox multiple v-model="processMessage.checkpeople"
@@ -341,9 +341,14 @@
 					uni.$http.post("/leave/updateNote", requestMessage).then(res => {
 						console.log(res)
 						if (res.data.code == 200) {
-							uni.hideLoading()
 							this.msg.msgType = "success"
 							this.msg.messageText = res.data.message
+							setTimeout(()=>{
+								uni.showToast({
+									title:"请求成功",
+									icon:"success"
+								})
+							},900)
 							this.$refs.message.open()
 							uni.navigateBack({
 								complete() {

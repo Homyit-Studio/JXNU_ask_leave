@@ -151,6 +151,12 @@
 						this.msg.msgType = "success"
 						this.msg.messageText = "修改成功"
 						this.modify = 0
+						setTimeout(()=>{
+							uni.showToast({
+								title:"请求成功",
+								icon:"success"
+							})
+						},600)
 						this.$refs.message.open()
 						this.$refs.studentPopup.close()
 						this.requestteacherRoster()
@@ -162,7 +168,7 @@
 					}
 				})
 			},
-			//删除学生
+			//删除老师
 			deleteStudent() {
 				uni.$http.post("/user/deletedUser", {
 					id: this.teacherMessage.id,
@@ -172,7 +178,12 @@
 						console.log(res)
 						this.msg.msgType = "success"
 						this.msg.messageText = res.data.message
-						this.rosterRequest.pageNo = 1
+						setTimeout(()=>{
+							uni.showToast({
+								title:"请求成功",
+								icon:"success"
+							})
+						},600)
 						this.$refs.message.open()
 						this.$refs.studentPopup.close()
 						this.requestClassRoster(this.classId)
