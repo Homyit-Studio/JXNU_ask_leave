@@ -8,6 +8,9 @@ import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.Result;
 import cn.homyit.onlineLeaveSystem.log.ApiLog;
+import cn.homyit.onlineLeaveSystem.log.UserLog;
+import cn.homyit.onlineLeaveSystem.myEnum.ModuleEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.OperationEnum;
 import cn.homyit.onlineLeaveSystem.service.LeaveNoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -28,6 +31,7 @@ public class LeaveController {
     @Autowired
     private LeaveNoteService leaveNoteService;
 
+    @UserLog(module = ModuleEnum.NOTE,title = "申请请假",type = OperationEnum.ADD)
     @ApiLog
     @PostMapping("/ask")
     public Result insertNote(@Validated @RequestBody LeaveNote note){
@@ -56,6 +60,7 @@ public class LeaveController {
         return Result.success(leaveNoteVo);
     }
 
+    @UserLog(module = ModuleEnum.NOTE,title = "审批假条",type = OperationEnum.MODIFY)
     @ApiLog
     @PostMapping("/updateNote")
     public Result updateNote(@Validated @RequestBody UpdateNoteDTO updateNoteDTO){
@@ -69,6 +74,8 @@ public class LeaveController {
         PageVo<LeaveNoteVo> pageVo = leaveNoteService.selectNodeByGrade(selectNoteDTO);
         return Result.success(pageVo);
     }
+
+    @UserLog(module = ModuleEnum.NOTE,title = "增加用户",type = OperationEnum.DELETE)
     @ApiLog
     @GetMapping("/deletedANote/{id}")
     public Result deletedANote(@PathVariable Long id){
@@ -90,6 +97,7 @@ public class LeaveController {
         Map<String,Integer> map = leaveNoteService.allCountForGrade(tableTimeDTO);
         return Result.success(map);
     }
+
 
     @PostMapping("/allCountsFroGradeId")
     public Result  allCountForGradeId(@RequestBody TableTimeDTO tableTimeDTO){

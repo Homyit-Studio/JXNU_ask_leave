@@ -1,6 +1,7 @@
 package cn.homyit.onlineLeaveSystem;
 
 import cn.homyit.onlineLeaveSystem.log.EnableApiLog;
+import cn.homyit.onlineLeaveSystem.log.EnableUserLog;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +11,7 @@ import java.util.TimeZone;
 
 @EnableScheduling
 @EnableApiLog
+@EnableUserLog
 @MapperScan("cn.homyit.onlineLeaveSystem.mapper")
 @SpringBootApplication
 public class OnlineLeaveSystemApplication {

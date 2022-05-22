@@ -3,6 +3,9 @@ package cn.homyit.onlineLeaveSystem.controller;
 import cn.homyit.onlineLeaveSystem.entity.DO.ImagesNote;
 import cn.homyit.onlineLeaveSystem.entity.VO.Result;
 import cn.homyit.onlineLeaveSystem.log.ApiLog;
+import cn.homyit.onlineLeaveSystem.log.UserLog;
+import cn.homyit.onlineLeaveSystem.myEnum.ModuleEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.OperationEnum;
 import cn.homyit.onlineLeaveSystem.service.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +24,8 @@ public class ImageNoteController {
 
     @Autowired
     private ImageService imageService;
+
+    @UserLog(module = ModuleEnum.IMAGE,title = "上传凭证",type = OperationEnum.ADD)
     @ApiLog
     @PostMapping("/upload")
     public Result upload(@RequestPart("file") MultipartFile file,@RequestParam("id") Long id){
@@ -32,7 +37,7 @@ public class ImageNoteController {
     /*
    批量上传
     */
-
+    @UserLog(module = ModuleEnum.IMAGE,title = "上传凭证",type = OperationEnum.ADD)
     @PostMapping(value = "/uploadFiles")
     public Result uploadFiles(@RequestPart("files") MultipartFile[] files,@RequestParam("id") Long id) {
 
@@ -45,6 +50,8 @@ public class ImageNoteController {
         List<ImagesNote> list = imageService.getImagesForNote(id);
         return Result.success(list);
     }
+
+    @UserLog(module = ModuleEnum.IMAGE,title = "删除凭证",type = OperationEnum.DELETE)
     @ApiLog
     @GetMapping("/delete/{id}")
     public Result deleteByNoteId(@PathVariable Long id){

@@ -162,7 +162,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             //待本人审核
             //todo 优化，逻辑搞错了
             if (role.equals(LevelEnum.STUDENT)){
-                wrapper.eq("examine",examineRole);
+                wrapper.apply("examine<level and examine!=-1");
             }else {
                 wrapper.eq("examine",role.getValue()-1);
             }
@@ -209,7 +209,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
         LeaveNote note = MyBeanUtils.copyBean(updateNoteDTO, LeaveNote.class);
         //角色级别小于审核级别
-        if (role.getValue()<updateNoteDTO.getLevelEnum().getValue()){
+        if (role.getValue()<=updateNoteDTO.getLevelEnum().getValue()){
             throw new BizException(ExceptionCodeEnum.ALREADY_AGREE);
         }
 
@@ -244,8 +244,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             throw new RuntimeException("您无管理班级");
         }
         //待本人审核
-        QueryWrapper<LeaveNote> wrapper1 = new QueryWrapper<LeaveNote>().eq("examine",
-                ExamineEnum.getEumByCode(role.getValue().intValue() - 1));
+        QueryWrapper<LeaveNote> wrapper1 = new QueryWrapper<>();
 
         //待下一级审核
         QueryWrapper<LeaveNote> wrapper2 = new QueryWrapper<LeaveNote>().
@@ -274,7 +273,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         if (role.equals(LevelEnum.INSTRUCTOR)){
             List<Long> allStudentNumber = teacherService.getAllStudentNumber();
 
-            wrapper1.in("student_number", allStudentNumber);
+            wrapper1.in("student_number", allStudentNumber)
+                    .eq("examine", ExamineEnum.getEumByCode(role.getValue().intValue() - 1));
             wrapper2.in("student_number", allStudentNumber);
             wrapper3.in("student_number", allStudentNumber);
             wrapper4.in("student_number", allStudentNumber);
@@ -282,7 +282,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             wrapper6.in("student_number", allStudentNumber);
             wrapper7.in("student_number", allStudentNumber);
         }else if (role.equals(LevelEnum.SECRETARY)) {
-            wrapper1.like("leader_number", loginUser.getUser().getStudentNumber());
+            wrapper1.like("leader_number", loginUser.getUser().getStudentNumber())
+                    .eq("examine", ExamineEnum.getEumByCode(role.getValue().intValue() - 1));
             wrapper2.like("leader_number", loginUser.getUser().getStudentNumber());
             wrapper3.like("leader_number", loginUser.getUser().getStudentNumber());
             wrapper4.like("leader_number", loginUser.getUser().getStudentNumber());
@@ -291,7 +292,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             wrapper7.like("leader_number", loginUser.getUser().getStudentNumber());
         } else if(role.equals(LevelEnum.STUDENT)){
             Long studentNumber = loginUser.getUser().getStudentNumber();
-            wrapper1.eq("student_number", studentNumber);
+            wrapper1.eq("student_number", studentNumber)
+                    .apply("examine<level and examine!=-1");
             wrapper2.eq("student_number", studentNumber);
             wrapper3.eq("student_number", studentNumber);
             wrapper4.eq("student_number", studentNumber);
