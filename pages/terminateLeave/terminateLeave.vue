@@ -160,10 +160,19 @@
 					}
 			},
 			submitForm(){
+				// console.log(this.backData.backWay);
+				// console.log(this.leaveData.departWay)
 				this.leaveData.leaveTime = this.dateAdd(this.leaveData.leaveTime,this.leaveData.depart);
 				this.backData.backTime = this.dateAdd( this.backData.backTime,this.backData.back)
 				this.$refs.leave_from.validate().then(res => {
 					this.$refs.back_from.validate().then(res => {
+						if(this.leaveData.depart === false && this.backData.back === false){
+							uni.showToast({
+								icon:"error",
+								title:"无效销假"
+							})
+							return
+						}
 						uni.$http.post('/back/updateNote',{
 							  "id": this.id,
 							  "depart": this.leaveData.depart  === true ? "YES" : "NO",

@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中取消行程。" showIcon></uni-notice-bar>
+		<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中填写返校内容。" showIcon></uni-notice-bar>
 	<view class="apply-leave">
 		<view>
 			<uni-forms ref="form" :modelValue="formData" :rules="dataRules" class="form-style" :border="true" validateTrigger="bind" err-show-type="toast">
@@ -12,17 +12,17 @@
 					</uni-forms-item>
 				</uni-group>
 				<uni-group>
-					<uni-forms-item required name="destination" label="目的地" >
+					<uni-forms-item required name="destination" label="目的地">
 						<uni-easyinput multiple v-model="formData.destination"  placeholder="请输入目的地" :inputBorder="false"/>
 					</uni-forms-item>
 				</uni-group>
 				<uni-group>
-					<uni-forms-item required name="startTime" label="离校时间" >
+					<uni-forms-item required name="startTime" label="开始时间" >
 						<uni-datetime-picker type="datetime" v-model="formData.startTime" :border="false" :clear-icon="false"  placeholder="选择离校日期和时间" />
 					</uni-forms-item>
 				</uni-group>
 				<uni-group>
-					<uni-forms-item required name="endTime" label="返校时间" >
+					<uni-forms-item required name="endTime" label="结束时间" >
 						<uni-datetime-picker type="datetime" v-model="formData.endTime" :border="false"  :clear-icon="false"  placeholder="选择返校日期和时间"/>
 					</uni-forms-item>
 				</uni-group>
@@ -149,13 +149,13 @@
 				//this.studentFile.filename = res.tempFiles[0].name;
 				this.imageValue.push(res.tempFilePaths[0])
 				// console.log(res.tempFilePaths[0])
-				console.log(this.imageValue)
+				//console.log(this.imageValue)
 			},
 			//图片删除
 			handleDelete(e){
 				const num = this.imageValue.findIndex(v => v.url === e.tempFilePath);
 				this.imageValue.splice(num, 1);
-				console.log(this.imageValue)
+				//console.log(this.imageValue)
 			},
 			onClickItem(e){
 				this.current = e.currentIndex;
@@ -185,7 +185,7 @@
 							console.log(this.studentMsg)
 							this.formData.leave = this.formData.leave === true ? '是' : '否';
 							//this.uploadImg()
-							uni.navigateTo({
+							uni.redirectTo({
 								url:'../finishLeave/finishLeave?formData=' + encodeURIComponent(JSON.stringify(this.formData))
 							})
 						}else{

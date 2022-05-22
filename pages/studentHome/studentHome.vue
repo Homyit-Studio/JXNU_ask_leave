@@ -19,15 +19,15 @@
 				</view>
 				<view class="tools-box">
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/applyLeave/applyLeave" class="tools-btn">
+						<view class="tools-btn" @click="applyLeave()">
 							<image src="../../static/stu_icon/woyaoqingjia.png" mode="" class="tools-img"></image>
-						</navigator>
+						</view>
 						<text>请假申请</text>
 					</view>
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/allLeaves/allLeaves" class="tools-btn">
+						<view class="tools-btn" @click="allLeaves()">
 							<image src="../../static/stu_icon/qingjiajilu.png" mode="" class="tools-img"></image>
-						</navigator>
+						</view>
 						<text>申请记录</text>
 					</view>
 					<view class="tools-box">
@@ -69,7 +69,11 @@
 		<!-- 个人信息展示/修改弹窗 -->
 		<uni-popup ref="popupupdateUserForStudent" background-color="#fff" type="bottom">
 			<view>
-				 <uni-list>
+				<!-- <uni-section></uni-section> -->
+				<view class="list-title">
+					<text class="list-title">点击修改个人信息</text>
+				</view>
+				<uni-list>
 					<uni-list-item title="本人手机号" :rightText="studentMessage.phoneNumber" clickable :showArrow="true" @click="onClick1()" ></uni-list-item> 
 					<uni-list-item title="家长手机号" :rightText="studentMessage.parentNumber" clickable :showArrow="true" @click="onClick2()" ></uni-list-item> 
 					<uni-list-item title="宿舍楼栋" :rightText="studentMessage.buildingNumber" clickable :showArrow="true" @click="onClick3()" ></uni-list-item> 
@@ -112,7 +116,6 @@
 		<uni-popup ref="updateFour" type="dialog">
 			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入宿舍号" :duration="2000"  @close="closeFour" @confirm="confirmFour"></uni-popup-dialog>
 		</uni-popup>
-		<!-- 太乱了再写我要吐了 -->
 	</view>
 </template>
 
@@ -152,58 +155,6 @@
 			//console.log(uni.getStorageSync("token"))
 		},
 		methods: {
-			//看到这一坨就想吐
-			onClick1(){
-				this.$refs.updateOne.open()
-			},
-			//yue
-			onClick2(){
-				this.$refs.updateTwo.open()
-			},
-			onClick3(){
-				this.$refs.updateThree.open()
-			},
-			onClick4(){
-				this.$refs.updateFour.open()
-			},
-			
-			//弹窗关闭
-			closeOne(){
-				this.$refs.updateOne.close();
-			},
-			closeTwo(){
-				this.$refs.updateTwo.close();
-			},
-			closeThree(){
-				this.$refs.updateThree.close();
-			},
-			closeFour(){
-				this.$refs.updateFour.close();
-			},
-			confirmOne(e){
-				this.studentMessage.phoneNumber = e;
-				//提交修改
-				this.submitUpdate("one");
-			
-			},
-			confirmTwo(e){
-				this.studentMessage.parentNumber = e;
-				//提交修改
-				this.submitUpdate("two");
-			
-			},
-			confirmThree(e){
-				this.studentMessage.buildingNumber = e;
-				//提交修改
-				this.submitUpdate("three");
-			
-			},
-			confirmFour(e){
-				this.studentMessage.dormitoryNumber = e;
-				//提交修改
-				this.submitUpdate("four");
-			
-			},	
 			submitUpdate(str){
 				uni.$http.post(
 				'/user/updateUserForStudent',{
@@ -246,7 +197,7 @@
 			},
 			getData(){
 				uni.$http.get('/user/personInfo').then((res)=>{
-					console.log(res.data)
+					//console.log(res.data)
 					let userData = res.data.data;
 					this.studentMessage = userData;
 					
@@ -325,10 +276,22 @@
 					console.log(err)
 				})
 			},
+			//请假申请
+			applyLeave(){
+				uni.navigateTo({
+					url: '/pages/applyLeave/applyLeave'
+				})
+			},
+			//申请记录
+			allLeaves(){
+				uni.navigateTo({
+					url: '/pages/allLeaves/allLeaves'
+				})
+			},
 			//销假路上
 			goTerminate(){
 				uni.showToast({
-					title:'请在 申请记录->我要销假 页面进行销假操作',
+					title:'请在 申请记录->等待销假->我要销假 页面进行销假操作',
 					icon:'none',
 				}
 				);
@@ -337,7 +300,58 @@
 						url: '/pages/allLeaves/allLeaves'
 					})
 				},2000)	
-			}
+			},
+			//看到这一坨就想吐
+			onClick1(){
+				this.$refs.updateOne.open()
+			},
+			//yue
+			onClick2(){
+				this.$refs.updateTwo.open()
+			},
+			onClick3(){
+				this.$refs.updateThree.open()
+			},
+			onClick4(){
+				this.$refs.updateFour.open()
+			},
+			
+			//弹窗关闭
+			closeOne(){
+				this.$refs.updateOne.close();
+			},
+			closeTwo(){
+				this.$refs.updateTwo.close();
+			},
+			closeThree(){
+				this.$refs.updateThree.close();
+			},
+			closeFour(){
+				this.$refs.updateFour.close();
+			},
+			confirmOne(e){
+				this.studentMessage.phoneNumber = e;
+				//提交修改
+				this.submitUpdate("one");
+			
+			},
+			confirmTwo(e){
+				this.studentMessage.parentNumber = e;
+				//提交修改
+				this.submitUpdate("two");
+			
+			},
+			confirmThree(e){
+				this.studentMessage.buildingNumber = e;
+				//提交修改
+				this.submitUpdate("three");
+			
+			},
+			confirmFour(e){
+				this.studentMessage.dormitoryNumber = e;
+				//提交修改
+				this.submitUpdate("four");
+			},	
 			
 		}
 	}
@@ -417,5 +431,11 @@
 				width: 35px;
 			}
 		}
+	}
+	.list-title{
+		padding: 10px;
+		text-align: center;
+		color: $uni-text-color-grey;
+		font-size: $jxnu-font-14;
 	}
 </style>
