@@ -202,7 +202,6 @@
 					this.shownodata = true
 				})
 			},
-			//xiugai
 			checkDetails(id) {
 				uni.redirectTo({
 					url: `/pages/allLeaveDetails/allLeaveDetails?id=` + id + '&type=' + this.currentValue ,
