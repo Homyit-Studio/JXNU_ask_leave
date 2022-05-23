@@ -9,7 +9,6 @@
 				<text class="uni-h6">假条</text>
 			</uni-card>
 		</view> -->
-		<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中填写返校内容。" showIcon></uni-notice-bar>
 		<view class="look-list">
 			<view class="handle-leave">
 				<view class="menu">
@@ -22,8 +21,9 @@
 						:key="item.id">
 						<template v-slot:header>
 							<view class="card-header">
-								<uni-tag v-if="item.examine == 'FAILURE'" :mark="true" :text="index+1+ '.'"
-									type="error">
+								<uni-tag v-if="item.examine == 'SUCCESS'" :text=" index+1 + '.已同意'" type="success">
+								</uni-tag>
+								<uni-tag v-else-if="item.examine == 'FAILURE'" :text="index+1+ ',已拒绝'" type="error">
 								</uni-tag>
 								<uni-tag :mark="true" v-else :text="index+1 + '.'" type="default"></uni-tag>
 								<view>
@@ -132,10 +132,10 @@
 			}
 		},
 		onLoad(options) {
-			//console.log(uni.getStorageSync('token'))
+			console.log(uni.getStorageSync('token'))
 			this.statuschoose = options.choose;
 			this.requestLeaveNotes()
-			this.requestLeaveCount()
+			//this.requestLeaveCount()
 		},
 		methods: {
 			changeGrade(grade) {
@@ -155,25 +155,25 @@
 					this.requestLeaveNotes()
 				}
 			},
-			requestLeaveCount(){
-				uni.$http.get(`/leave/allCountsForPerson`).then(res => {
-					if (res.data.code == 200) {
-						let data = res.data.data
-						for (let index in this.localMenus) {
-							//console.log(data[this.localMenus[index].value])
-							this.localMenus[index].total = data[this.localMenus[index].value]
-						}
-					} else {
-						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
-						this.$refs.message.open()
-					}
-				}).catch(err => {
-					this.msg.msgType = "error"
-					this.msg.messageText = err.errMsg
-					this.$refs.message.open()
-				})
-			},
+			// requestLeaveCount(){
+			// 	uni.$http.get(`/leave/allCounts/${this.listRequest.gradeId}`).then(res => {
+			// 		if (res.data.code == 200) {
+			// 			let data = res.data.data
+			// 			for (let index in this.localMenus) {
+			// 				console.log(data[this.localMenus[index].value])
+			// 				this.localMenus[index].total = data[this.localMenus[index].value]
+			// 			}
+			// 		} else {
+			// 			this.msg.msgType = "error"
+			// 			this.msg.messageText = res.data.message
+			// 			this.$refs.message.open()
+			// 		}
+			// 	}).catch(err => {
+			// 		this.msg.msgType = "error"
+			// 		this.msg.messageText = err.errMsg
+			// 		this.$refs.message.open()
+			// 	})
+			// },
 			requestLeaveNotes(){
 				uni.$http.post("/leave/selectNoteByRole", this.listRequest).then(res => {
 					if (res.data.code == 200) {
@@ -182,16 +182,16 @@
 							duration: 500,
 							icon: "loading"
 						});
-						//console.log(res.data.data)
+						console.log(res.data.data.total)
 						this.leaveNoteList = res.data.data.list
 						this.endPage = res.data.data.endPage;
-						//console.log(this.leaveNoteList)
+						console.log(this.leaveNoteList)
 						if (this.listRequest.pageNo >= this.endPage) {
 							this.shownodata = true
 						}
 					} else {
 						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
+						this.msg.messageText = "请求错误"
 						this.$refs.message.open()
 						this.shownodata = true
 					}
@@ -203,7 +203,7 @@
 				})
 			},
 			checkDetails(id) {
-				uni.redirectTo({
+				uni.navigateTo({
 					url: `/pages/allLeaveDetails/allLeaveDetails?id=` + id + '&type=' + this.currentValue ,
 					animationType: 'pop-in',
 					animationDuration: 200
@@ -212,7 +212,7 @@
 			changeMenu(e) {
 				//console.log(e)
 				this.currentValue = e.value;
-				//console.log(this.currentValue)
+				console.log(this.currentValue)
 				this.listRequest.pageNo = 1
 				this.listRequest.examineEnum = e.value;
 				this.requestLeaveNotes()
@@ -226,14 +226,13 @@
 			if (this.isloading) return;
 			this.isloading = true
 			this.listRequest.pageNo++;
-			uni.$http.post(`/leave/selectNoteByRole`, this.listRequest).then(res => {
+			uni.$http.post(`/leave/selectNodeByGrade`, this.listRequest).then(res => {
 				if (res.data.code == 200) {
 					uni.showToast({
 						title: '加载中',
 						duration: 500,
 						icon: "loading"
 					});
-					//console.log(res.data.data)
 					this.leaveNoteList = [...this.leaveNoteList, ...res.data.data.list]
 					this.isloading = false
 				} else {

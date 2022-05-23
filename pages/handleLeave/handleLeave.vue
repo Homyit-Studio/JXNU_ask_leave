@@ -3,7 +3,7 @@
 		<view>
 			<view class="leave-remind-title">
 				<uni-card :is-shadow="false" is-full>
-					<text class="uni-h6">假条</text>
+					<text class="card-title">假条</text>
 				</uni-card>
 			</view>
 			<!-- 	<view class="uni-padding-wrap uni-common-mt">
@@ -231,9 +231,10 @@
 <style lang="scss">
 	.handle-leave-page {
 		display: flex;
-		.uni-h6{
-			text-align: center;
-		}
+		.card-title {
+					text-align: center;
+				}
+
 		.card-actions-item {
 			display: flex;
 			justify-content: flex-end;
@@ -256,6 +257,7 @@
 
 		.leave-remind-title {
 			width: 100vw;
+			text-align: center;
 		}
 
 		.leave-notes {
