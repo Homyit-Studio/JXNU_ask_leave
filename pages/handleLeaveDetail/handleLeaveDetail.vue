@@ -342,19 +342,14 @@
 						console.log(res)
 						if (res.data.code == 200) {
 							this.msg.msgType = "success"
-							this.msg.messageText = res.data.message
+							this.msg.messageText = "审批成功"
 							setTimeout(()=>{
-								uni.showToast({
-									title:"请求成功",
-									icon:"success"
+								this.$refs.message.open()
+							},100)
+							setTimeout(()=> {
+								uni.navigateBack({
 								})
-							},900)
-							this.$refs.message.open()
-							uni.navigateBack({
-								complete() {
-									console.log(1)
-								}
-							})
+							}, 2000)
 						} else {
 							this.msg.msgType = "error"
 							this.msg.messageText = res.data.message

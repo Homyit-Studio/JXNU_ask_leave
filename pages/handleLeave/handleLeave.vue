@@ -101,7 +101,7 @@
 					},
 					{
 						total: 0,
-						text: '被拒假条',
+						text: '已拒假条',
 						value: "FAILURE",
 					}
 				],
@@ -231,7 +231,9 @@
 <style lang="scss">
 	.handle-leave-page {
 		display: flex;
-
+		.uni-h6{
+			text-align: center;
+		}
 		.card-actions-item {
 			display: flex;
 			justify-content: flex-end;

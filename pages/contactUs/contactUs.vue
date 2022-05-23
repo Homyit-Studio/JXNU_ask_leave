@@ -5,8 +5,7 @@
 			<text>HOMYIT STUDIO</text>
 		</view>
 		<uni-list>
-			<uni-list-item title="教师端手册" note="班主任权限:审批假条,管理班级"></uni-list-item>
-			<uni-list-item  title="问题反馈" note="请联系234"></uni-list-item>
+			<uni-list-item  title="问题反馈" note="请联系"></uni-list-item>
 		</uni-list>
 	</view>
 </template>
