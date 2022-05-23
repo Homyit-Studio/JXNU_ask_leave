@@ -36,8 +36,8 @@ $http.beforeRequest = function(options) {
 		options.header["token"] = uni.getStorageSync('token')
 	}
 	uni.showLoading({
-		title: '正在加载中...',
-	})
+		title: '正在请求中'
+	});
 }
 
 $http.afterRequest = function() {

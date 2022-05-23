@@ -172,11 +172,6 @@
 			requestLeaveNotes() {
 				uni.$http.post("/leave/selectNoteByRole", this.listRequest).then(res => {
 					if (res.data.code == 200) {
-						uni.showToast({
-							title: '加载中',
-							duration: 1000,
-							icon: "loading"
-						});
 						console.log(res)
 						this.leaveNoteList = res.data.data.list
 						this.endPage = res.data.data.endPage
