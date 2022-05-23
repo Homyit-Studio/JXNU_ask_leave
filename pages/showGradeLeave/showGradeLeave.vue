@@ -98,7 +98,7 @@
 					},
 					{
 						total: null,
-						text: '被拒假条',
+						text: '已拒假条',
 						value: "FAILURE",
 					}
 				],
@@ -112,6 +112,34 @@
 					{
 						value: "2020",
 						text: "2020级"
+					},
+					{
+						value: "2019",
+						text: "2019级"
+					},
+					{
+						value: "2018",
+						text: "2018级"
+					},
+					{
+						value: "3021",
+						text: "研一"
+					},
+					{
+						value: "3020",
+						text: "研二"
+					},
+					{
+						value: "3019",
+						text: "研三"
+					},
+					{
+						value: "1018",
+						text: "留学生四年级"
+					},
+					{
+						value: "1019",
+						text: "留学生三年级"
 					}
 				],
 				isloading: false,

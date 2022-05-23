@@ -4,7 +4,7 @@
 			<view class="message-card" @click="showStudent(item)">
 				<view class="student-message">
 					<image
-						:src="item.sex  == 'WOMAN'? 'https://img.tukuppt.com/png_preview/00/05/38/DCoSdpcUVs.jpg!/fw/780' : 'https://img.tukuppt.com/png_preview/00/05/28/LjhCsodQxt.jpg!/fw/780'">
+						:src="item.sex  == 'WOMAN'? 'https://img.51miz.com/preview/element/00/01/12/71/E-1127122-0E7A71E8.jpg' : 'https://img.51miz.com/preview/element/00/01/12/75/E-1127590-2FA28D01.jpg'">
 					</image><text>{{item.username}}</text>
 				</view>
 				<view><text>工号:{{"00" + item.studentNumber}}</text></view>
@@ -243,6 +243,7 @@
 			display: flex;
 			justify-content: center;
 			padding-bottom: 50rpx;
+			margin-top: 10px;
 
 			button {
 				width: 300rpx;

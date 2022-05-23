@@ -300,7 +300,7 @@
 			display: flex;
 			justify-content: center;
 			padding-bottom: 50rpx;
-
+			margin-top: 10px;
 			button {
 				width: 300rpx;
 				height: 60rpx;

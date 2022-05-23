@@ -45,14 +45,14 @@
 						<view>
 							<navigator animation-type="pop-in" animation-duration="300"
 								url="/pages/handleLeave/handleLeave?choose=0" class="tools-btn">
-								<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+								<uni-icons type="notification-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 							</navigator>
 							<text>审批请假</text>
 						</view>
 						<view>
 							<navigator animation-type="pop-in" animation-duration="300"
 								url="/pages/personFinishRecord/personFinishRecord" class="tools-btn">
-								<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+								<uni-icons type="email-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 							</navigator>
 							<text>审批汇总</text>
 						</view>
@@ -90,7 +90,7 @@
 					<view>
 						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
 							url="/pages/classList/classList?choose=1">
-							<uni-icons type="person" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+							<uni-icons type="staff-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>全院班级</text>
 					</view>
@@ -141,7 +141,7 @@
 				<view class="tools-box">
 					<view @click="lookMessage">
 						<view class="tools-btn">
-							<uni-icons type="notification-filled" size="35" color="#f0f0f0" class="icon-style">
+							<uni-icons type="person-filled" size="35" color="#f0f0f0" class="icon-style">
 							</uni-icons>
 						</view>
 						<text>个人信息</text>
