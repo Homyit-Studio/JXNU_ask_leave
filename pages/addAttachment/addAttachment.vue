@@ -37,9 +37,13 @@
 			select(res){
 				//console.log('选择文件：',e)
 				//this.studentFile.filename = res.tempFiles[0].name;
-				this.imageValue.push(res.tempFilePaths[0])
-				// console.log(res.tempFilePaths[0])
-				console.log(this.imageValue)
+				//console.log(res.tempFilePaths)
+				for(let index in res.tempFilePaths){
+					this.imageValue.push(res.tempFilePaths[index])
+					console.log(index)
+				}
+				//console.log(res.tempFilePaths[0])
+				//console.log(this.imageValue)
 			},
 			//图片删除
 			handleDelete(e){

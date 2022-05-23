@@ -21,7 +21,7 @@
 				<view><text decode="true">前往方式:&emsp;{{leaveDetails.way}}</text></view>
 				<view><text decode="true">联系号码:&emsp;{{leaveDetails.phoneNumber}}</text></view>
 				<view><text
-						decode="true">宿舍楼栋:&emsp;{{leaveDetails.buildingNumber+'栋'}}{{leaveDetails.dormitoryNumber}}</text>
+						decode="true">宿舍楼栋:&emsp;{{leaveDetails.buildingNumber}}{{leaveDetails.dormitoryNumber}}</text>
 				</view>
 				<view>
 					<text decode="true">请假事由:&emsp;</text>

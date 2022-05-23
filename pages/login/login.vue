@@ -149,7 +149,7 @@
 									})
 								}else{
 									uni.showToast({
-										icon:"error",
+										icon:"none",
 										title:"身份验证失败,请从学生端登录"
 									})
 								}
@@ -181,9 +181,18 @@
 										uni.navigateTo({
 											url: '/pages/studentHome/studentHome'
 										})
-									}
-								}
-								
+									}else{
+										uni.showToast({
+											icon:"none",
+											title:"身份验证失败,请从教师端登录"
+										})
+									} 
+								}else {
+									uni.showToast({
+										icon:"none",
+										title: res.data.message
+									})
+								}	
 						})
 					}
 				})

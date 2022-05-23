@@ -34,6 +34,7 @@
 	export default {
 		data() {
 			return {
+				dataPath:"",
 				index: 0,
 				array:["年级","班级","个人"],
 				formData:{
@@ -101,6 +102,7 @@
 			},
 			//非H5环境下文件下载
 			platformnotH5(){
+				const that = this;
 				uni.downloadFile({
 					url: 'https://www.lovehot.club/api/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&endTime='+this.formData.endTime, 
 					header: {
@@ -109,32 +111,48 @@
 					},
 					success: (res) => {
 						console.log(res)
-						const path = res.tempFilePath;
+						that.dataPath = res.tempFilePath;
 						if (res.statusCode === 200) {
-							uni.saveFile({
-								tempFilePath:res.path,//下载成功之后返回的临时路径
-								success:(e)=>{
-								//保存成功之后 打开文件
-								uni.openDocument({
-								  filePath: e.savedFilePath,
-								  fail:(e)=>{
-									  console.log(e)
-									uni.showToast({
-									  icon:"error",
-									  title: `打开失败`
-									})
-								  }
-								})
+							//直接打开？
+							uni.openDocument({
+							  filePath: that.dataPath,
+							  showMenu: true,
+							  success: function (res) {
+								console.log('打开文档成功');
 							  },
-							  fail:(e)=>{
-								console.log(e)
+							  fail:(err)=>{
 								uni.showToast({
-									title: `保存失败`,
+									title: `文件打开失败`,
 									icon:"error"
 								})
+								console.log(err);
 							  }
-							})
-						}
+						});
+						  
+						// 	uni.saveFile({
+						// 		tempFilePath:that.dataPath,//下载成功之后返回的临时路径
+						// 		success:(e)=>{
+						// 		//保存成功之后 打开文件
+						// 		uni.openDocument({
+						// 		  filePath: e.savedFilePath,
+						// 		  fail:(e)=>{
+						// 			  console.log(e)
+						// 			uni.showToast({
+						// 			  icon:"error",
+						// 			  title: `打开失败`
+						// 			})
+						// 		  }
+						// 		})
+						// 	  },
+						// 	  fail:(e)=>{
+						// 		console.log(e)
+						// 		uni.showToast({
+						// 			title: `保存失败`,
+						// 			icon:"error"
+						// 		})
+						// 	  }
+						// 	})
+						 }
 					}
 				});
 				
