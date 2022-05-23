@@ -203,7 +203,7 @@
 				})
 			},
 			checkDetails(id) {
-				uni.navigateTo({
+				uni.redirectTo({
 					url: `/pages/allLeaveDetails/allLeaveDetails?id=` + id + '&type=' + this.currentValue ,
 					animationType: 'pop-in',
 					animationDuration: 200
