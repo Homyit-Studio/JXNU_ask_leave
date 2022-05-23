@@ -164,7 +164,7 @@
 					"dormitoryNumber": this.studentMessage.dormitoryNumber
 				 }
 				).then(res =>{
-					console.log(res);
+					//console.log(res);
 					if(res.data.code === 200){
 						uni.showToast({
 							icon:"success",
@@ -187,7 +187,7 @@
 					}
 				}).catch(err =>{
 					uni.showToast({
-						icon:"error",
+						icon:"none",
 						title:"网络似乎有问题"
 					})
 				})
@@ -211,14 +211,19 @@
 					});
 				}).catch((err)=>{
 					uni.showToast({
+						icon:"none",
 						title: "网络似乎出现了一些问题",
 					})
 				})
 			},
+			//打开修改密码
 			revisePassword() {
-				this.$refs.popupRevisePassword.open()
+				this.$refs.popupRevisePassword.open();
 			},
- 
+			//关闭修改密码
+			cancelSubmit(){
+				this.$refs.popupRevisePassword.close();
+			},
 			//提交修改密码
 			reviseSubmit() {
 				this.$refs.revisePasswordForm.validate().then(res=>{
@@ -232,6 +237,7 @@
 						console.log(res)
 						if(res.data.code === 200){
 							uni.showToast({
+								icon:"none",
 								title: "修改成功,请重新登录",
 							})
 							setTimeout(()=>{
@@ -248,9 +254,9 @@
 					})
 				}).catch(err =>{
 					//this.$errShowToast(err);
-					uni.showToast({
-						title: "网络似乎出现了一些问题",
-					})
+					// uni.showToast({
+					// 	title: "网络似乎出现了一些问题",
+					// })
 				})
 			},
 			//退出登录
