@@ -9,8 +9,9 @@
 				<text class="uni-h6">假条</text>
 			</uni-card>
 		</view> -->
+		<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中填写返校内容。" showIcon></uni-notice-bar>
 		<view class="look-list">
-			<view class="handle-leave">
+				<view class="handle-leave">
 				<view class="menu">
 					<uni-data-menu :localdata="localMenus" :unique-opened="true" @select="changeMenu"
 						active-text-color="#409eff">
@@ -135,7 +136,7 @@
 			console.log(uni.getStorageSync('token'))
 			this.statuschoose = options.choose;
 			this.requestLeaveNotes()
-			//this.requestLeaveCount()
+			this.requestLeaveCount()
 		},
 		methods: {
 			changeGrade(grade) {
@@ -155,25 +156,25 @@
 					this.requestLeaveNotes()
 				}
 			},
-			// requestLeaveCount(){
-			// 	uni.$http.get(`/leave/allCounts/${this.listRequest.gradeId}`).then(res => {
-			// 		if (res.data.code == 200) {
-			// 			let data = res.data.data
-			// 			for (let index in this.localMenus) {
-			// 				console.log(data[this.localMenus[index].value])
-			// 				this.localMenus[index].total = data[this.localMenus[index].value]
-			// 			}
-			// 		} else {
-			// 			this.msg.msgType = "error"
-			// 			this.msg.messageText = res.data.message
-			// 			this.$refs.message.open()
-			// 		}
-			// 	}).catch(err => {
-			// 		this.msg.msgType = "error"
-			// 		this.msg.messageText = err.errMsg
-			// 		this.$refs.message.open()
-			// 	})
-			// },
+			requestLeaveCount(){
+				uni.$http.get(`/leave/allCountsForPerson`).then(res => {
+					if (res.data.code == 200) {
+						let data = res.data.data
+						for (let index in this.localMenus) {
+							//console.log(data[this.localMenus[index].value])
+							this.localMenus[index].total = data[this.localMenus[index].value]
+						}
+					} else {
+						this.msg.msgType = "error"
+						this.msg.messageText = res.data.message
+						this.$refs.message.open()
+					}
+				}).catch(err => {
+					this.msg.msgType = "error"
+					this.msg.messageText = err.errMsg
+					this.$refs.message.open()
+				})
+			},
 			requestLeaveNotes(){
 				uni.$http.post("/leave/selectNoteByRole", this.listRequest).then(res => {
 					if (res.data.code == 200) {
@@ -203,7 +204,7 @@
 				})
 			},
 			checkDetails(id) {
-				uni.navigateTo({
+				uni.redirectTo({
 					url: `/pages/allLeaveDetails/allLeaveDetails?id=` + id + '&type=' + this.currentValue ,
 					animationType: 'pop-in',
 					animationDuration: 200
@@ -226,7 +227,7 @@
 			if (this.isloading) return;
 			this.isloading = true
 			this.listRequest.pageNo++;
-			uni.$http.post(`/leave/selectNodeByGrade`, this.listRequest).then(res => {
+			uni.$http.post(`/leave/selectNoteByRole`, this.listRequest).then(res => {
 				if (res.data.code == 200) {
 					uni.showToast({
 						title: '加载中',

@@ -22,7 +22,7 @@
 		methods: {
 			toLogin(e) {
 				let card = e.currentTarget.dataset.card;
-				uni.navigateTo({
+				uni.redirectTo({
 					url: "../login/login?card=" + card,
 					animationType: 'pop-in',
 					animationDuration: 200

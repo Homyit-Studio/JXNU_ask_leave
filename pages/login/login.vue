@@ -144,7 +144,7 @@
 										key: 'teacherMessage',
 										data: this.loginFormData
 									});
-									uni.navigateTo({
+									uni.redirectTo({
 										url: '/pages/teacherHome/teacherHome'
 									})
 								}else{
@@ -178,7 +178,7 @@
 											key: 'studentMessage',
 											data: this.loginFormData
 										});
-										uni.navigateTo({
+										uni.redirectTo({
 											url: '/pages/studentHome/studentHome'
 										})
 									}else{

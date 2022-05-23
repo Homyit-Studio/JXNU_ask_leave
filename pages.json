@@ -25,7 +25,8 @@
 		{
 			"path": "pages/teacherHome/teacherHome",
 			"style": {
-				"navigationBarTitleText": "教师中心"
+				"navigationBarTitleText": "教师中心",
+				"disableSwipeBack": true
 			}
 		}, {
 			"path": "pages/studentHome/studentHome",
