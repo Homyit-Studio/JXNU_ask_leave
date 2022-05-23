@@ -7,7 +7,7 @@
 					return-type="array"
 					file-mediatype="image"
 					mode="grid" 
-					file-extname="png,jpg"
+					file-extname="png,jpg,jpeg"
 					:auto-upload="false"
 					@select="select" 
 					@delete="handleDelete" 

@@ -187,11 +187,11 @@
 								uni.showToast({
 									title: "提交成功",		
 								})
+								//将页面传递给上两个页面栈
 								setTimeout(function() {
-									uni.redirectTo({
-										url:'/pages/studentHome/studentHome'
-										} 
-									)
+									uni.navigateBack({
+										delta: 2
+									})
 								}, 1000)
 							}
 						}).catch(err=>{
