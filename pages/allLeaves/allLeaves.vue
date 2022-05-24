@@ -13,7 +13,7 @@
 		<view class="look-list">
 			<view class="handle-leave">
 				<view class="menu">
-					<uni-data-menu :localdata="localMenus" :unique-opened="true" @select="changeMenu"
+					<uni-data-menu :localdata="localMenus" :unique-opened="true" @select="changeMenu" :value="currentValue"
 						active-text-color="#409eff">
 					</uni-data-menu>
 				</view>
@@ -133,7 +133,12 @@
 		},
 		onLoad(options) {
 			//console.log(uni.getStorageSync('token'))
-			this.statuschoose = options.choose;
+			//console.log(options)
+			if(options.is_WAIT_REPORT == "true"){
+				this.currentValue = "WAIT_REPORT";
+				this.listRequest.examineEnum = "WAIT_REPORT";
+				
+			}
 			this.requestLeaveNotes()
 			this.requestLeaveCount()
 		},
@@ -210,7 +215,8 @@
 				})
 			},
 			changeMenu(e) {
-				//console.log(e)
+				//console.log(this.activeUrl)
+				// console.log(e)
 				this.currentValue = e.value;
 				//console.log(this.currentValue)
 				this.listRequest.pageNo = 1
