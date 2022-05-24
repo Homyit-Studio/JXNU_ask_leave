@@ -59,12 +59,18 @@
 						rules: [{
 							required: true,
 							errorMessage: "请输入正确的学号"
+						},{
+							format: 'number',
+							errorMessage: '学号只能输入数字'
 						}]
 					},
 					"password": {
 						rules: [{
 							required: true,
 							errorMessage: "请输入正确的密码"
+						},{
+							format: 'number',
+							errorMessage: '密码只能输入数字'
 						}]
 					}
 				},
@@ -73,12 +79,18 @@
 						rules: [{
 							required: true,
 							errorMessage: "请输入正确的工号"
+						},{
+							format: 'number',
+							errorMessage: '工号只能输入数字'
 						}]
 					},
 					"password": {
 						rules: [{
 							required: true,
 							errorMessage: "请输入正确的密码"
+						},{
+							format: 'number',
+							errorMessage: '密码只能输入数字'
 						}]
 					}
 				},

@@ -5,7 +5,14 @@
 			<text>HOMYIT STUDIO</text>
 		</view>
 		<uni-list>
-			<uni-list-item  title="问题反馈" note="请联系"></uni-list-item>
+			<uni-list-item  title="问题反馈">
+				<template v-slot:body>
+					<view><text>系统中如果出现请求错误，系统卡顿以及其他问题点击联系客服，进行问题反馈。</text></view>
+					<view class="contact">
+						<button open-type="contact" class="contact-button" size="mini">联系客服</button>
+					</view>
+				</template>
+			</uni-list-item>
 		</uni-list>
 	</view>
 </template>
@@ -34,6 +41,15 @@
 			.homyit-image{
 				width: 60px;
 				height: 60px;
+			}
+		}
+		.contact{
+			display: flex;
+			justify-content: center;
+			.contact-button{
+				margin: 10px;
+				background-color: $jxnu-bg-color;
+				color: #fff;
 			}
 		}
 	}

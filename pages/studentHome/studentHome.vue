@@ -49,9 +49,15 @@
 				<view class="tools-box">
 					<view>
 						<view class="tools-btn" @click="showInfo()">
-							<image src="../../static/stu_icon/wodegerenxinxi.png" mode="" class="tools-img"></image>	
-						</view>		
+							<image src="../../static/stu_icon/wodegerenxinxi.png" mode="" class="tools-img"></image>
+						</view>
 						<text>个人信息</text>
+					</view>
+					<view @click="contactus">
+						<navigator class="tools-btn" url="../contactUs/contactUs">
+							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>联系我们</text>
 					</view>
 					<view>
 						<view class="tools-btn" @click="logOut()">
@@ -64,7 +70,8 @@
 		</view>
 		<!-- 确认退出弹框 -->
 		<uni-popup ref="dialog_up" type="dialog">
-			<uni-popup-dialog type="error" content="确认退出？" :duration="2000" :before-close="true" @close="close" @confirm="confirm"></uni-popup-dialog>
+			<uni-popup-dialog type="error" content="确认退出？" :duration="2000" :before-close="true" @close="close"
+				@confirm="confirm"></uni-popup-dialog>
 		</uni-popup>
 		<!-- 个人信息展示/修改弹窗 -->
 		<uni-popup ref="popupupdateUserForStudent" background-color="#fff" type="bottom">
@@ -74,17 +81,22 @@
 					<text class="list-title">点击修改个人信息</text>
 				</view>
 				<uni-list>
-					<uni-list-item title="本人手机号" :rightText="studentMessage.phoneNumber" clickable :showArrow="true" @click="onClick1()" ></uni-list-item> 
-					<uni-list-item title="家长手机号" :rightText="studentMessage.parentNumber" clickable :showArrow="true" @click="onClick2()" ></uni-list-item> 
-					<uni-list-item title="宿舍楼栋" :rightText="studentMessage.buildingNumber" clickable :showArrow="true" @click="onClick3()" ></uni-list-item> 
-					<uni-list-item title="宿舍号" :rightText="studentMessage.dormitoryNumber" clickable :showArrow="true" @click="onClick4()" ></uni-list-item>
-				 </uni-list>
-				</view>
+					<uni-list-item title="本人手机号" :rightText="studentMessage.phoneNumber" clickable :showArrow="true"
+						@click="onClick1()"></uni-list-item>
+					<uni-list-item title="家长手机号" :rightText="studentMessage.parentNumber" clickable :showArrow="true"
+						@click="onClick2()"></uni-list-item>
+					<uni-list-item title="宿舍楼栋" :rightText="studentMessage.buildingNumber" clickable :showArrow="true"
+						@click="onClick3()"></uni-list-item>
+					<uni-list-item title="宿舍号" :rightText="studentMessage.dormitoryNumber" clickable :showArrow="true"
+						@click="onClick4()"></uni-list-item>
+				</uni-list>
+			</view>
 		</uni-popup>
 		<!-- 修改密码弹窗 -->
 		<uni-popup ref="popupRevisePassword" background-color="#fff" type="bottom">
 			<view class="revise-popup-content">
-				<uni-forms class="revise-form" ref="revisePasswordForm" :modelValue="reviseFormData" :rules="dataRules" validateTrigger="submit">
+				<uni-forms class="revise-form" ref="revisePasswordForm" :modelValue="reviseFormData" :rules="dataRules"
+					validateTrigger="submit">
 					<uni-forms-item name="oldPassword">
 						<uni-easyinput type="password" prefixIcon=".uniui-person-filled"
 							v-model="reviseFormData.oldPassword" placeholder="请输入原密码" />
@@ -102,19 +114,23 @@
 		</uni-popup>
 		<!-- 修改手机号 -->
 		<uni-popup ref="updateOne" type="dialog">
-			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入本人手机号" :duration="2000"  @close="closeOne" @confirm="confirmOne"></uni-popup-dialog>
+			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入本人手机号" :duration="2000"
+				@close="closeOne" @confirm="confirmOne"></uni-popup-dialog>
 		</uni-popup>
 		<!-- 修改父母手机号 -->
 		<uni-popup ref="updateTwo" type="dialog">
-			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入家长手机号" :duration="2000"  @close="closeTwo" @confirm="confirmTwo"></uni-popup-dialog>
+			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入家长手机号" :duration="2000"
+				@close="closeTwo" @confirm="confirmTwo"></uni-popup-dialog>
 		</uni-popup>
 		<!-- 修改宿舍楼 -->
 		<uni-popup ref="updateThree" type="dialog">
-			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入宿舍楼栋" :duration="2000"  @close="closeThree" @confirm="confirmThree"></uni-popup-dialog>
+			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入宿舍楼栋" :duration="2000"
+				@close="closeThree" @confirm="confirmThree"></uni-popup-dialog>
 		</uni-popup>
 		<!-- 修改宿舍号 -->
 		<uni-popup ref="updateFour" type="dialog">
-			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入宿舍号" :duration="2000"  @close="closeFour" @confirm="confirmFour"></uni-popup-dialog>
+			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入宿舍号" :duration="2000"
+				@close="closeFour" @confirm="confirmFour"></uni-popup-dialog>
 		</uni-popup>
 	</view>
 </template>
@@ -123,7 +139,7 @@
 	export default {
 		data() {
 			return {
-				is_update:false,
+				is_update: false,
 				studentMessage: {
 					studentNumber: "null",
 					username: "null",
@@ -132,20 +148,18 @@
 					oldPassword: "",
 					newPassword: ""
 				},
-				dataRules:{
-					"oldPassword":{
-						rules:[
-							{
-								required: true,
-								errorMessage: "请输入原密码"
-							}]
+				dataRules: {
+					"oldPassword": {
+						rules: [{
+							required: true,
+							errorMessage: "请输入原密码"
+						}]
 					},
-					"newPassword":{
-						rules:[
-							{
-								required: true,
-								errorMessage: "请输入新密码"
-							}]
+					"newPassword": {
+						rules: [{
+							required: true,
+							errorMessage: "请输入新密码"
+						}]
 					},
 				}
 			}
@@ -155,63 +169,63 @@
 			//console.log(uni.getStorageSync("token"))
 		},
 		methods: {
-			submitUpdate(str){
+			submitUpdate(str) {
 				uni.$http.post(
-				'/user/updateUserForStudent',{
-					"phoneNumber": this.studentMessage.phoneNumber,
-					"parentNumber": this.studentMessage.parentNumber,
-					"buildingNumber": this.studentMessage.buildingNumber,
-					"dormitoryNumber": this.studentMessage.dormitoryNumber
-				 }
-				).then(res =>{
+					'/user/updateUserForStudent', {
+						"phoneNumber": this.studentMessage.phoneNumber,
+						"parentNumber": this.studentMessage.parentNumber,
+						"buildingNumber": this.studentMessage.buildingNumber,
+						"dormitoryNumber": this.studentMessage.dormitoryNumber
+					}
+				).then(res => {
 					//console.log(res);
-					if(res.data.code === 200){
+					if (res.data.code === 200) {
 						uni.showToast({
-							icon:"success",
-							title:"修改成功"
+							icon: "success",
+							title: "修改成功"
 						})
-						switch(str){
-							case "one" : 
+						switch (str) {
+							case "one":
 								this.closeOne()
 								break;
-							case "two" :
+							case "two":
 								this.closeFour()
 								break;
-							case "three" :
+							case "three":
 								this.closeThree()
 								break;
-							case "four" :
+							case "four":
 								this.closeFour()
-							break;
+								break;
 						}
 					}
-				}).catch(err =>{
+				}).catch(err => {
 					uni.showToast({
-						icon:"none",
-						title:"网络似乎有问题"
+						icon: "none",
+						title: "网络似乎有问题"
 					})
 				})
 			},
-			showInfo(){
+			showInfo() {
 				this.$refs.popupupdateUserForStudent.open()
 			},
-			getData(){
-				uni.$http.get('/user/personInfo').then((res)=>{
+			getData() {
+				uni.$http.get('/user/personInfo').then((res) => {
 					//console.log(res.data)
 					let userData = res.data.data;
 					this.studentMessage = userData;
-					
+
 					//储存学生信息，方便其他页面获取
 					uni.setStorage({
 						key: 'userStr',
 						data: JSON.stringify(userData),
-						success: function () {
+						success: function() {
 							//console.log('success');
 						}
 					});
-				}).catch((err)=>{
+				}).catch((err) => {
 					uni.showToast({
-						icon:"none",
+						icon: "none",
 						title: "网络似乎出现了一些问题",
 					})
 				})
@@ -221,38 +235,38 @@
 				this.$refs.popupRevisePassword.open();
 			},
 			//关闭修改密码
-			cancelSubmit(){
+			cancelSubmit() {
 				this.$refs.popupRevisePassword.close();
 			},
 			//提交修改密码
 			reviseSubmit() {
-				this.$refs.revisePasswordForm.validate().then(res=>{
+				this.$refs.revisePasswordForm.validate().then(res => {
 					uni.showToast({
 						title: "正在修改中"
 					})
 					uni.$http.post('/user/updatePWD', {
-						  "oldPassword": this.reviseFormData.oldPassword,
-						  "newPassword": this.reviseFormData.newPassword
-					}).then(res=>{
+						"oldPassword": this.reviseFormData.oldPassword,
+						"newPassword": this.reviseFormData.newPassword
+					}).then(res => {
 						console.log(res)
-						if(res.data.code === 200){
+						if (res.data.code === 200) {
 							uni.showToast({
-								icon:"none",
+								icon: "none",
 								title: "修改成功,请重新登录",
 							})
-							setTimeout(()=>{
+							setTimeout(() => {
 								this.$refs.popupRevisePassword.close();
-								this.confirm();//相当于退出登录
-							},1500)
-						}else{
+								this.confirm(); //相当于退出登录
+							}, 1500)
+						} else {
 							//this.$errShowToast(res.data.message);
 							uni.showToast({
-								icon:"none",
+								icon: "none",
 								title: res.data.message,
 							})
 						}
 					})
-				}).catch(err =>{
+				}).catch(err => {
 					//this.$errShowToast(err);
 					// uni.showToast({
 					// 	title: "网络似乎出现了一些问题",
@@ -260,7 +274,7 @@
 				})
 			},
 			//退出登录
-			logOut(){
+			logOut() {
 				this.$refs.dialog_up.open()
 			},
 			//弹框操作
@@ -269,96 +283,95 @@
 			},
 			//确认退出
 			confirm() {
-				uni.$http.get('/user/logout').then(res =>{
+				uni.$http.get('/user/logout').then(res => {
 					//console.log(res)
-					if(res.data.code === 200){
-						uni.clearStorage();//清理本地缓存
+					if (res.data.code === 200) {
+						uni.clearStorage(); //清理本地缓存
 						uni.redirectTo({
 							url: '/pages/index/index'
-						})	
+						})
 					}
 					this.$refs.dialog_up.close();
-				}).catch(err=>{
+				}).catch(err => {
 					console.log(err)
 				})
 			},
 			//请假申请
-			applyLeave(){
+			applyLeave() {
 				uni.navigateTo({
 					url: '/pages/applyLeave/applyLeave'
 				})
 			},
 			//申请记录
-			allLeaves(){
+			allLeaves() {
 				uni.navigateTo({
 					url: '/pages/allLeaves/allLeaves'
 				})
 			},
 			//销假路上
-			goTerminate(){
+			goTerminate() {
 				uni.showToast({
-					title:'请在 申请记录->等待销假->我要销假 页面进行销假操作',
-					icon:'none',
-				}
-				);
-				setTimeout(()=>{
+					title: '请在 申请记录->等待销假->我要销假 页面进行销假操作',
+					icon: 'none',
+				});
+				setTimeout(() => {
 					uni.navigateTo({
 						url: '/pages/allLeaves/allLeaves'
 					})
-				},2000)	
+				}, 2000)
 			},
 			//看到这一坨就想吐
-			onClick1(){
+			onClick1() {
 				this.$refs.updateOne.open()
 			},
 			//yue
-			onClick2(){
+			onClick2() {
 				this.$refs.updateTwo.open()
 			},
-			onClick3(){
+			onClick3() {
 				this.$refs.updateThree.open()
 			},
-			onClick4(){
+			onClick4() {
 				this.$refs.updateFour.open()
 			},
-			
+
 			//弹窗关闭
-			closeOne(){
+			closeOne() {
 				this.$refs.updateOne.close();
 			},
-			closeTwo(){
+			closeTwo() {
 				this.$refs.updateTwo.close();
 			},
-			closeThree(){
+			closeThree() {
 				this.$refs.updateThree.close();
 			},
-			closeFour(){
+			closeFour() {
 				this.$refs.updateFour.close();
 			},
-			confirmOne(e){
+			confirmOne(e) {
 				this.studentMessage.phoneNumber = e;
 				//提交修改
 				this.submitUpdate("one");
-			
+
 			},
-			confirmTwo(e){
+			confirmTwo(e) {
 				this.studentMessage.parentNumber = e;
 				//提交修改
 				this.submitUpdate("two");
-			
+
 			},
-			confirmThree(e){
+			confirmThree(e) {
 				this.studentMessage.buildingNumber = e;
 				//提交修改
 				this.submitUpdate("three");
-			
+
 			},
-			confirmFour(e){
+			confirmFour(e) {
 				this.studentMessage.dormitoryNumber = e;
 				//提交修改
 				this.submitUpdate("four");
-			},	
-			
+			},
+
 		}
 	}
 </script>
@@ -372,56 +385,57 @@
 		border-radius: 0 0 40rpx 40rpx;
 		background: $bgstyle;
 	}
-	
+
 	.backgrond-style {
 		@include bgstyle;
 	}
-	
+
 	.teacher-home {
 		.card-actions-item {
 			display: flex;
 			justify-content: flex-end;
 		}
 	}
-	
+
 	.revise-form {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		padding-top: 50rpx;
-	
+
 		.uni-easyinput {
 			width: 650rpx;
 			border-radius: 100rpx;
 		}
 	}
-	
+
 	.revise-popup-content {
 		.revise-buttons {
 			display: flex;
 			justify-content: center;
 			padding-bottom: 50rpx;
-	
+
 			button {
 				width: 300rpx;
 				height: 60rpx;
 				line-height: 60rpx;
 				font-size: $jxnu-font-14;
 			}
-	
+
 			.revise-button {
+				color: #fff;
 				background-color: $jxnu-bg-color;
 			}
 		}
 	}
-	
+
 	.teacher-tools {
 		.tools-box {
 			display: flex;
 			flex-direction: row;
 			justify-content: flex-start;
 			text-align: center;
-	
+
 			.tools-btn {
 				display: block;
 				height: 35px;
@@ -432,13 +446,15 @@
 				color: $uni-text-color;
 				border-radius: 30rpx;
 			}
-			.tools-img{
+
+			.tools-img {
 				height: 35px;
 				width: 35px;
 			}
 		}
 	}
-	.list-title{
+
+	.list-title {
 		padding: 10px;
 		text-align: center;
 		color: $uni-text-color-grey;

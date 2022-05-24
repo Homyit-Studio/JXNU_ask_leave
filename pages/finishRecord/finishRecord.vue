@@ -14,7 +14,7 @@
 			</uni-card>
 		</view>
 		<view class="charts-box">
-			<qiun-data-charts :ontouch="true" :onmovetip="true" :canvas2d="true" canvasId="uhfduhf9842342" type="column"
+			<qiun-data-charts :ontouch="true" :opts="opts" :onmovetip="true" :canvas2d="true" canvasId="uhfduhf9842342" type="pie"
 				:chartData="chartData" />
 		</view>
 		<uni-card isFull="true">
@@ -40,7 +40,7 @@
 			</uni-data-select>
 		</view>
 		<view class="charts-box">
-			<qiun-data-charts type="pie" :opts="opts" :ontouch="true" :onmovetip="true" :canvas2d="true"
+			<qiun-data-charts type="column" :ontouch="true" :onmovetip="true" :canvas2d="true"
 				canvasId="uxjaeuhf9842342" :chartData="gradeChartData" />
 		</view>
 		<view>
@@ -176,9 +176,11 @@
 						}]
 						this.$refs.dateMessage.close()
 						for (let item in data) {
-							console.log(item)
 							this.chartData.categories.push(this.dataMap[item])
-							this.chartData.series[0].data.push(data[item])
+							let catalog = {}
+							catalog.name = this.dataMap[item]
+							catalog.value = data[item]
+							this.chartData.series[0].data.push(catalog)
 						}
 					} else {
 						this.msg.msgType = "error"
@@ -210,12 +212,8 @@
 						for (let item in data) {
 							console.log(item)
 							this.gradeChartData.categories.push(this.dataMap[item])
-							let catalog = {}
-							catalog.name = this.dataMap[item]
-							catalog.value = data[item]
-							this.gradeChartData.series[0].data.push(catalog)
+							this.gradeChartData.series[0].data.push(data[item])
 						}
-						console.log(this.chartData.series[0].data)
 					} else {
 						this.msg.msgType = "error"
 						this.msg.messageText = "请求错误"

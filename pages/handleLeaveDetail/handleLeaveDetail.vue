@@ -27,12 +27,10 @@
 				<view class="cofirm-image"><text decode="true">请假凭证:&emsp;</text>
 					<!-- <text>未上传凭证</text> -->
 					<text v-if="confirmImg == null">学生未上传请假凭证</text>
-					<cover-view v-else>
-						<view v-for="item in confirmImg" :key="item.id">
-							<cover-image :src="item.url">
-							</cover-image>
-						</view>
-					</cover-view>
+					<view v-else>
+						<image v-for="item in confirmImg" :key="item.id" :src="item.url" mode="aspectFill"
+							@click="preview(item)"></image>
+					</view>
 				</view>
 			</uni-card>
 		</view>
@@ -210,6 +208,9 @@
 							if (res.data.code == 200) {
 								console.log(res.data.data)
 								this.confirmImg = res.data.data
+								for (let item in this.confirmImg) {
+									this.confirmImg[item].url = "https://www.lovehot.club" + this.confirmImg[item].url;
+								}
 							} else {
 								this.confirmImg = null
 							}
@@ -321,6 +322,16 @@
 					})
 				}
 			},
+			//图片预览
+			preview(e) {
+				//console.log(e)
+				let array = [];
+				array.push(e.url);
+				uni.previewImage({
+					current: array[0],
+					urls: array
+				});
+			},
 			cancelConfirm() {
 				this.$refs.inputDialog.close()
 			},
@@ -343,12 +354,11 @@
 						if (res.data.code == 200) {
 							this.msg.msgType = "success"
 							this.msg.messageText = "审批成功"
-							setTimeout(()=>{
+							setTimeout(() => {
 								this.$refs.message.open()
-							},100)
-							setTimeout(()=> {
-								uni.navigateBack({
-								})
+							}, 100)
+							setTimeout(() => {
+								uni.navigateBack({})
 							}, 2000)
 						} else {
 							this.msg.msgType = "error"

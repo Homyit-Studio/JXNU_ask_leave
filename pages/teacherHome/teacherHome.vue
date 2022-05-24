@@ -146,17 +146,17 @@
 						</view>
 						<text>个人信息</text>
 					</view>
-					<view @click="signout">
-						<navigator class="tools-btn">
-							<uni-icons type="paperplane" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-						</navigator>
-						<text>退出登录</text>
-					</view>
 					<view @click="contactus">
 						<navigator class="tools-btn" url="../contactUs/contactUs">
 							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>联系我们</text>
+					</view>
+					<view @click="signout">
+						<navigator class="tools-btn">
+							<uni-icons type="paperplane" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>退出登录</text>
 					</view>
 				</view>
 			</uni-card>
@@ -388,6 +388,7 @@
 			}
 
 			.revise-button {
+				color: #fff;
 				background-color: $jxnu-bg-color;
 			}
 		}
