@@ -168,7 +168,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             }
 
         }else if(examineEnum.equals(ExamineEnum.TRANSMIT)){
-            //todo 还得记录是谁传递的吗？老子不干了，又要改表
+
             wrapper.eq("examine",role.getValue().intValue());
 //            Long studentNumber = loginUser.getUser().getStudentNumber();
 //            String roleId =
@@ -183,7 +183,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             List<Long> allStudentNumber = teacherService.getAllStudentNumber();
             wrapper.in("student_number",allStudentNumber);
         }else if (role.equals(LevelEnum.SECRETARY)){
-            //todo  不太想改了
+
             wrapper.like("leader_number",loginUser.getUser().getStudentNumber());
         }
 
@@ -208,10 +208,11 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         LevelEnum role = loginUser.getUser().getRole();
 
         LeaveNote note = MyBeanUtils.copyBean(updateNoteDTO, LeaveNote.class);
-        //角色级别小于审核级别
-        if (role.getValue()<=updateNoteDTO.getLevelEnum().getValue()){
-            throw new BizException(ExceptionCodeEnum.ALREADY_AGREE);
-        }
+        note.setLeaderNumber(null);
+//        //角色级别小于审核级别
+//        if (role.getValue()<updateNoteDTO.getLevelEnum().getValue()){
+//            throw new BizException(ExceptionCodeEnum.ALREADY_AGREE);
+//        }
 
         if (updateNoteDTO.getOpinionEnum().equals(OpinionEnum.NO)){
             note.setExamine(ExamineEnum.FAILURE);
@@ -272,7 +273,6 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
         if (role.equals(LevelEnum.INSTRUCTOR)){
             List<Long> allStudentNumber = teacherService.getAllStudentNumber();
-
             wrapper1.in("student_number", allStudentNumber)
                     .eq("examine", ExamineEnum.getEumByCode(role.getValue().intValue() - 1));
             wrapper2.in("student_number", allStudentNumber);
@@ -300,6 +300,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
             wrapper5.eq("student_number", studentNumber);
             wrapper6.eq("student_number", studentNumber);
             wrapper7.eq("student_number", studentNumber);
+        }else{
+            wrapper1.eq("examine", ExamineEnum.getEumByCode(role.getValue().intValue() - 1));
         }
 
         Integer roleCount = leaveNoteMapper.selectCount(wrapper1);
@@ -374,28 +376,28 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         Integer waitReport = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.WAIT_REPORT)
                 .gt("start_time",tableTimeDTO.getStartTime())
-                .lt("end_time",tableTimeDTO.getEndTime())
+                .lt("start_time",tableTimeDTO.getEndTime())
 
         );
         //申请过期
         Integer applyExpired = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.APPLY_EXPIRED)
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
 
         );
         //销假过期
         Integer reportExpired = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.REPORT_EXPIRED)
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
         );
 
         //已拒绝
         Integer failure = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.FAILURE)
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
         );
 
         //审核中
@@ -405,12 +407,12 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                                 ExamineEnum.SECRETARY.getValue(),
                                 ExamineEnum.DEAN.getValue()))
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
         );
         Integer processed = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.PROCESSED)
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
         );
 
         return getStringIntegerMap(waitReport, applyExpired, reportExpired, failure, processing,processed);
@@ -425,7 +427,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.WAIT_REPORT)
                 .eq("grade_id",gradeId)
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
 
         );
         //申请过期
@@ -433,14 +435,14 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.APPLY_EXPIRED)
                         .eq("grade_id",gradeId)
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
         );
         //销假过期
         Integer reportExpired = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.REPORT_EXPIRED)
                         .eq("grade_id",gradeId)
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
         );
 
         //已拒绝
@@ -448,7 +450,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.FAILURE)
                         .eq("grade_id",gradeId)
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
         );
 
         //审核中
@@ -459,14 +461,14 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
                                 ExamineEnum.DEAN.getValue()))
                         .eq("grade_id",gradeId)
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
         );
 
         Integer processed = leaveNoteMapper.selectCount(
                 new QueryWrapper<LeaveNote>().eq("examine",ExamineEnum.PROCESSED)
                         .eq("grade_id",gradeId)
                         .gt("start_time",tableTimeDTO.getStartTime())
-                        .lt("end_time",tableTimeDTO.getEndTime())
+                        .lt("start_time",tableTimeDTO.getEndTime())
 
         );
 

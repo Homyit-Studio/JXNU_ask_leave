@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
     public HashMap<String,String> login(SysStudentUser user) {
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(user.getStudentNumber(),user.getPassword());
+
         Authentication authenticate = authenticationManager.authenticate(authenticationToken);
 //        if(Objects.isNull(authenticate)){
 //            throw new BizException(ExceptionCodeEnum.LOGIN_ERROR);
@@ -169,7 +170,8 @@ public class UserServiceImpl implements UserService {
             throw new BizException(ExceptionCodeEnum.NO_CLASS_ID);
         }
         //先查账号是否存在
-        SysStudentUser checkExist = userMapper.selectById(userAddDTODTO.getStudentNumber());
+        SysStudentUser checkExist = userMapper.selectOne(new QueryWrapper<SysStudentUser>().eq("student_number",userAddDTODTO.getStudentNumber()));
+
         if (!Objects.isNull(checkExist)){
             throw new BizException(ExceptionCodeEnum.USER_EXIST);
         }
@@ -220,7 +222,6 @@ public class UserServiceImpl implements UserService {
     }
 
     //删除学生信息
-    //todo 为什么联合主键不是逻辑删除
     @Override
     public void deletedUser(UserUpdaterDTO userUpdaterDTO) {
         userMapper.deleteById(userUpdaterDTO.getId());

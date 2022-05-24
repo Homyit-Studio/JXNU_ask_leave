@@ -89,7 +89,7 @@ public class UserController {
     }
 
     //增加删除更新
-    @UserLog(module = ModuleEnum.MANAGE_USER,title = "增加用户",type = OperationEnum.ADD)
+//    @UserLog(module = ModuleEnum.MANAGE_USER,title = "增加用户",type = OperationEnum.ADD)
     @PreAuthorize("hasAuthority('managing_students')")
     @PostMapping("/addUser")
     @ApiLog

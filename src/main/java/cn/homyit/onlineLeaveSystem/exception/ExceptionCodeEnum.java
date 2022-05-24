@@ -9,7 +9,6 @@ import java.util.Optional;
 /**
  * 通用错误枚举（不同类型的错误也可以拆成不同的Enum细分）
  *
- * @author sunting
  */
 @Getter
 public enum ExceptionCodeEnum {
@@ -23,6 +22,8 @@ public enum ExceptionCodeEnum {
     NO_IMAGES(604,"此假条未上传图片"),
     NOT_IMAGE(605,"请上传图片"),
     NO_CLASS_ID(606,"请添加学生对应班级或年级"),
+    TOKEN_EXPIRED(567,"登录过期，请重新登录"),
+    FORBIDDEN(568,"权限不足"),
 
     /**
      * 通用结果

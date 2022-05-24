@@ -19,7 +19,7 @@ public class SysStudentClassInfo implements Serializable {
   private Long gradeId;
   private Integer capacity;
   private String highUser;
-  @TableLogic
+
   private Long deleted;
 
 }

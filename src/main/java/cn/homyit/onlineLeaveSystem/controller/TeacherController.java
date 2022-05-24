@@ -45,6 +45,12 @@ public class TeacherController {
         return Result.success(list);
     }
 
+    @GetMapping("/deleteForGrade/{gradeId}")
+    public Result deleteForGrade(@PathVariable Long gradeId){
+        teacherService.deleteForGrade(gradeId);
+        return Result.success();
+    }
+
 
 
 

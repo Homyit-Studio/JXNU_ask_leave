@@ -9,7 +9,7 @@ public enum LevelEnum implements IEnum<Integer> {
     INSTRUCTOR(1,"班主任"),
     SECRETARY(2,"负责人"),
     DEAN(3,"院长"),
-    LOOK(4,"查看")
+    LOOK(-10,"查看")
     ;
 
 

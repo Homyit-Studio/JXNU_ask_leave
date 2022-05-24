@@ -11,7 +11,7 @@ import java.util.TimeZone;
 
 @EnableScheduling
 @EnableApiLog
-@EnableUserLog
+//@EnableUserLog
 @MapperScan("cn.homyit.onlineLeaveSystem.mapper")
 @SpringBootApplication
 public class OnlineLeaveSystemApplication {

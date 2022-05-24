@@ -1,16 +1,13 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
-import cn.homyit.onlineLeaveSystem.entity.DO.LoginUser;
-import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentClassInfo;
-import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.entity.DO.*;
 import cn.homyit.onlineLeaveSystem.entity.DTO.PageStudentDTO;
 import cn.homyit.onlineLeaveSystem.entity.VO.ClassInfoVO;
 import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.StudentUserVo;
 import cn.homyit.onlineLeaveSystem.exception.BizException;
 import cn.homyit.onlineLeaveSystem.exception.ExceptionCodeEnum;
-import cn.homyit.onlineLeaveSystem.mapper.ClassInfoMapper;
-import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
+import cn.homyit.onlineLeaveSystem.mapper.*;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
 import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -39,7 +36,14 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private SysStudentUserMapper studentUserMapper;
 
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
 
+    @Autowired
+    private SysClassStudentMapper classStudentMapper;
+
+    @Autowired
+    private SysClassTeacherMapper classTeacherMapper;
 
     //获取管理班级
     @Override
@@ -94,6 +98,23 @@ public class TeacherServiceImpl implements TeacherService {
         List<SysStudentClassInfo> sysStudentClassInfos = classInfoMapper.selectList(wrapper);
         List<ClassInfoVO> classInfoVOS = MyBeanUtils.copyList(sysStudentClassInfos, ClassInfoVO.class);
         return classInfoVOS;
+
+    }
+
+    @Override
+    public void deleteForGrade(Long gradeId) {
+
+        studentUserMapper.delete(new QueryWrapper<SysStudentUser>().
+                eq("grade_id",gradeId));
+
+        classInfoMapper.delete(new QueryWrapper<SysStudentClassInfo>().
+                eq("grade_id",gradeId));
+
+        sysUserRoleMapper.deleteForGrade(gradeId);
+
+        classStudentMapper.deleteForGrade(gradeId);
+
+
 
     }
 

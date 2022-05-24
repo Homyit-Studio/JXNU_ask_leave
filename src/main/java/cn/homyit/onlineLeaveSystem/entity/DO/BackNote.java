@@ -26,7 +26,7 @@ public class BackNote  {
   private BackEnum back;
 
   private BackStatusEnum status;
-  @TableLogic
+
   private Integer deleted;
 
 

@@ -9,4 +9,5 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @since 2022-05-06 16:49
  */
 public interface SysClassStudentMapper extends BaseMapper<SysClassStudent> {
+    void deleteForGrade(Long gradeId);
 }

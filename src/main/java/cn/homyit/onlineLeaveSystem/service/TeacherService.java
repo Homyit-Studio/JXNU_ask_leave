@@ -18,4 +18,5 @@ public interface TeacherService {
 
     List<ClassInfoVO> getAllClass();
 
+    void deleteForGrade(Long gradeId);
 }

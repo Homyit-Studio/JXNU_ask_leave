@@ -2,12 +2,16 @@ package cn.homyit.onlineLeaveSystem.listener;
 
 import cn.homyit.onlineLeaveSystem.entity.DO.SysClassStudent;
 import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentClassInfo;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysStudentUser;
+import cn.homyit.onlineLeaveSystem.entity.DO.SysUserRole;
 import cn.homyit.onlineLeaveSystem.entity.DTO.StudentExcelDTO;
 import cn.homyit.onlineLeaveSystem.mapper.ClassInfoMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysClassStudentMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysUserRoleMapper;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
+import cn.homyit.onlineLeaveSystem.myEnum.SexEnum;
+import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -33,12 +37,11 @@ public class EastExcelListener extends AnalysisEventListener<StudentExcelDTO> {
     private HashSet<String> classSet ;
 
     private  long gradeId;
+    private  final long FOREIGN_GRADE_ID = 1;
+    private  final long UNDERGRADUATE_GRADE_ID = 2;
+    private  final long POSTGRADUATE_GRADE_ID = 3;
 
-    private  final long FOREIGN_GRADE_ID = 500L;
-    private  final long FOREIGN_CLASS_ID = 500L;
 
-    private  final long POSTGRADUATE_GRADE_ID = 1000L;
-    private  final long POSTGRADUATE_CLASS_ID = 1000L;
 
 
 
@@ -63,22 +66,28 @@ public class EastExcelListener extends AnalysisEventListener<StudentExcelDTO> {
 
         classSet = new HashSet<>();
     }
-    //todo 开启事务
 
     @Override
     public void invoke(StudentExcelDTO data, AnalysisContext context) {
-/*
-//        System.out.println("-------------"+gradeId);
-//        System.out.println(gradeId==FOREIGN_GRADE_ID);
 
-        //插入班级表
-        String majorAndClass = data.getMajorAndClass().trim();
-        //留学生无额外班级
-        if(!classSet.contains(majorAndClass)&&gradeId!=FOREIGN_GRADE_ID&&gradeId!=POSTGRADUATE_GRADE_ID){
+/*
+        String majorAndClass;
+        //本科生
+        if (gradeId/1000==UNDERGRADUATE_GRADE_ID){
+            majorAndClass = data.getMajorAndClass().trim();
+        }else {
+            //研究生与留学生
+            String s = data.getMajorAndClass();
+            int index = s.indexOf("级")+1;
+            majorAndClass = s.substring(0,index);
+        }
+
+        if(!classSet.contains(majorAndClass)){
             SysStudentClassInfo sysStudentClassInfo = new SysStudentClassInfo();
             classSet.add(majorAndClass);
-            sysStudentClassInfo.setMajorAndClass(data.getMajorAndClass());
+            sysStudentClassInfo.setMajorAndClass(majorAndClass);
             sysStudentClassInfo.setGradeId(gradeId);
+            //创建班级
             classInfoMapper.insert(sysStudentClassInfo);
         }
 
@@ -91,29 +100,19 @@ public class EastExcelListener extends AnalysisEventListener<StudentExcelDTO> {
         String rawPWD = data.getPhoneNumber().trim();
         user.setPassword(passwordEncoder.encode(rawPWD));
 
-
-//        插入用户班级表
-        //获得班级id 留学生固定班级
-        if(gradeId == FOREIGN_GRADE_ID){
-            user.setClassId(FOREIGN_CLASS_ID);
-        }else if(gradeId==POSTGRADUATE_GRADE_ID){
-            user.setClassId(POSTGRADUATE_CLASS_ID);
-        }else {
-            QueryWrapper<SysStudentClassInfo> wrapper = new QueryWrapper<>();
-            wrapper.eq("major_and_class",data.getMajorAndClass())
-                    .eq("grade_id",gradeId)
-                    .select("id");
-            Long classId = classInfoMapper.selectOne(wrapper).getId();
-            user.setClassId(classId);
-        }
-
+        //获取班级id
+        QueryWrapper<SysStudentClassInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("major_and_class",majorAndClass)
+                .eq("grade_id",gradeId)
+                .select("id");
+        Long classId = classInfoMapper.selectOne(wrapper).getId();
+        user.setClassId(classId);
+        user.setGradeId(gradeId);
 
         //插入用户表
-        user.setGradeId(gradeId);
         userMapper.insert(user);
         //插入用户班级表
-        sysClassStudentMapper.insert(new SysClassStudent(user.getClassId(), data.getStudentNumber()));
-
+        sysClassStudentMapper.insert(new SysClassStudent(classId, data.getStudentNumber()));
         //插入用户角色表
         sysUserRoleMapper.insert(new SysUserRole(data.getStudentNumber(), LevelEnum.STUDENT.getValue().longValue()));
 */

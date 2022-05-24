@@ -42,7 +42,7 @@ public class LeaveNote {
   private String instructorOpinion;
   private String secretaryOpinion;
   private String deanOpinion;
-  @TableLogic
+
   private Integer deleted;
 
   private ExamineEnum examine;
