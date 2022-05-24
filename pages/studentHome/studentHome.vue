@@ -316,7 +316,7 @@
 				});
 				setTimeout(() => {
 					uni.navigateTo({
-						url: '/pages/allLeaves/allLeaves'
+						url: '/pages/allLeaves/allLeaves?is_WAIT_REPORT=true'
 					})
 				}, 2000)
 			},
