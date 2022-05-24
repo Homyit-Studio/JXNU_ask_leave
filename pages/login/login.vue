@@ -68,9 +68,6 @@
 						rules: [{
 							required: true,
 							errorMessage: "请输入正确的密码"
-						},{
-							format: 'number',
-							errorMessage: '密码只能输入数字'
 						}]
 					}
 				},
@@ -88,9 +85,6 @@
 						rules: [{
 							required: true,
 							errorMessage: "请输入正确的密码"
-						},{
-							format: 'number',
-							errorMessage: '密码只能输入数字'
 						}]
 					}
 				},
