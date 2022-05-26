@@ -54,7 +54,7 @@
 			position: absolute;
 			right: 10px;
 			top: 2px;
-			width: 15px;
+			min-width: 15px;
 			height: 15px;
 			text-align: center;
 			font-size: 12px;

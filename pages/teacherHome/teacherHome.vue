@@ -318,11 +318,12 @@
 								key: 'studentMessage',
 							});
 						}
+						uni.showToast({
+							title: "退出成功",
+							icon:"success"
+						})
 						setTimeout(() => {
-							uni.showToast({
-								title: "退出成功"
-							})
-							uni.navigateTo({
+							uni.redirectTo({
 								url: "../index/index"
 							})
 						}, 1000)

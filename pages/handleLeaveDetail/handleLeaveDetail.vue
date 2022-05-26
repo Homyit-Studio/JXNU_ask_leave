@@ -355,7 +355,10 @@
 							this.msg.msgType = "success"
 							this.msg.messageText = "审批成功"
 							setTimeout(() => {
-								this.$refs.message.open()
+								uni.showToast({
+									title:"审批成功",
+									icon:"success"
+								})
 							}, 100)
 							setTimeout(() => {
 								uni.navigateBack({})

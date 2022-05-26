@@ -40,6 +40,17 @@ $http.beforeRequest = function(options) {
 	});
 }
 
-$http.afterRequest = function() {
+$http.afterRequest = function(res) {
 	uni.hideLoading()
+	if(res.data.code == 567){
+		uni.showToast({
+			title:"登录失效，请重新登录",
+			icon:"exception"
+		})
+		setTimeout(() => {
+			uni.redirectTo({
+				url:"/pages/index/index"
+			})
+		}, 1000)
+	}
 }

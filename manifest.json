@@ -50,7 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "wxb88d09e822a2015e",
+        "appid" : "wx64800e6d9f67dda7",
         "setting" : {
             "urlCheck" : false,
             "es6" : true
@@ -70,18 +70,17 @@
         "enable" : false
     },
     "vueVersion" : "3",
-	"h5" : {
-	        "devServer" : {
-	            "port" : 3000,
-	            "disableHostCheck" : true,
-	            "proxy" : {
-	                "/api" : {
-	                    "target" : "https://www.lovehot.club/api",
-	                    "changeOrigin" : true,
-	                    "secure" : false
-	                }
-	            }
-	        }
-	    }
-
+    "h5" : {
+        "devServer" : {
+            "port" : 3000,
+            "disableHostCheck" : true,
+            "proxy" : {
+                "/api" : {
+                    "target" : "https://www.lovehot.club/api",
+                    "changeOrigin" : true,
+                    "secure" : false
+                }
+            }
+        }
+    }
 }
