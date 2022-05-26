@@ -128,18 +128,16 @@
 				duration: 500,
 			})
 			uni.$http.get('/leave/selectANote/' + item.id).then(res =>{
-				console.log(res)
 				if(res.data.code === 200){
 					this.leaveDetails = res.data.data
 					uni.hideLoading();	
-					//console.log(this.leaveDetails)
+					//le.log(this.leaveDetails)
 				}
 				
 			})
 			this.types = item.type;
 			//获取假条图片
 			uni.$http.get('/image/' + item.id).then(res =>{
-				console.log(res)
 				if(res.data.code === 200){
 					this.imgs = res.data.data
 					for(let item in this.imgs){
@@ -183,7 +181,7 @@
 			},
 			//图片预览
 			preview(e){
-				//console.log(e)
+				//le.log(e)
 				let array = [];
 				array.push(e.url);
 				uni.previewImage({
@@ -193,9 +191,9 @@
 			},
 			//确认删除
 			confirm() {
-				console.log(this.leaveDetails.id)
+				le.log(this.leaveDetails.id)
 				uni.$http.get('/leave/deletedANote/' + this.leaveDetails.id).then(res =>{
-					//console.log(res)
+					//le.log(res)
 					if(res.data.code === 200){
 						uni.showToast({
 							title: "删除成功",		
