@@ -30,7 +30,7 @@
 		onLoad(item){
 			this.id = item.id;
 			this.type = item.type
-			console.log(item)
+			//console.log(item)
 		},
 		methods: {
 			// 获取上传状态
@@ -40,7 +40,7 @@
 				//console.log(res.tempFilePaths)
 				for(let index in res.tempFilePaths){
 					this.imageValue.push(res.tempFilePaths[index])
-					console.log(index)
+					//console.log(index)
 				}
 				//console.log(res.tempFilePaths[0])
 				//console.log(this.imageValue)
@@ -49,20 +49,23 @@
 			handleDelete(e){
 				const num = this.imageValue.findIndex(v => v.url === e.tempFilePath);
 				this.imageValue.splice(num, 1);
-				console.log(this.imageValue)
+				//console.log(this.imageValue)
 			},
 			submitForm(){
-				if(this.imageValue){
+				if(this.imageValue.length != 0){
 					uni.$http.get('/image/delete/' + this.id).then(res =>{
+						//console.log(res)
 						if(res.data.code === 200){
 							this.postImg(uni.getStorageSync('token'))
 						}else{
 							uni.showToast({
+								icon:'none',
 								title:"网络似乎出现了一些问题"
 							})
 						}
 					}).catch(err =>{
 						uni.showToast({
+							icon:'none',
 							title:"网络似乎出现了一些问题"
 						})
 					})
@@ -86,7 +89,7 @@
 				//console.log(path)
 				//console.log(this.imageValue[0])
 				await uni.uploadFile({
-						url: "https://www.lovehot.club/api/image/uploadFiles?id=" + this.id,
+						url: "https://leave.jxnu.edu.cn/api/image/uploadFiles?id=" + this.id,
 						filePath: path,
 						name: 'files',//后端接收字段名
 						header: {
@@ -95,7 +98,7 @@
 						},
 						success: (res) => {
 							let obj = JSON.parse(res.data);
-							console.log(res)
+							//console.log(res)
 							if(obj.code === 200){
 								uni.redirectTo({
 									url: `/pages/allLeaveDetails/allLeaveDetails?id=` + this.id + '&type=' + this.type ,

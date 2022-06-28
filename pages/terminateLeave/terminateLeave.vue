@@ -111,7 +111,7 @@
 				}
 			},
 			switchChange1(e){
-				console.log(e.detail.value)
+				//console.log(e.detail.value)
 				this.leaveData.depart = e.detail.value;
 				if(this.leaveData.depart === true){
 					this.leaveDataRules = {
@@ -136,7 +136,7 @@
 				
 			},
 			switchChange2(e){
-					console.log(e.detail.value)
+					//console.log(e.detail.value)
 					this.backData.back = e.detail.value;
 					if(this.backData.back === true){
 						this.backDataRules = {
@@ -182,7 +182,7 @@
 							  "backWay": this.backData.backWay,
 							  "backTime": this.backData.backTime
 						}).then(res=>{
-							console.log(res)
+							//console.log(res)
 							if(res.data.code === 200){
 								uni.showToast({
 									title: "提交成功",		
@@ -195,13 +195,13 @@
 								}, 1000)
 							}
 						}).catch(err=>{
-							console.log(err)
+							//console.log(err)
 						})
 					}).catch(err => {
-						console.log('err' + err);
+						//console.log('err' + err);
 					})
 				}).catch(err => {
-					console.log('err' + err);
+					//console.log('err' + err);
 				})
 				},
 				//获取当前格式化时间

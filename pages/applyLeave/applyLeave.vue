@@ -175,14 +175,14 @@
 							"way": this.formData.way,
 							"reason": this.formData.reason
 					}).then((res)=>{
-						console.log(res)
+						//console.log(res)
 						if(res.data.code === 200){
 							this.formData.studentNumber = this.studentMsg.studentNumber;
 							this.formData.majorAndClass = this.studentMsg.majorAndClass;
 							this.formData.dormitoryNumber = this.studentMsg.dormitoryNumber;
 							this.formData.buildingNumber = this.studentMsg.buildingNumber;
 							this.formData.phoneNumber = this.studentMsg.phoneNumber;
-							console.log(this.studentMsg)
+							//console.log(this.studentMsg)
 							this.formData.leave = this.formData.leave === true ? '是' : '否';
 							//this.uploadImg()
 							uni.redirectTo({
@@ -235,7 +235,7 @@
 			//补充时间
 			dateAdd(dateStr){
 				if(dateStr.length <= 11){
-					console.log(dateStr + '00:00:00')
+					//console.log(dateStr + '00:00:00')
 					return dateStr + '00:00:00'
 				}
 				else{
@@ -276,7 +276,7 @@
 		onLoad:function(options) {
 			let userData = JSON.parse(uni.getStorageSync('userStr'));
 			this.studentMsg = userData;
-			console.log(this.getFormatDate())
+			//console.log(this.getFormatDate())
 			this.formData.startTime = this.formData.endTime = this.getFormatDate();
 		},
 	}
