@@ -68,9 +68,9 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         note.setGradeId(user.getGradeId());
 
         Integer days = Math.toIntExact(diff / (24 * 60 * 60 * 1000));
-        if (days<=3){
+        if (days<=2){
             note.setLevel(LevelEnum.INSTRUCTOR);
-        }else if(days>3&&days<=7){
+        }else if(days>2&&days<=6){
             note.setLevel(LevelEnum.SECRETARY);
         }else {
             note.setLevel(LevelEnum.DEAN);

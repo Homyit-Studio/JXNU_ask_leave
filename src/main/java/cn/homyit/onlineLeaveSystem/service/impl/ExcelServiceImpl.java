@@ -4,6 +4,8 @@ import cn.homyit.onlineLeaveSystem.entity.DTO.DownloadNoteDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.StudentExcelDTO;
 import cn.homyit.onlineLeaveSystem.entity.DTO.TeacherExcelDTO;
 import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
+import cn.homyit.onlineLeaveSystem.exception.BizException;
+import cn.homyit.onlineLeaveSystem.exception.ExceptionCodeEnum;
 import cn.homyit.onlineLeaveSystem.listener.EastExcelListener;
 import cn.homyit.onlineLeaveSystem.listener.TeacherExcelListener;
 import cn.homyit.onlineLeaveSystem.mapper.*;
@@ -63,7 +65,7 @@ public class ExcelServiceImpl implements ExcelService {
                 new EastExcelListener(userMapper,passwordEncoder,classInfoMapper,sysClassStudentMapper,sysUserRoleMapper,gradeId)).build();
         } catch (IOException e) {
             e.printStackTrace();
-            throw  new RuntimeException("excel导入错误");
+            throw  new BizException(ExceptionCodeEnum.EXCEL_IMPORT);
         }
         ReadSheet sheet = EasyExcel.readSheet(0).headRowNumber(2).build();
         reader.read(sheet);
@@ -87,7 +89,7 @@ public class ExcelServiceImpl implements ExcelService {
                     )).build();
         } catch (IOException e) {
             e.printStackTrace();
-            throw  new RuntimeException("excel导入错误");
+            throw  new BizException(ExceptionCodeEnum.EXCEL_IMPORT);
         }
         ReadSheet sheet = EasyExcel.readSheet(0).headRowNumber(2).build();
         reader.read(sheet);

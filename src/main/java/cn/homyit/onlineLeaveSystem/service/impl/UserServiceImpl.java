@@ -80,6 +80,7 @@ public class UserServiceImpl implements UserService {
 
         HashMap<String,String> map = new HashMap<>();
         map.put("token",jwt);
+        System.out.println(loginUser.getUser());
         map.put("role",loginUser.getUser().getRole().toString());
         return map;
 

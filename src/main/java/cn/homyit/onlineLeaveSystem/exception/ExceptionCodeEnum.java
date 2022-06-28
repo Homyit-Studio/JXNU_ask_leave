@@ -24,6 +24,7 @@ public enum ExceptionCodeEnum {
     NO_CLASS_ID(606,"请添加学生对应班级或年级"),
     TOKEN_EXPIRED(567,"登录过期，请重新登录"),
     FORBIDDEN(568,"权限不足"),
+    EXCEL_IMPORT(111,"请检查数据是否正确，对应信息是否完整，是否重复"),
 
     /**
      * 通用结果

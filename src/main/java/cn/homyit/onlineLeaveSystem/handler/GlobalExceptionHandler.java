@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BizException.class)
     public Result<ExceptionCodeEnum> handleBizException(BizException e) {
-        log.warn("错误: {}", e.getMessage(), e);
+//        log.warn("错误: {}", e.getMessage(), e);
         // 一般只需返回泛化的错误信息，比如“参数错误”
         return Result.error(e.getError(),e.getError().getDesc() );
     }
@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public Result<ExceptionCodeEnum> handleConstraintViolationException(Exception e) {
-        log.warn("错误: {}", e.getMessage(), e);
+//        log.warn("错误: {}", e.getMessage(), e);
         // 一般只需返回泛化的错误信息，比如“参数错误”
         return Result.error(ExceptionCodeEnum.ERROR_PARAM, e.getMessage());
     }
@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
     //散装
     @ExceptionHandler(ConstraintViolationException.class)
     public Result<ExceptionCodeEnum> handleConstraintViolationException(ConstraintViolationException e) {
-        log.warn("参数错误: {}", e.getMessage(), e);
+//        log.warn("参数错误: {}", e.getMessage(), e);
         // 一般只需返回泛化的错误信息，比如“参数错误”
         return Result.error(ExceptionCodeEnum.ERROR_PARAM, e.getMessage());
     }

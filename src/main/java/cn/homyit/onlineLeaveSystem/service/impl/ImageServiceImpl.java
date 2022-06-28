@@ -89,6 +89,9 @@ public class ImageServiceImpl implements ImageService {
         QueryWrapper<ImagesNote> wrapper = new QueryWrapper<>();
         wrapper.eq("note_id",id);
         List<ImagesNote> imagesNotes = imageMapper.selectList(wrapper);
+        if(CollectionUtils.isEmpty(imagesNotes)){
+            return;
+        }
         for (ImagesNote imagesNote : imagesNotes) {
             String url = imagesNote.getUrl();
             String name = new File(url).getName();

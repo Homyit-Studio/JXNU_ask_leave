@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -25,7 +26,7 @@ public class ImageNoteController {
     @Autowired
     private ImageService imageService;
 
-    @UserLog(module = ModuleEnum.IMAGE,title = "上传凭证",type = OperationEnum.ADD)
+//    @UserLog(module = ModuleEnum.IMAGE,title = "上传凭证",type = OperationEnum.ADD)
     @ApiLog
     @PostMapping("/upload")
     public Result upload(@RequestPart("file") MultipartFile file,@RequestParam("id") Long id){
@@ -37,7 +38,7 @@ public class ImageNoteController {
     /*
    批量上传
     */
-    @UserLog(module = ModuleEnum.IMAGE,title = "上传凭证",type = OperationEnum.ADD)
+//    @UserLog(module = ModuleEnum.IMAGE,title = "上传凭证",type = OperationEnum.ADD)
     @PostMapping(value = "/uploadFiles")
     public Result uploadFiles(@RequestPart("files") MultipartFile[] files,@RequestParam("id") Long id) {
 
@@ -46,12 +47,12 @@ public class ImageNoteController {
     }
 
     @GetMapping("/{id}")
-    public Result<List<ImagesNote>> getImagesForNote(@PathVariable Long id){
+    public Result<List<ImagesNote>> getImagesForNote(@PathVariable @NotNull(message = "id不为空") Long id){
         List<ImagesNote> list = imageService.getImagesForNote(id);
         return Result.success(list);
     }
 
-    @UserLog(module = ModuleEnum.IMAGE,title = "删除凭证",type = OperationEnum.DELETE)
+//    @UserLog(module = ModuleEnum.IMAGE,title = "删除凭证",type = OperationEnum.DELETE)
     @ApiLog
     @GetMapping("/delete/{id}")
     public Result deleteByNoteId(@PathVariable Long id){
