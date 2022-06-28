@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author 州牧
- * @description
+ * @description 用户通用的接口，本应当将teacherController合并
  * @since 2022-05-03 19:04
  */
 

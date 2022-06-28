@@ -10,7 +10,7 @@ import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
  * @author 州牧
- * @description
+ * @description 将枚举字段转换为文字，导出假条需要
  * @since 2022-05-13 21:58
  */
 public class ExamineConverter implements Converter<ExamineEnum> {

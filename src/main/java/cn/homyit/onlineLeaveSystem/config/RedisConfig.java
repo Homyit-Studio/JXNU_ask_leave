@@ -6,7 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
+/**
+ * @author 州牧
+ * @description redis配置
+ */
 @Configuration
 public class RedisConfig {
 

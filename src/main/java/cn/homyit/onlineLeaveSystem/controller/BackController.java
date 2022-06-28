@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 /**
  * @author 州牧
- * @description
+ * @description 销假处理
  * @since 2022-05-07 22:31
  */
 @RestController

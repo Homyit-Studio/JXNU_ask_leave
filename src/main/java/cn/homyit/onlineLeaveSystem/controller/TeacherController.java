@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  * @author 州牧
- * @description
+ * @description 班主任的接口，查询为主
  * @since 2022-05-04 14:53
  */
 @RestController
