@@ -98,7 +98,7 @@
 						},
 						success: (res) => {
 							let obj = JSON.parse(res.data);
-							//console.log(res)
+							console.log(res)
 							if(obj.code === 200){
 								uni.redirectTo({
 									url: `/pages/allLeaveDetails/allLeaveDetails?id=` + this.id + '&type=' + this.type ,

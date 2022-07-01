@@ -70,6 +70,7 @@
 	export default {
 		data() {
 			return {
+				isloading: false,
 				statuschoose: null,
 				currentValue:'PROCESSING',
 				localMenus: [{
@@ -131,6 +132,11 @@
 					"gradeId": "2021"
 				}
 			}
+		},
+		onShow() {
+			this.listRequest.pageNo = 1
+			this.requestLeaveNotes()
+			this.requestLeaveCount()
 		},
 		onLoad(options) {
 			//console.log(uni.getStorageSync('token'))
@@ -211,7 +217,7 @@
 				})
 			},
 			checkDetails(id) {
-				uni.redirectTo({
+				uni.navigateTo({
 					url: `/pages/allLeaveDetails/allLeaveDetails?id=` + id + '&type=' + this.currentValue ,
 					animationType: 'pop-in',
 					animationDuration: 200

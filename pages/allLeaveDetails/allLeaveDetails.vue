@@ -114,7 +114,7 @@
 				leaveDetails: {
 				},
 				imgs:[],
-				baseUrl:"https://www.lovehot.club"
+				baseUrl:"https://leave.jxnu.edu.cn"
 			}
 		},
 		onLoad(item) {
@@ -128,7 +128,7 @@
 					uni.hideLoading();	
 					//le.log(this.leaveDetails)
 				}
-				
+
 			})
 			this.types = item.type;
 			//获取假条图片
@@ -137,6 +137,7 @@
 					this.imgs = res.data.data
 					for(let item in this.imgs){
 						this.imgs[item].url = this.baseUrl + this.imgs[item].url;
+						//console.log(this.imgs[item])
 					}
 					//有图片，替换附件
 					if(this.imgs.length){
@@ -186,7 +187,7 @@
 			},
 			//确认删除
 			confirm() {
-				le.log(this.leaveDetails.id)
+				//le.log(this.leaveDetails.id)
 				uni.$http.get('/leave/deletedANote/' + this.leaveDetails.id).then(res =>{
 					//le.log(res)
 					if(res.data.code === 200){
@@ -194,10 +195,7 @@
 							title: "删除成功",		
 						})
 						setTimeout(function() {
-							uni.redirectTo({
-								url:'/pages/allLeaves/allLeaves'
-								} 
-							)
+							uni.navigateBack({})
 						}, 1000)
 					}else{
 						uni.showToast({

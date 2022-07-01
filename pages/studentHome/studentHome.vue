@@ -318,7 +318,7 @@
 					uni.navigateTo({
 						url: '/pages/allLeaves/allLeaves?is_WAIT_REPORT=true'
 					})
-				}, 2000)
+				}, 1000)
 			},
 			//看到这一坨就想吐
 			onClick1() {
