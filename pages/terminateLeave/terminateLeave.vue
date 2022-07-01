@@ -191,6 +191,12 @@
 							}
 						})
 					})
+						}).catch(err=>{
+							//console.log(err)
+					}).catch(err => {
+						//console.log('err' + err);
+				}).catch(err => {
+					//console.log('err' + err);
 				})
 				},
 				//获取当前格式化时间

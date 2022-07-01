@@ -70,6 +70,7 @@
 	export default {
 		data() {
 			return {
+				isloading: false,
 				statuschoose: null,
 				currentValue:'PROCESSING',
 				localMenus: [{
@@ -132,8 +133,12 @@
 				}
 			}
 		},
+		onShow() {
+			this.listRequest.pageNo = 1
+			this.requestLeaveNotes()
+			this.requestLeaveCount()
+		},
 		onLoad(options) {
-			// console.log(uni.getStorageSync('token'))
 			this.statuschoose = options.choose;
 			//console.log(uni.getStorageSync('token'))
 			//console.log(options)
@@ -190,10 +195,15 @@
 							duration: 500,
 							icon: "loading"
 						});
+
 						// console.log(res.data.data.total)
 						this.leaveNoteList = res.data.data.list
 						this.endPage = res.data.data.endPage;
 						// console.log(this.leaveNoteList)
+						//console.log(res.data.data.total)
+						this.leaveNoteList = res.data.data.list
+						this.endPage = res.data.data.endPage;
+						//console.log(this.leaveNoteList)
 						if (this.listRequest.pageNo >= this.endPage) {
 							this.shownodata = true
 						}
@@ -211,7 +221,7 @@
 				})
 			},
 			checkDetails(id) {
-				uni.redirectTo({
+				uni.navigateTo({
 					url: `/pages/allLeaveDetails/allLeaveDetails?id=` + id + '&type=' + this.currentValue ,
 					animationType: 'pop-in',
 					animationDuration: 200
@@ -221,7 +231,6 @@
 				//console.log(this.activeUrl)
 				// console.log(e)
 				this.currentValue = e.value;
-				// console.log(this.currentValue)
 				this.listRequest.pageNo = 1
 				this.listRequest.examineEnum = e.value;
 				this.requestLeaveNotes()

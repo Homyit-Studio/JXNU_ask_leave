@@ -14,6 +14,7 @@
 							file-extname = "xlsx"
 							:auto-upload="false"
 							@select="selectS" 
+							@delete="handleDeleteS" 
 							 >
 							 </uni-file-picker>
 						</uni-forms-item>
@@ -30,7 +31,8 @@
 							file-mediatype="all"
 							file-extname = "xlsx"
 							:auto-upload="false"
-							@select="selectT" 
+							@select="selectT"
+							 @delete="handleDeleteT" 
 							 >
 							 </uni-file-picker>
 						</uni-forms-item>
@@ -84,49 +86,63 @@
 				this.studentFile.filename = res.tempFiles[0].name;
 				this.studentFile.path = res.tempFilePaths[0];
 			},
+			//删除
+			handleDeleteS(e){
+				this.studentFile.filename = null;
+				this.studentFile.path = null;
+			},
 			selectT(res){
-				// console.log(res.tempFilePaths[0]);
+
 				this.teacherFile.filename = res.tempFiles[0].name;
 				this.teacherFile.path = res.tempFilePaths[0];
+			},
+			//删除
+			handleDeleteT(e){
+				this.teacherFile.filename = null;
+				this.teacherFile.path = null;
 			},
 			submitFormS(){
 			this.$refs.form.validate().then(res=>{
 				if(this.studentFile.path){
 					//直接使用blob路径上传文件
-						uni.uploadFile({
-							url: "https://www.lovehot.club/api/excel/upload?grade=" + this.formData.grade,
-							filePath: this.studentFile.path,
+					//console.log(this.studentFile.path)
+					const path = this.studentFile.path;
+					uni.uploadFile({
+							url: "https://leave.jxnu.edu.cn/api/excel/upload?grade=" + this.formData.grade,
+							filePath: path,
+							name: 'file',
 							header: {
 								"token" : uni.getStorageSync('token'),
 								//"Content-Type": "multipart/form-data",
 							},
-							success: (res) => {
-								let obj = JSON.parse(res.data);
-								// console.log(obj)
-								if(obj.code === 200){
-									uni.showToast({
-										icon:'success',
-										title: '上传成功'
+						success: (res) => {
+							let obj = JSON.parse(res.data);
+							//console.log(obj)
+							if(obj.code === 200){
+								uni.showToast({
+									icon:'success',
+									title: '上传成功'
+								});
+								setTimeout(()=>{
+									uni.redirectTo({
+										url: '/pages/importList/importList'
 									});
-									setTimeout(()=>{
-										uni.redirectTo({
-											url: '/pages/importList/importList'
-										});
-									},1500)
-								}else{
-									uni.showToast({
-										icon:'error',
-										title: '文件提交失败'
-									});
-									
-								}
-							},
-							fail: (err) => {
+								},1500)
+							}else{
 								uni.showToast({
 									icon:'error',
-									title: '请求失败'
+									title: '文件提交失败'
 								});
-							},
+								
+							}
+						},	
+						fail: (err) => {
+							//console.log(err)
+							uni.showToast({
+								icon:'error',
+								title: '文件上传失败'
+							});
+						},
 						})
 					
 				}else{
@@ -139,17 +155,18 @@
 			},
 			submitFormT(){
 				if(this.teacherFile.path){
-					// console.log(uni.getStorageSync('token'))
+					//console.log(uni.getStorageSync('token'))
+					const path = this.teacherFile.path;
 					uni.uploadFile({
-						url: "https://www.lovehot.club/api/excel/uploadTeacher",
-						filePath: this.teacherFile.path,
+						url: "https://leave.jxnu.edu.cn/api/excel/uploadTeacher",
+						filePath: path,
+						name: 'file',
 						header: {
 							"token" : uni.getStorageSync('token'),
 							//"Content-Type": "multipart/form-data",
 						},
 						success: (res) => {
 							let obj = JSON.parse(res.data);
-							// console.log(obj)
 							if(obj.code === 200){
 								uni.showToast({
 									icon:'success',
@@ -163,9 +180,10 @@
 							}
 						},
 						fail: (err) => {
+							//console.log(err)
 							uni.showToast({
 								icon:'error',
-								title: '请求失败'
+								title: '文件上传失败'
 							});
 						},
 					})

@@ -68,6 +68,7 @@
 		},
 		methods: {
 			bindPickerChange(e){
+				// console.log(e)
 				this.index = e.detail.value
 			},
 			submitForm(){
@@ -92,6 +93,7 @@
 						"token" : uni.getStorageSync('token'),
 					},
 					success: (res) => {
+						// console.log(res)
 						if(res.statusCode === 200){	
 							this.getFile(res.data)
 						}		
@@ -108,6 +110,7 @@
 						//"Content-Type": "multipart/form-data",
 					},
 					success: (res) => {
+						// console.log(res)
 						that.dataPath = res.tempFilePath;
 						if (res.statusCode === 200) {
 							//直接打开？

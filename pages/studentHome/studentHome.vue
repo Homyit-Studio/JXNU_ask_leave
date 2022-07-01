@@ -318,7 +318,7 @@
 					uni.navigateTo({
 						url: '/pages/allLeaves/allLeaves?is_WAIT_REPORT=true'
 					})
-				}, 2000)
+				}, 1000)
 			},
 			//看到这一坨就想吐
 			onClick1() {
@@ -349,27 +349,52 @@
 				this.$refs.updateFour.close();
 			},
 			confirmOne(e) {
-				this.studentMessage.phoneNumber = e;
-				//提交修改
-				this.submitUpdate("one");
-
+				if(e == ""){
+					uni.showToast({
+						icon:"error",
+						title: "修改值不能为空",
+					})
+				}else{
+					this.studentMessage.phoneNumber = e;
+					//提交修改
+					this.submitUpdate("one");
+				}
 			},
 			confirmTwo(e) {
-				this.studentMessage.parentNumber = e;
-				//提交修改
-				this.submitUpdate("two");
-
+				if(e == ""){
+					uni.showToast({
+						icon:"error",
+						title: "修改值不能为空",
+					})
+				}else{
+					this.studentMessage.parentNumber = e;
+					//提交修改
+					this.submitUpdate("two");
+				}
 			},
 			confirmThree(e) {
-				this.studentMessage.buildingNumber = e;
-				//提交修改
-				this.submitUpdate("three");
-
+				if(e == ""){
+					uni.showToast({
+						icon:"error",
+						title: "修改值不能为空",
+					})
+				}else{
+					this.studentMessage.buildingNumber = e;
+					//提交修改
+					this.submitUpdate("three");
+				}
 			},
 			confirmFour(e) {
-				this.studentMessage.dormitoryNumber = e;
-				//提交修改
-				this.submitUpdate("four");
+				if(e == ""){
+					uni.showToast({
+						icon:"error",
+						title: "修改值不能为空",
+					})
+				}else{
+					this.studentMessage.dormitoryNumber = e;
+					//提交修改
+					this.submitUpdate("four");
+				}
 			},
 
 		}
@@ -417,8 +442,8 @@
 
 			button {
 				width: 300rpx;
-				height: 60rpx;
-				line-height: 60rpx;
+				height: 40px;
+				line-height: 40px;
 				font-size: $jxnu-font-14;
 			}
 

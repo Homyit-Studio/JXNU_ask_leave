@@ -41,17 +41,13 @@
 		<view class="details-card">
 			<uni-card title="审批情况" :is-shadow="false"  class="details-card">
 				<view>
-					<text decode="true">辅导员意见:&emsp;</text>
-					<text class="reason-text">{{leaveDetails.instructorOpinion === null ? '暂无' : leaveDetails.instructorOpinion}}</text>
-				</view>
-				
-				<view>
-					<text decode="true">学院&emsp;意见:&emsp;</text>
-					<text class="reason-text">{{leaveDetails.secretaryOpinion === null ? '暂无' : leaveDetails.secretaryOpinion}}</text>
+					<text decode="true">辅导员意见:&emsp;{{leaveDetails.instructorOpinion === null ? '暂无' : leaveDetails.instructorOpinion}}</text>
 				</view>
 				<view>
-					<text decode="true">院长&emsp;意见:&emsp;</text>
-					<text class="reason-text">{{leaveDetails.deanOpinion === null ? '暂无' : leaveDetails.deanOpinion}}</text>
+					<text decode="true">学院&emsp;意见:&emsp;{{leaveDetails.secretaryOpinion === null ? '暂无' : leaveDetails.secretaryOpinion}}</text>
+				</view>
+				<view>
+					<text decode="true">院长&emsp;意见:&emsp;{{leaveDetails.deanOpinion === null ? '暂无' : leaveDetails.deanOpinion}}</text>
 				</view>
 			</uni-card>
 		</view>
@@ -69,8 +65,7 @@
 				<view><text decode="true">联系号码:&emsp;{{leaveDetails.phoneNumber}}</text></view>
 				<view><text decode="true">宿舍楼栋:&emsp;{{leaveDetails.dormitoryNumber}}</text></view>
 				<view>
-					<text decode="true">请假事由:&emsp;</text>
-					<text class="reason-text">{{leaveDetails.reason}}</text>
+					<text decode="true">请假事由:&emsp;{{leaveDetails.reason}}</text>
 				</view>	
 				<view>
 					<text decode="true">附&emsp;&emsp;件:&emsp;</text>
@@ -119,7 +114,7 @@
 				leaveDetails: {
 				},
 				imgs:[],
-				baseUrl:"https://www.lovehot.club"
+				baseUrl:"https://leave.jxnu.edu.cn"
 			}
 		},
 		onLoad(item) {
@@ -131,9 +126,9 @@
 				if(res.data.code === 200){
 					this.leaveDetails = res.data.data
 					uni.hideLoading();	
-					//console.log(this.leaveDetails)
+					//le.log(this.leaveDetails)
 				}
-				
+
 			})
 			this.types = item.type;
 			//获取假条图片
@@ -142,6 +137,7 @@
 					this.imgs = res.data.data
 					for(let item in this.imgs){
 						this.imgs[item].url = this.baseUrl + this.imgs[item].url;
+						//console.log(this.imgs[item])
 					}
 					//有图片，替换附件
 					if(this.imgs.length){
@@ -181,7 +177,7 @@
 			},
 			//图片预览
 			preview(e){
-				//console.log(e)
+				//le.log(e)
 				let array = [];
 				array.push(e.url);
 				uni.previewImage({
@@ -192,16 +188,13 @@
 			//确认删除
 			confirm() {
 				uni.$http.get('/leave/deletedANote/' + this.leaveDetails.id).then(res =>{
-					//console.log(res)
+					//le.log(res)
 					if(res.data.code === 200){
 						uni.showToast({
 							title: "删除成功",		
 						})
 						setTimeout(function() {
-							uni.redirectTo({
-								url:'/pages/allLeaves/allLeaves'
-								} 
-							)
+							uni.navigateBack({})
 						}, 1000)
 					}else{
 						uni.showToast({
@@ -224,7 +217,7 @@
 			text-align: center;
 			background-color: #fff;
 			color: $uni-text-color;
-			padding: 10rpx 0;
+			padding: 10px 0;
 		}
 
 		.details-card {
@@ -237,7 +230,7 @@
 				}
 				.reason-text{
 					display: inline-block;
-					width: 400rpx;
+					width: 400px;
 				}
 				image{
 					width: 80px;
@@ -247,10 +240,11 @@
 		}
 		.btn-grounps{
 			width: 700rpx;
-			margin: 0rpx auto;
+			margin: 0px auto;
 			button{
-				margin-top: 5rpx;
-				height: 80rpx;
+				margin-top: 5px;
+				height: 50px;
+				line-height: 50px;
 				font-size: $jxnu-font-16;
 			}
 			.withOutBoder{

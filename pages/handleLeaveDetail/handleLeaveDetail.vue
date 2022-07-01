@@ -136,7 +136,7 @@
 		computed: {
 			currentProcess: {
 				get() {
-					// console.log(this.leaveDetails.examine)
+					console.log(this.leaveDetails.examine)
 					if (this.leaveDetails.examine == 'PROCESSING') {
 						return '等待审核中'
 					} else if (this.leaveDetails.examine == 'APPLY_EXPIRED') {
@@ -180,6 +180,8 @@
 							for (let key in this.process) {
 								if (this.process[key].other == res.data.data.examine) {
 									this.activeProcess = key
+									console.log(this.activeProcess, this.process[key].other, res.data.data
+										.examine)
 									break
 								}
 							}
@@ -204,9 +206,10 @@
 						//获取销假凭证
 						uni.$http.get(`/image/${id}`).then(res => {
 							if (res.data.code == 200) {
+								console.log(res.data.data)
 								this.confirmImg = res.data.data
 								for (let item in this.confirmImg) {
-									this.confirmImg[item].url = "https://leave.jxnu.edu.cn" + this.confirmImg[item].url;
+									this.confirmImg[item].url = "https://www.lovehot.club" + this.confirmImg[item].url;
 								}
 							} else {
 								this.confirmImg = null
@@ -216,7 +219,7 @@
 						if (this.leaveDetails.examine == 'PROCESSED') {
 							uni.$http.get(`/back/selectANote/${id}`).then(res => {
 								if (res.data.code == 200) {
-								
+									console.log(234)
 									this.gobackMessage = res.data.data
 								} else {
 									this.msg.msgType = "error"
@@ -345,9 +348,9 @@
 					if (this.opinionEnum == 'YES') {
 						requestMessage['leaderNumber'] = this.processMessage.checkpeople.join()
 					}
-					// console.log(requestMessage)
+					console.log(requestMessage)
 					uni.$http.post("/leave/updateNote", requestMessage).then(res => {
-						
+						console.log(res)
 						if (res.data.code == 200) {
 							this.msg.msgType = "success"
 							this.msg.messageText = "审批成功"
