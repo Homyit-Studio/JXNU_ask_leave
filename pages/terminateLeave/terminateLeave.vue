@@ -111,7 +111,6 @@
 				}
 			},
 			switchChange1(e){
-				console.log(e.detail.value)
 				this.leaveData.depart = e.detail.value;
 				if(this.leaveData.depart === true){
 					this.leaveDataRules = {
@@ -136,7 +135,6 @@
 				
 			},
 			switchChange2(e){
-					console.log(e.detail.value)
 					this.backData.back = e.detail.value;
 					if(this.backData.back === true){
 						this.backDataRules = {
@@ -160,8 +158,6 @@
 					}
 			},
 			submitForm(){
-				// console.log(this.backData.backWay);
-				// console.log(this.leaveData.departWay)
 				this.leaveData.leaveTime = this.dateAdd(this.leaveData.leaveTime,this.leaveData.depart);
 				this.backData.backTime = this.dateAdd( this.backData.backTime,this.backData.back)
 				this.$refs.leave_from.validate().then(res => {
@@ -182,7 +178,6 @@
 							  "backWay": this.backData.backWay,
 							  "backTime": this.backData.backTime
 						}).then(res=>{
-							console.log(res)
 							if(res.data.code === 200){
 								uni.showToast({
 									title: "提交成功",		
@@ -194,14 +189,8 @@
 									})
 								}, 1000)
 							}
-						}).catch(err=>{
-							console.log(err)
 						})
-					}).catch(err => {
-						console.log('err' + err);
 					})
-				}).catch(err => {
-					console.log('err' + err);
 				})
 				},
 				//获取当前格式化时间
@@ -238,7 +227,6 @@
 			
 			onLoad(item){
 				this.id = item.id;
-				//console.log(this.id)
 				this.leaveData.leaveTime = this.backData.backTime = this.getFormatDate();
 			},
 		}

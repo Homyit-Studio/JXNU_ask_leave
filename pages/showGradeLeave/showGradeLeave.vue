@@ -190,17 +190,13 @@
 				}
 			},
 			requestLeaveCount() {
-				console.log({
-					startTime: this.getFormatDate(2),
-					endTime: this.getFormatDate(),
-					gradeId: this.listRequest.gradeId
-				})
+				
 				uni.$http.post(`/leave/allCountsFroGradeId`, {
 					startTime: "2021-07-26 03:34:26",
 					endTime: this.getFormatDate(),
 					gradeId: this.listRequest.gradeId
 				}).then(res => {
-					console.log(res)
+					// console.log(res)
 					if (res.data.code == 200) {
 						uni.showToast({
 							title: '加载中',
@@ -209,7 +205,7 @@
 						});
 						let data = res.data.data
 						for (let index in this.localMenus) {
-							console.log(data[this.localMenus[index].value])
+							// console.log(data[this.localMenus[index].value])
 							this.localMenus[index].total = data[this.localMenus[index].value]
 						}
 					} else {

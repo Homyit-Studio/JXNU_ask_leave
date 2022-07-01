@@ -159,9 +159,9 @@
 		methods: {
 			submitForm(ref) {
 				this.$refs[ref].validate().then(res => {
-						console.log(this.formData)
+						// console.log(this.formData)
 						uni.$http.post("/user/addUser", this.formData).then(res => {
-							console.log(res)
+							// console.log(res)
 							if (res.data.code == 200) {
 								uni.navigateBack({
 								})

@@ -149,17 +149,17 @@
 			}
 		},
 		onLoad(options) {
-			console.log(options.message.gradeId)
+			// console.log(options.message.gradeId)
 			this.peoplestatus = options.people
 			this.username = options.username
 		},
 		methods: {
 			submitForm(ref) {
 				this.$refs[ref].validate().then(res => {
-						console.log(this.formData)
+						// console.log(this.formData)
 						uni.$http.post("/user/addUser", this.formData).then(res => {
 							if (res.data.code == 200) {
-								console.log(34)
+								// console.log(34)
 							} else {
 								this.msg.msgType = "error"
 								this.msg.messageText = res.data.message

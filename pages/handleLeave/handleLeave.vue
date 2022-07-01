@@ -159,7 +159,7 @@
 					if (res.data.code == 200) {
 						let data = res.data.data
 						for (let index in this.localMenus) {
-							console.log(data[this.localMenus[index].value])
+							// console.log(data[this.localMenus[index].value])
 							this.localMenus[index].total = data[this.localMenus[index].value]
 						}
 					} else {
@@ -172,7 +172,6 @@
 			requestLeaveNotes() {
 				uni.$http.post("/leave/selectNoteByRole", this.listRequest).then(res => {
 					if (res.data.code == 200) {
-						console.log(res)
 						this.leaveNoteList = res.data.data.list
 						this.endPage = res.data.data.endPage
 						if (this.listRequest.pageNo >= this.endPage) {

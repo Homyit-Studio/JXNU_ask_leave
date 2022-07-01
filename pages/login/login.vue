@@ -1,8 +1,8 @@
 <template>
 	<view class="login-content">
-		<view>
-			<image class="login-img" src="https://uis.jxnu.edu.cn/cas/file/png/logoM.png" lazy-load mode="aspectFit"
-				fade-show></image>
+		<view class="login-img">
+			<!-- <image class="login-img" src="https://www.haoy99.com/FileUpload/2019-02/Jin11iu1Feng1Xie1ppt-180923_103.jpg" lazy-load mode="scaleToFill"
+				fade-show></image> -->
 		</view>
 		<view class="login-card">
 			<text class="uni-h6">账号登录</text>
@@ -217,7 +217,7 @@
 
 		.login-img {
 			width: 500rpx;
-			height: 200rpx;
+			height: 100rpx;
 		}
 
 		.login-card {

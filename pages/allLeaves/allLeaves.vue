@@ -133,7 +133,7 @@
 			}
 		},
 		onLoad(options) {
-			console.log(uni.getStorageSync('token'))
+			// console.log(uni.getStorageSync('token'))
 			this.statuschoose = options.choose;
 			//console.log(uni.getStorageSync('token'))
 			//console.log(options)
@@ -190,10 +190,10 @@
 							duration: 500,
 							icon: "loading"
 						});
-						console.log(res.data.data.total)
+						// console.log(res.data.data.total)
 						this.leaveNoteList = res.data.data.list
 						this.endPage = res.data.data.endPage;
-						console.log(this.leaveNoteList)
+						// console.log(this.leaveNoteList)
 						if (this.listRequest.pageNo >= this.endPage) {
 							this.shownodata = true
 						}
@@ -221,7 +221,7 @@
 				//console.log(this.activeUrl)
 				// console.log(e)
 				this.currentValue = e.value;
-				console.log(this.currentValue)
+				// console.log(this.currentValue)
 				this.listRequest.pageNo = 1
 				this.listRequest.examineEnum = e.value;
 				this.requestLeaveNotes()

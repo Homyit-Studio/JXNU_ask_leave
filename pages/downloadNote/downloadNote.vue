@@ -68,7 +68,6 @@
 		},
 		methods: {
 			bindPickerChange(e){
-				console.log(e)
 				this.index = e.detail.value
 			},
 			submitForm(){
@@ -93,7 +92,6 @@
 						"token" : uni.getStorageSync('token'),
 					},
 					success: (res) => {
-						console.log(res)
 						if(res.statusCode === 200){	
 							this.getFile(res.data)
 						}		
@@ -110,7 +108,6 @@
 						//"Content-Type": "multipart/form-data",
 					},
 					success: (res) => {
-						console.log(res)
 						that.dataPath = res.tempFilePath;
 						if (res.statusCode === 200) {
 							//直接打开？
@@ -118,14 +115,14 @@
 							  filePath: that.dataPath,
 							  showMenu: true,
 							  success: function (res) {
-								console.log('打开文档成功');
+								// console.log('打开文档成功');
 							  },
 							  fail:(err)=>{
 								uni.showToast({
 									title: `文件打开失败`,
 									icon:"error"
 								})
-								console.log(err);
+								// console.log(err);
 							  }
 						});
 						  
@@ -160,7 +157,7 @@
 			//补充时间
 			dateAdd(dateStr){
 				if(dateStr.length <= 11){
-					console.log(dateStr + '00:00:00')
+					// console.log(dateStr + '00:00:00')
 					return dateStr + '00:00:00'
 				}
 				else{

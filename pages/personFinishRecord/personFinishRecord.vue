@@ -3,7 +3,7 @@
 		<view class="card-remind">
 			<uni-card :isFull="true">
 				<text>
-					以下数据为与您相关的近一个星期请假数据的预览，可前往审批假条可查看详情。
+					以下数据为与您相关的近期请假数据的预览，可前往审批假条可查看详情。
 				</text>
 				<view class="nav-button">
 					<navigator url="../handleLeave/handleLeave">审批假条>></navigator>
@@ -11,7 +11,7 @@
 			</uni-card>
 		</view>
 		<view class="charts-box">
-			<qiun-data-charts type="column" :ontouch="true" :onmovetip="true" :canvasId="uhfeewuhf9842342"
+			<qiun-data-charts type="column" :ontouch="true" :onmovetip="true" canvasId="uhfeewuhf9842342"
 				:chartData="chartData" />
 		</view>
 		<view>
@@ -56,9 +56,9 @@
 							name: "请假统计",
 							data: []
 						}]
-						console.log(res.data.data)
+						// console.log(res.data.data)
 						for (let item in data) {
-							console.log(item)
+							// console.log(item)
 							this.chartData.categories.push(this.dataMap[item])
 							this.chartData.series[0].data.push(data[item])
 						}

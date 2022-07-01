@@ -47,12 +47,11 @@
 		methods: {
 		},
 		onLoad(item){
-			console.log(item.id)
 			uni.$http.get('/back/selectANote/' + item.id).then(res =>{
-				console.log(res)
+				// console.log(res)
 				if(res.data.code === 200){
 					this.terminateDetails = res.data.data
-					console.log(this.terminateDetails)
+					// console.log(this.terminateDetails)
 				}
 			})
 		}

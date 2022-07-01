@@ -3,7 +3,7 @@
 		<view class="card-remind">
 			<uni-card :isFull="true">
 				<text>
-					以下数据为计信学院的请假相关数据预览(默认为一星期)，可前往请假记录查看详情：
+					以下数据为学院请假数据的总预览(默认为一星期)，可前往请假记录查看详情：
 				</text>
 				<view class="nav-button">
 					<navigator url="../showGradeLeave/showGradeLeave">请假记录>></navigator>
@@ -20,7 +20,7 @@
 		<uni-card isFull="true">
 			<view>
 				<text>
-					可选择起始日期查看该时间段的报表：
+					可选择起始日期查看某时间段的报表：
 				</text>
 				<view class="nav-button" @click="datePopup">
 					<text>选择时间</text>
@@ -164,11 +164,9 @@
 				this.getGradeData(this.gradevalue)
 			},
 			requestAllCounts() {
-				console.log(this.dateChoose)
 				uni.$http.post("/leave/allCounts", this.dateChoose).then(res => {
 					if (res.data.code == 200) {
 						let data = res.data.data
-						console.log(res.data.data)
 						this.chartData.categories = []
 						this.chartData.series = [{
 							name: "请假统计",
@@ -189,9 +187,6 @@
 					}
 				})
 			},
-			clickdata(e) {
-				console.log(e)
-			},
 			changeGrade(grade) {
 				this.getGradeData(grade)
 			},
@@ -203,14 +198,12 @@
 				}).then(res => {
 					if (res.data.code == 200) {
 						let data = res.data.data
-						console.log(res.data.data)
 						this.gradeChartData.categories = []
 						this.gradeChartData.series = [{
 							name: "年级统计",
 							data: []
 						}]
 						for (let item in data) {
-							console.log(item)
 							this.gradeChartData.categories.push(this.dataMap[item])
 							this.gradeChartData.series[0].data.push(data[item])
 						}

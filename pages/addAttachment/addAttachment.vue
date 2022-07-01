@@ -30,7 +30,7 @@
 		onLoad(item){
 			this.id = item.id;
 			this.type = item.type
-			console.log(item)
+			// console.log(item)
 		},
 		methods: {
 			// 获取上传状态
@@ -40,7 +40,7 @@
 				//console.log(res.tempFilePaths)
 				for(let index in res.tempFilePaths){
 					this.imageValue.push(res.tempFilePaths[index])
-					console.log(index)
+					// console.log(index)
 				}
 				//console.log(res.tempFilePaths[0])
 				//console.log(this.imageValue)
@@ -49,7 +49,7 @@
 			handleDelete(e){
 				const num = this.imageValue.findIndex(v => v.url === e.tempFilePath);
 				this.imageValue.splice(num, 1);
-				console.log(this.imageValue)
+				// console.log(this.imageValue)
 			},
 			submitForm(){
 				if(this.imageValue){
@@ -95,7 +95,7 @@
 						},
 						success: (res) => {
 							let obj = JSON.parse(res.data);
-							console.log(res)
+							// console.log(res)
 							if(obj.code === 200){
 								uni.redirectTo({
 									url: `/pages/allLeaveDetails/allLeaveDetails?id=` + this.id + '&type=' + this.type ,

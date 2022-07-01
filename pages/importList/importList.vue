@@ -85,7 +85,7 @@
 				this.studentFile.path = res.tempFilePaths[0];
 			},
 			selectT(res){
-				console.log(res.tempFilePaths[0]);
+				// console.log(res.tempFilePaths[0]);
 				this.teacherFile.filename = res.tempFiles[0].name;
 				this.teacherFile.path = res.tempFilePaths[0];
 			},
@@ -102,7 +102,7 @@
 							},
 							success: (res) => {
 								let obj = JSON.parse(res.data);
-								console.log(obj)
+								// console.log(obj)
 								if(obj.code === 200){
 									uni.showToast({
 										icon:'success',
@@ -139,7 +139,7 @@
 			},
 			submitFormT(){
 				if(this.teacherFile.path){
-					console.log(uni.getStorageSync('token'))
+					// console.log(uni.getStorageSync('token'))
 					uni.uploadFile({
 						url: "https://www.lovehot.club/api/excel/uploadTeacher",
 						filePath: this.teacherFile.path,
@@ -149,7 +149,7 @@
 						},
 						success: (res) => {
 							let obj = JSON.parse(res.data);
-							console.log(obj)
+							// console.log(obj)
 							if(obj.code === 200){
 								uni.showToast({
 									icon:'success',

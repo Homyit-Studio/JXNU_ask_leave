@@ -146,7 +146,7 @@
 						</view>
 						<text>个人信息</text>
 					</view>
-					<view @click="contactus">
+					<view>
 						<navigator class="tools-btn" url="../contactUs/contactUs">
 							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
@@ -255,9 +255,6 @@
 					this.msg.messageText = "请求错误"
 					this.$refs.message.open()
 				}
-			})
-			this.$nextTick(() => {
-				console.log(this.$refs)
 			})
 		},
 		methods: {

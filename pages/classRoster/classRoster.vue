@@ -90,7 +90,7 @@
 		</view>
 		<!-- 添加成员 -->
 		<view v-if="enterChoose == '0'">
-			<uni-fab ref="fab" :content="content" horizontal="right" vertical="bottom" :direction="direction"
+			<uni-fab ref="fab" :content="content" horizontal="right" vertical="bottom"
 				@trigger="triggerAdd" />
 		</view>
 	</view>
@@ -158,7 +158,9 @@
 			this.enterChoose = options.choose;
 			this.classId = options.id
 			this.gradeId = options.gradeId
-			this.requestClassRoster(options.id)
+		},
+		onShow(){
+			this.requestClassRoster(this.classId)
 		},
 		computed: {
 			imageSrc: {
@@ -173,10 +175,10 @@
 		},
 		methods: {
 			bindClick(e) {
-				console.log('点击了' + (e.position === 'left' ? '左侧' : '右侧') + e.content.text + '按钮')
+				// console.log('点击了' + (e.position === 'left' ? '左侧' : '右侧') + e.content.text + '按钮')
 			},
 			swipeChange(e, index) {
-				console.log('当前状态：' + e + '，下标：' + index)
+				// console.log('当前状态：' + e + '，下标：' + index)
 			},
 			requestClassRoster(id) {
 				this.rosterRequest.classId = id
@@ -217,7 +219,7 @@
 				uni.$http.post("/user/updateUser",
 					this.peopleformData).then(res => {
 					if (res.data.code == 200) {
-						console.log(res)
+						// console.log(res)
 						this.msg.msgType = "success"
 						this.msg.messageText = "修改成功"
 						this.rosterRequest.pageNo = 1
@@ -240,7 +242,7 @@
 					studentNumber: this.studentMessage.studentNumber
 				}).then(res => {
 					if (res.data.code == 200) {
-						console.log(res)
+						// console.log(res)
 						this.msg.msgType = "success"
 						this.msg.messageText = res.data.message
 						this.rosterRequest.pageNo = 1
@@ -266,7 +268,7 @@
 			this.rosterRequest.pageNo++;
 			uni.$http.post(`/teacher/getStudentsByClassId`, this.rosterRequest).then(res => {
 				if (res.data.code == 200) {
-					console.log(res)
+					// console.log(res)
 					uni.showToast({
 						title: '加载中',
 						duration: 500,

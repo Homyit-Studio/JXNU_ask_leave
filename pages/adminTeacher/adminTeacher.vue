@@ -147,7 +147,6 @@
 				uni.$http.post("/user/updateUser",
 					this.peopleformData).then(res => {
 					if (res.data.code == 200) {
-						console.log(res)
 						this.msg.msgType = "success"
 						this.msg.messageText = "修改成功"
 						this.modify = 0
@@ -175,7 +174,6 @@
 					studentNumber: this.teacherMessage.studentNumber
 				}).then(res => {
 					if (res.data.code == 200) {
-						console.log(res)
 						this.msg.msgType = "success"
 						this.msg.messageText = res.data.message
 						setTimeout(()=>{

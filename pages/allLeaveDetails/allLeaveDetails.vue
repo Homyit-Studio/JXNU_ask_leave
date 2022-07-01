@@ -128,7 +128,6 @@
 				duration: 500,
 			})
 			uni.$http.get('/leave/selectANote/' + item.id).then(res =>{
-				console.log(res)
 				if(res.data.code === 200){
 					this.leaveDetails = res.data.data
 					uni.hideLoading();	
@@ -139,7 +138,6 @@
 			this.types = item.type;
 			//获取假条图片
 			uni.$http.get('/image/' + item.id).then(res =>{
-				console.log(res)
 				if(res.data.code === 200){
 					this.imgs = res.data.data
 					for(let item in this.imgs){
@@ -193,7 +191,6 @@
 			},
 			//确认删除
 			confirm() {
-				console.log(this.leaveDetails.id)
 				uni.$http.get('/leave/deletedANote/' + this.leaveDetails.id).then(res =>{
 					//console.log(res)
 					if(res.data.code === 200){
