@@ -59,7 +59,7 @@
 						</view>
 						<text>退出登录</text>
 					</view>
-					<view @click="contactus">
+					<view>
 						<navigator class="tools-btn" url="../contactUs/contactUs">
 							<image src="../../static/stu_icon/lianxiwomen.png" mode="" class="tools-img"></image>
 						</navigator>

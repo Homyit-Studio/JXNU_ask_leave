@@ -206,7 +206,7 @@
 							if (res.data.code == 200) {
 								this.confirmImg = res.data.data
 								for (let item in this.confirmImg) {
-									this.confirmImg[item].url = "https://www.lovehot.club" + this.confirmImg[item].url;
+									this.confirmImg[item].url = "https://leave.jxnu.edu.cn" + this.confirmImg[item].url;
 								}
 							} else {
 								this.confirmImg = null
