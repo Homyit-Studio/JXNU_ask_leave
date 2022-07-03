@@ -18,6 +18,9 @@
 						placeholder="请输入登录密码" />
 				</uni-forms-item>
 			</uni-forms>
+			<view class="forget-box">
+				<navigator url="../forgetPassword/forgetPassword" hover-class="forget-hover" class="forget-nav">忘记密码?</navigator>
+			</view>
 			<button type="default" class="button" @click="loginSubmit('studentForm')">提交</button>
 		</view>
 		<view class="login-form" v-else>
@@ -31,6 +34,9 @@
 						placeholder="请输入登录密码" />
 				</uni-forms-item>
 			</uni-forms>
+			<view class="forget-box">
+				<navigator url="../forgetPassword/forgetPassword" hover-class="forget-hover" class="forget-nav">忘记密码?</navigator>
+			</view>
 			<button type="default" class="button" @click="loginSubmit('teacherForm')">提交</button>
 		</view>
 		<view>
@@ -233,6 +239,18 @@
 		.uni-easyinput {
 			width: 650rpx;
 			border-radius: 100rpx;
+		}
+		.forget-box{
+			display: flex;
+			justify-content: flex-end;
+			.forget-nav{
+				color:  $jxnu-bg-color;
+				font-size: 12px;
+				padding-right: 10px;
+			}
+			.forget-hover{
+				color: #666;
+			}
 		}
 
 		.button {

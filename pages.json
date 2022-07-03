@@ -178,6 +178,22 @@
                 "navigationBarTitleText": "联系我们"
             }
             
+        },{
+            "path" : "pages/forgetPassword/forgetPassword",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "找回密码"
+            }
+            
+        }
+        ,{
+            "path" : "pages/bindEmail/bindEmail",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "绑定邮箱",
+                "enablePullDownRefresh": false
+            }
+            
         }
     ],
 	"globalStyle": {
