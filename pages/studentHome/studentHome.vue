@@ -54,17 +54,18 @@
 						<text>个人信息</text>
 					</view>
 					<view>
-						<view class="tools-btn" @click="logOut()">
-							<image src="../../static/stu_icon/tuichudenglu.png" mode="" class="tools-img"></image>
-						</view>
-						<text>退出登录</text>
-					</view>
-					<view>
 						<navigator class="tools-btn" url="../contactUs/contactUs">
 							<image src="../../static/stu_icon/lianxiwomen.png" mode="" class="tools-img"></image>
 						</navigator>
 						<text>联系我们</text>
 					</view>
+					<view>
+						<view class="tools-btn" @click="logOut()">
+							<image src="../../static/stu_icon/tuichudenglu.png" mode="" class="tools-img"></image>
+						</view>
+						<text>退出登录</text>
+					</view>
+				
 				</view>
 			</uni-card>
 		</view>

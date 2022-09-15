@@ -90,8 +90,7 @@
 		</view>
 		<!-- 添加成员 -->
 		<view v-if="enterChoose == '0'">
-			<uni-fab ref="fab" :content="content" horizontal="right" vertical="bottom"
-				@trigger="triggerAdd" />
+			<uni-fab ref="fab" :content="content" horizontal="right" vertical="bottom" @trigger="triggerAdd" />
 		</view>
 	</view>
 </template>
@@ -159,7 +158,7 @@
 			this.classId = options.id
 			this.gradeId = options.gradeId
 		},
-		onShow(){
+		onShow() {
 			this.requestClassRoster(this.classId)
 		},
 		computed: {
@@ -181,6 +180,7 @@
 				// console.log('当前状态：' + e + '，下标：' + index)
 			},
 			requestClassRoster(id) {
+				this.rosterRequest.pageNo = 1
 				this.rosterRequest.classId = id
 				uni.$http.post(`/teacher/getStudentsByClassId`, this.rosterRequest).then(res => {
 					if (res.data.code == 200) {
@@ -303,6 +303,7 @@
 			justify-content: center;
 			padding-bottom: 50rpx;
 			margin-top: 10px;
+
 			button {
 				width: 300rpx;
 				height: 60rpx;

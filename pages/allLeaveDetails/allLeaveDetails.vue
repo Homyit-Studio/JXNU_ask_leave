@@ -75,26 +75,26 @@
 				</view>
 			</uni-card>
 			<!-- 根据不同状态展示不同按钮 -->
-			<view>
+			<view class="bottom-button">
 				<!-- 等待处理 -->
 				<view class="btn-grounps" v-if="types === 'PROCESSING'">
-					<button type="default" class="Boder" @click="addAttachment()">{{this.btn_text}}</button>
-					<button type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>
+					<button size="mini" type="default" class="Boder" @click="addAttachment()">{{this.btn_text}}</button>
+					<button size="mini" type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>
 				</view>
 				<!-- 已销假 -->
 				<view class="btn-grounps" v-else-if="types === 'PROCESSED'">
-					<button type="default" class="withOutBoder" @click="checkTerminate()">查看销假</button>
+					<button size="mini" type="default" class="withOutBoder" @click="checkTerminate()">查看销假</button>
 					<!-- <button type="default" class="withOutBoder" @click="goToTerminate()" v-else>我要销假</button> -->
 				</view>
 				<!-- 等待销假 -->
 				<view class="btn-grounps" v-else-if="types === 'WAIT_REPORT'">
-					<button type="default" class="withOutBoder" @click="goToTerminate()">我要销假</button>				
+					<button size="mini" type="default" class="withOutBoder" @click="goToTerminate()">我要销假</button>				
 				</view>
 				<!-- 销假过期 -->
 				<!-- 申请过期 -->
 				<!-- 被拒假条 -->
 				<view class="btn-grounps" v-else>
-					<button type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>
+					<button size="mini" type="default" class="deteleWarn" @click="deteleLeave()">删除假条</button>
 				</view>	
 			</view>	
 		</view>
@@ -238,14 +238,19 @@
 				}
 			}
 		}
+		.bottom-button{
+			margin-bottom: 20px;
+		}
 		.btn-grounps{
-			width: 700rpx;
-			margin: 0px auto;
+			// width: 700rpx;
+			text-align: center;
+			// margin: 0px auto;
 			button{
+				width: 450rpx;
 				margin-top: 5px;
-				height: 50px;
-				line-height: 50px;
-				font-size: $jxnu-font-16;
+				// height: 50px;
+				// line-height: 50px;
+				// font-size: $jxnu-font-16;
 			}
 			.withOutBoder{
 				background-color: $uni-bg-color;

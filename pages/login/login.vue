@@ -1,8 +1,8 @@
 <template>
 	<view class="login-content">
 		<view class="login-img">
-			<!-- <image class="login-img" src="https://www.haoy99.com/FileUpload/2019-02/Jin11iu1Feng1Xie1ppt-180923_103.jpg" lazy-load mode="scaleToFill"
-				fade-show></image> -->
+			<image class="login-img" src="https://www.jxnu.edu.cn/_upload/site/00/05/5/logo.png" lazy-load mode="scaleToFill"
+				fade-show></image>
 		</view>
 		<view class="login-card">
 			<text class="uni-h6">账号登录</text>
@@ -19,9 +19,10 @@
 				</uni-forms-item>
 			</uni-forms>
 			<view class="forget-box">
-				<navigator url="../forgetPassword/forgetPassword" hover-class="forget-hover" class="forget-nav">忘记密码?</navigator>
+				<navigator url="../forgetPassword/forgetPassword" hover-class="forget-hover" class="forget-nav">忘记密码?
+				</navigator>
 			</view>
-			<button type="default" class="button" @click="loginSubmit('studentForm')">提交</button>
+			<button type="button" class="button" @click="loginSubmit('studentForm')">提交</button>
 		</view>
 		<view class="login-form" v-else>
 			<uni-forms ref="teacherForm" :rules="teacherRules" :modelValue="loginFormData">
@@ -35,9 +36,10 @@
 				</uni-forms-item>
 			</uni-forms>
 			<view class="forget-box">
-				<navigator url="../forgetPassword/forgetPassword" hover-class="forget-hover" class="forget-nav">忘记密码?</navigator>
+				<navigator url="../forgetPassword/forgetPassword" hover-class="forget-hover" class="forget-nav">忘记密码?
+				</navigator>
 			</view>
-			<button type="default" class="button" @click="loginSubmit('teacherForm')">提交</button>
+			<button type="button" class="button" @click="loginSubmit('teacherForm')">提交</button>
 		</view>
 		<view>
 			<!-- 提示信息弹窗 -->
@@ -52,6 +54,7 @@
 	export default {
 		data() {
 			return {
+				requestStatus: false,
 				msg: {
 					msgType: 'success',
 					messageText: '这是一条成功提示',
@@ -65,7 +68,7 @@
 						rules: [{
 							required: true,
 							errorMessage: "请输入正确的学号"
-						},{
+						}, {
 							format: 'number',
 							errorMessage: '学号只能输入数字'
 						}]
@@ -82,7 +85,7 @@
 						rules: [{
 							required: true,
 							errorMessage: "请输入正确的工号"
-						},{
+						}, {
 							format: 'number',
 							errorMessage: '工号只能输入数字'
 						}]
@@ -119,6 +122,28 @@
 		},
 		computed: {},
 		methods: {
+			debounce(fn, wait) {
+				let delay = wait || 1000
+				let timer
+				return function() {
+					let args = arguments;
+					if (timer) {
+						clearTimeout(timer)
+						uni.showToast({
+							title: "请不要重复操作",
+							icon: "error"
+						})
+					}
+					let callNow = !timer
+					timer = setTimeout(() => {
+						uni.showToast({
+							title: "正在登录中"
+						})
+						timer = null
+					}, delay)
+					if (callNow) fn.apply(this, args)
+				}
+			},
 			cardChoose(card) {
 				if (card == "student") {
 					this.loginFormData = {
@@ -136,10 +161,19 @@
 			loginSubmit(ref) {
 				//console.log(ref)
 				this.$refs[ref].validate().then(res => {
+					if (this.requestStatus) {
+						return false
+					}
+					this.requestStatus = true
+					uni.showLoading({
+						title: "正在登录中..."
+					})
+					console.log("提交")
 					if (ref === "teacherForm") {
 						uni.$http.post("/user/login", this.loginFormData).then(res => {
+
 							if (res.data.code == 200) {
-								if(res.data.data.role !== "学生"){
+								if (res.data.data.role !== "学生") {
 									uni.showToast({
 										title: "登录成功，请稍等.."
 									})
@@ -159,52 +193,74 @@
 									uni.redirectTo({
 										url: '/pages/teacherHome/teacherHome'
 									})
-								}else{
+									setTimeout(() => {
+										this.requestStatus = false
+									}, 1000)
+								} else {
 									uni.showToast({
-										icon:"none",
-										title:"身份验证失败,请从学生端登录"
+										icon: "error",
+										title: "身份验证失败"
 									})
+									setTimeout(() => {
+										this.requestStatus = false
+									}, 1000)
 								}
 							} else {
-								this.msg.msgType = "error"
-								this.msg.messageText = res.data.message
-								this.$refs.message.open()
+								// this.msg.msgType = "error"
+								// this.msg.messageText = res.data.message
+								// this.$refs.message.open()
+								uni.showToast({
+									icon: "error",
+									title: res.data.message
+								})
+								setTimeout(() => {
+									this.requestStatus = false
+								}, 1000)
 							}
 						})
 					} else if (ref === "studentForm") {
 						uni.$http.post("/user/login", this.loginFormData).then(res => {
 							if (res.data.code == 200) {
-								if(res.data.data.role == "学生"){
-										uni.setStorage({
-											key: 'token',
-											data: res.data.data.token,
-											// success: function () {
-											// 	console.log('success');
-											// }
-										});
-										uni.setStorage({
-											key: 'role',
-											data: res.data.data.role,
-										});
-										uni.setStorage({
-											key: 'studentMessage',
-											data: this.loginFormData
-										});
-										uni.redirectTo({
-											url: '/pages/studentHome/studentHome'
-										})
-									}else{
-										uni.showToast({
-											icon:"none",
-											title:"身份验证失败,请从教师端登录"
-										})
-									} 
-								}else {
-									uni.showToast({
-										icon:"none",
-										title: res.data.message
+								if (res.data.data.role == "学生") {
+									uni.setStorage({
+										key: 'token',
+										data: res.data.data.token,
+										// success: function () {
+										// 	console.log('success');
+										// }
+									});
+									uni.setStorage({
+										key: 'role',
+										data: res.data.data.role,
+									});
+									uni.setStorage({
+										key: 'studentMessage',
+										data: this.loginFormData
+									});
+									uni.redirectTo({
+										url: '/pages/studentHome/studentHome'
 									})
-								}	
+									setTimeout(() => {
+										this.requestStatus = false
+									}, 1000)
+								} else {
+									uni.showToast({
+										icon: "none",
+										title: "身份验证失败,请从教师端登录"
+									})
+									setTimeout(() => {
+										this.requestStatus = false
+									}, 1000)
+								}
+							} else {
+								uni.showToast({
+									icon: "none",
+									title: res.data.message
+								})
+								setTimeout(() => {
+									this.requestStatus = false
+								}, 1000)
+							}
 						})
 					}
 				})
@@ -224,6 +280,7 @@
 		.login-img {
 			width: 500rpx;
 			height: 100rpx;
+			margin: 20rpx 0;
 		}
 
 		.login-card {
@@ -240,15 +297,18 @@
 			width: 650rpx;
 			border-radius: 100rpx;
 		}
-		.forget-box{
+
+		.forget-box {
 			display: flex;
 			justify-content: flex-end;
-			.forget-nav{
-				color:  $jxnu-bg-color;
+
+			.forget-nav {
+				color: $jxnu-bg-color;
 				font-size: 12px;
 				padding-right: 10px;
 			}
-			.forget-hover{
+
+			.forget-hover {
 				color: #666;
 			}
 		}

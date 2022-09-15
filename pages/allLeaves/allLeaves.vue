@@ -1,6 +1,6 @@
 <template>
 	<view class="grade-content">
-	<!-- 	<view class="grade-select">
+		<!-- 	<view class="grade-select">
 			<uni-data-select v-model="gradevalue" :localdata="gradeSelect" @change="changeGrade" label="年级">
 			</uni-data-select>
 		</view> -->
@@ -9,22 +9,22 @@
 				<text class="uni-h6">假条</text>
 			</uni-card>
 		</view> -->
-		<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中填写返校内容。" showIcon></uni-notice-bar>
+		<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中填写返校内容。"
+			showIcon></uni-notice-bar>
 		<view class="look-list">
-				<view class="handle-leave">
+			<view class="handle-leave">
 				<view class="menu">
-					<uni-data-menu :localdata="localMenus" :unique-opened="true" @select="changeMenu" :value="currentValue"
-						active-text-color="#409eff">
+					<uni-data-menu :localdata="localMenus" :unique-opened="true" @select="changeMenu"
+						:value="currentValue" active-text-color="#409eff">
 					</uni-data-menu>
 				</view>
 				<uni-list class="leave-list">
-					<uni-list-item class="leave-list-item" direction="column" v-for="(item, index) in leaveNoteList"
-						:key="item.id">
+					<uni-list-item class="leave-list-item" direction="column" v-for="(item, index) in leaveNoteList">
 						<template v-slot:header>
 							<view class="card-header">
-								<uni-tag v-if="item.examine == 'SUCCESS'" :text=" index+1 + '.已同意'" type="success">
+								<uni-tag v-if="item.examine == 'SUCCESS'" :text=" index+1 + '.'" type="success">
 								</uni-tag>
-								<uni-tag v-else-if="item.examine == 'FAILURE'" :text="index+1+ ',已拒绝'" type="error">
+								<uni-tag v-else-if="item.examine == 'FAILURE'" :text="index+1+ '.'" type="error">
 								</uni-tag>
 								<uni-tag :mark="true" v-else :text="index+1 + '.'" type="default"></uni-tag>
 								<view>
@@ -41,7 +41,7 @@
 						</template>
 						<template v-slot:footer>
 							<view class="card-actions">
-								<view class="card-actions-item" @click="checkDetails(item.id)">
+								<view class="card-actions-item" @click="checkDetails(item.id,index+1)">
 									<view class="tag-view">
 										<uni-tag :text="statuschoose == 1? '去审批' : '查看详情'"
 											custom-style="background-color: #1b478e; border-color: #1b478e; color: #fff;" />
@@ -63,6 +63,10 @@
 				</uni-popup-message>
 			</uni-popup>
 		</view>
+		<view class="goTotop" v-if="showTop" @click="gobackTop">
+			<uni-icons type="top" color="#fff" size="15"></uni-icons>
+			顶部
+		</view>
 	</view>
 </template>
 
@@ -70,14 +74,18 @@
 	export default {
 		data() {
 			return {
+				showTop: false,
+				pageId: "student",
+				currentPage: 1,
+				changeCart: true,
 				isloading: false,
 				statuschoose: null,
-				currentValue:'PROCESSING',
+				currentValue: 'PROCESSING',
 				localMenus: [{
 						total: null,
 						text: '等待处理',
 						value: "PROCESSING",
-					},{
+					}, {
 						total: null,
 						text: '销假完成',
 						value: "PROCESSED",
@@ -115,7 +123,6 @@
 				// 		text: "2020级"
 				// 	}
 				// ],
-				isloading: false,
 				//数据总数
 				endPage: null,
 				msg: {
@@ -134,21 +141,24 @@
 			}
 		},
 		onShow() {
-			this.listRequest.pageNo = 1
-			this.requestLeaveNotes()
-			this.requestLeaveCount()
+			if (this.listRequest.examineEnum == "PROCESSING") {
+				this.requestLeaveCount()
+				this.getscrollTop()
+			}
+
 		},
 		onLoad(options) {
 			this.statuschoose = options.choose;
 			//console.log(uni.getStorageSync('token'))
 			//console.log(options)
-			if(options.is_WAIT_REPORT == "true"){
+			if (options.is_WAIT_REPORT == "true") {
 				this.currentValue = "WAIT_REPORT";
 				this.listRequest.examineEnum = "WAIT_REPORT";
-				
+
 			}
-			this.requestLeaveNotes()
-			this.requestLeaveCount()
+			// this.listRequest.pageNo = 1
+			// this.requestLeaveNotes()
+			// this.requestLeaveCount()
 		},
 		methods: {
 			changeGrade(grade) {
@@ -168,7 +178,7 @@
 					this.requestLeaveNotes()
 				}
 			},
-			requestLeaveCount(){
+			requestLeaveCount() {
 				uni.$http.get(`/leave/allCountsForPerson`).then(res => {
 					if (res.data.code == 200) {
 						let data = res.data.data
@@ -187,7 +197,7 @@
 					this.$refs.message.open()
 				})
 			},
-			requestLeaveNotes(){
+			requestLeaveNotes() {
 				uni.$http.post("/leave/selectNoteByRole", this.listRequest).then(res => {
 					if (res.data.code == 200) {
 						uni.showToast({
@@ -198,7 +208,14 @@
 
 						// console.log(res.data.data.total)
 						this.leaveNoteList = res.data.data.list
-						this.endPage = res.data.data.endPage;
+						if (this.changeCart) {
+							this.endPage = res.data.data.endPage
+							console.log("end", this.endPage)
+						}
+
+						setTimeout(() => {
+							this.changeCart = false
+						}, 1000)
 						// console.log(this.leaveNoteList)
 						//console.log(res.data.data.total)
 						this.leaveNoteList = res.data.data.list
@@ -220,9 +237,11 @@
 					this.shownodata = true
 				})
 			},
-			checkDetails(id) {
+			checkDetails(id, indexnum) {
+				this.currentPage = Math.ceil(indexnum / 5)
+				uni.setStorageSync('pageNoDetail' + this.pageId, this.currentPage);
 				uni.navigateTo({
-					url: `/pages/allLeaveDetails/allLeaveDetails?id=` + id + '&type=' + this.currentValue ,
+					url: `/pages/allLeaveDetails/allLeaveDetails?id=` + id + '&type=' + this.currentValue,
 					animationType: 'pop-in',
 					animationDuration: 200
 				})
@@ -233,8 +252,104 @@
 				this.currentValue = e.value;
 				this.listRequest.pageNo = 1
 				this.listRequest.examineEnum = e.value;
+				this.changeCart = true
 				this.requestLeaveNotes()
-			}
+				setTimeout(() => {
+					this.changeCart = false
+				}, 1000)
+			},
+			//节流处理
+			throttle(fn, delay) {
+				let t = null,
+					begin = new Date().getTime();
+				return function() {
+					let _self = this,
+						args = arguments,
+						cur = new Date().getTime();
+					clearTimeout(t)
+
+					if (cur - begin >= delay) {
+						console.log(cur)
+						fn.apply(_self, args);
+						begin = cur
+					} else {
+						uni.showToast({
+							icon: "error",
+							title: "操作过快，请稍等"
+						})
+						t = setTimeout(function() {
+							console.log("set")
+							console.log(cur)
+							fn.apply(_self, args)
+						}, delay)
+					}
+				}
+			},
+			gobackTop() {
+				uni.pageScrollTo({
+					duration: 500, // 毫秒
+					scrollTop: 1 // 位置
+				})
+			},
+			getscrollTop() {
+				let scrollDetail = uni.getStorageSync('scrollDetail' + this.pageId)
+				let pageNoDetail = uni.getStorageSync('pageNoDetail' + this.pageId)
+				console.log(typeof pageNoDetail)
+
+				if (!pageNoDetail) {
+					pageNoDetail = 1
+				}
+
+				console.log(scrollDetail, pageNoDetail)
+				this.listRequest.pageSize = pageNoDetail * 5
+				this.listRequest.pageNo = 1
+				console.log("执行")
+				uni.$http.post("/leave/selectNoteByRole", this.listRequest).then(res => {
+					if (res.data.code == 200) {
+						this.leaveNoteList = res.data.data.list
+						if (this.listRequest.pageNo >= this.endPage) {
+							this.shownodata = true
+						}
+						if (this.changeCart) {
+							this.endPage = res.data.data.endPage
+							console.log("end", this.endPage)
+						}
+
+						setTimeout(() => {
+							this.changeCart = false
+						}, 1000)
+						this.listRequest.pageSize = 5
+						this.listRequest.pageNo = pageNoDetail
+						uni.pageScrollTo({
+							duration: 500, // 毫秒
+							scrollTop: scrollDetail // 位置
+						})
+						// uni.setStorageSync('scrollDetail' + this.pageId, 1);
+						// uni.setStorageSync('pageNoDetail' + this.pageId, 1);
+					} else {
+						this.msg.msgType = "error"
+						this.msg.messageText = res.data.message
+						this.$refs.message.open()
+						this.shownodata = true
+						// uni.setStorageSync('scrollDetail' + this.pageId, 1);
+						// uni.setStorageSync('pageNoDetail' + this.pageId, 1);
+					}
+				}).catch(err => {
+					this.msg.msgType = "error"
+					this.msg.messageText = err.errMsg
+					this.$refs.message.open()
+					this.shownodata = true
+					// uni.setStorageSync('scrollDetail' + this.pageId, 1);
+					// uni.setStorageSync('pageNoDetail' + this.pageId, 1);
+				})
+
+				// if (data) {
+				// 	uni.pageScrollTo({
+				// 		duration: 500, // 毫秒
+				// 		scrollTop: data // 位置
+				// 	})
+				// }
+			},
 		},
 		onReachBottom() {
 			if (this.listRequest.pageNo >= this.endPage) {
@@ -244,7 +359,7 @@
 			if (this.isloading) return;
 			this.isloading = true
 			this.listRequest.pageNo++;
-			uni.$http.post(`/leave/selectNoteByRole`, this.listRequest).then(res => {
+			this.throttle(uni.$http.post(`/leave/selectNoteByRole`, this.listRequest).then(res => {
 				if (res.data.code == 200) {
 					uni.showToast({
 						title: '加载中',
@@ -254,8 +369,9 @@
 					this.leaveNoteList = [...this.leaveNoteList, ...res.data.data.list]
 					this.isloading = false
 				} else {
-					this.msg.msgType = "error"
-					this.msg.messageText = res.data.message
+					this.listRequest.pageNo--;
+					this.msg.msgType = "none"
+					this.msg.messageText = "错误！操作频繁请重试"
 					this.$refs.message.open()
 					this.isloading = false
 				}
@@ -264,7 +380,30 @@
 				this.msg.messageText = err.errMsg
 				this.$refs.message.open()
 				this.isloading = false
-			})
+			}), 1000)
+		},
+		// 监听页面滚动位置
+		onPageScroll(e) {
+			// console.log(e) // {scrollTop: 216}
+			// console.log(this.listRequest.pageNo)
+			this.scrollTop = e.scrollTop;
+			if (e.scrollTop >= 1000) {
+				this.showTop = true
+			} else {
+				this.showTop = false
+			}
+			uni.setStorageSync('scrollDetail' + this.pageId, e.scrollTop);
+
+		},
+		onPullDownRefresh() {
+			this.changeCart = true
+			this.listRequest.pageNo = 1
+			this.requestLeaveNotes()
+			this.requestLeaveCount()
+			setTimeout(function() {
+				this.changeCart = false
+				uni.stopPullDownRefresh();
+			}, 1000);
 		}
 	}
 </script>
@@ -324,6 +463,24 @@
 		.show-nodata {
 			text-align: center;
 			padding: 20px;
+		}
+
+		.goTotop {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 30px;
+			height: 30px;
+			background-color: #bcbcbc;
+			padding: 10px;
+			border-radius: 50px;
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			z-index: 1000;
+			font-size: 12px;
+			color: #fff;
 		}
 	}
 </style>

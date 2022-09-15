@@ -22,7 +22,7 @@
 	export default {
 		data() {
 			return {
-				avatar: "https://bkimg.cdn.bcebos.com/pic/b21c8701a18b87d6473830f5000828381e30fde6",
+				avatar: "https://bkimg.cdn.bcebos.com/pic/b21c8701a18b87d6473830f5000828381e30fde6?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyNzI=,g_7,xp_5,yp_5/format,f_auto",
 				classList: [],
 				enterChoose:null,
 				msg: {

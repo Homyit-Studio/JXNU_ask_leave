@@ -35,13 +35,13 @@ $http.beforeRequest = function(options) {
 	if (options.url != "https://leave.jxnu.edu.cn/api/user/login") {
 		options.header["token"] = uni.getStorageSync('token')
 	}
-	uni.showLoading({
-		title: '正在请求中'
-	});
+	// uni.showLoading({
+	// 	title: '正在请求中'
+	// });
 }
 
 $http.afterRequest = function(res) {
-	uni.hideLoading()
+	// uni.hideLoading()
 	if(res.data.code == 567){
 		uni.showToast({
 			title:"登录失效，请重新登录",

@@ -18,7 +18,7 @@
 				</view>
 				<uni-list class="leave-list">
 					<uni-list-item class="leave-list-item" direction="column" v-for="(item, index) in leaveNoteList"
-						:key="item.id">
+						:key="item.id + item.startTime">
 						<template v-slot:header>
 							<view class="card-header">
 								<uni-tag v-if="item.examine == 'FAILURE'" :mark="true" :text="index+1+ '.'"
@@ -39,7 +39,7 @@
 						</template>
 						<template v-slot:footer>
 							<view class="card-actions">
-								<view class="card-actions-item" @click="checkDetails(item.id, item.examine)">
+								<view class="card-actions-item" @click="checkDetails(item.id, item.examine,index+1)">
 									<view class="tag-view">
 										<uni-tag
 											:text="statuschoose == 1 && currentCatalog == 'PROCESSING' && (identity == item.level || item.level == 'INSTRUCTOR' || item.examine == 'INSTRUCTOR')? '去审批' : '查看详情'"
@@ -62,6 +62,10 @@
 				</uni-popup-message>
 			</uni-popup>
 		</view>
+		<view class="goTotop" v-if="showTop" @click="gobackTop">
+			<uni-icons type="top" color="#fff" size="15"></uni-icons>
+			顶部
+		</view>
 	</view>
 </template>
 
@@ -69,9 +73,14 @@
 	export default {
 		data() {
 			return {
+				showTop: false,
+				currentPage: 1,
 				currentCatalog: "PROCESSING",
+				pageId: "grade",
 				statuschoose: null,
 				identity: null,
+
+				changeCart: true,
 				localMenus: [{
 						total: null,
 						text: '等待处理',
@@ -162,21 +171,39 @@
 		},
 		onLoad(options) {
 			this.statuschoose = options.choose;
+			// this.requestLeaveNotes()
+			// this.requestLeaveCount()
 		},
 		onReady() {
+			uni.setStorageSync('pageNoDetail' + this.pageId, 1);
 			this.identity = uni.getStorageSync("identity")
 		},
 		onShow() {
-			this.listRequest.pageNo = 1
-			this.requestLeaveNotes()
-			this.requestLeaveCount()
+
+			// this.listRequest.pageNo = 1
+			// if(this.changeCart){
+			// 	this.requestLeaveNotes()
+			// 	setTimeout(() => {
+			// 		this.changeCart = false
+			// 	}, 500)
+			// }
+
+			if (this.listRequest.examineEnum == "PROCESSING") {
+				this.requestLeaveCount()
+				this.getscrollTop()
+			}
 		},
 		methods: {
 			changeGrade(grade) {
 				this.listRequest.gradeId = grade
 				this.listRequest.pageNo = 1
-				this.requestLeaveNotes()
+				this.changeCart = true
 				this.requestLeaveCount()
+				this.requestLeaveNotes()
+				setTimeout(() => {
+					this.changeCart = false
+				}, 1000)
+
 			},
 			onClickChoice(index) {
 				if (index.currentIndex == 0) {
@@ -190,7 +217,7 @@
 				}
 			},
 			requestLeaveCount() {
-				
+
 				uni.$http.post(`/leave/allCountsFroGradeId`, {
 					startTime: "2021-07-26 03:34:26",
 					endTime: this.getFormatDate(),
@@ -220,6 +247,7 @@
 				})
 			},
 			requestLeaveNotes() {
+				console.log("再次执行")
 				uni.showToast({
 					title: '加载中',
 					duration: 1000,
@@ -227,14 +255,27 @@
 				});
 				uni.$http.post("/leave/selectNodeByGrade", this.listRequest).then(res => {
 					if (res.data.code == 200) {
+						console.log(res)
 						this.leaveNoteList = res.data.data.list
-						this.endPage = res.data.data.endPage
+						console.log(res.data.data.endPage)
+						console.log(this.listRequest)
+						if (this.changeCart) {
+
+							this.endPage = res.data.data.endPage
+							console.log("end", this.endPage)
+
+						}
+
+						setTimeout(() => {
+							this.changeCart = false
+						}, 1000)
+
 						if (this.listRequest.pageNo >= this.endPage) {
 							this.shownodata = true
 						}
 					} else {
 						this.msg.msgType = "error"
-						this.msg.messageText = res.data.message
+						this.msg.messageText = "数据请求错误，请重试"
 						this.$refs.message.open()
 						this.shownodata = true
 					}
@@ -260,7 +301,7 @@
 				if (month >= 1 && month <= 9) {
 					month = "0" + month;
 				}
-				if(choose == 2){
+				if (choose == 2) {
 					day -= 7
 				}
 				if (day >= 0 && day <= 9) {
@@ -278,7 +319,9 @@
 				var currentdate = year + sign1 + month + sign1 + day + " " + hour + sign2 + minutes + sign2 + seconds;
 				return currentdate;
 			},
-			checkDetails(id, examine) {
+			checkDetails(id, examine, indexnum) {
+				this.currentPage = Math.ceil(indexnum / 5)
+				uni.setStorageSync('pageNoDetail' + this.pageId, this.currentPage);
 				uni.navigateTo({
 					url: `../handleLeaveDetail/handleLeaveDetail?id=${id}&current=${this.currentCatalog}&card=${this.statuschoose}`,
 					animationType: 'pop-in',
@@ -289,10 +332,114 @@
 				this.listRequest.pageNo = 1
 				this.listRequest.examineEnum = e.value;
 				this.currentCatalog = e.value
+				this.changeCart = true
 				this.requestLeaveNotes()
-			}
+				setTimeout(() => {
+					this.changeCart = false
+				}, 1000)
+			},
+			throttle(fn, delay) {
+				let t = null,
+					begin = new Date().getTime();
+				return function() {
+					let _self = this,
+						args = arguments,
+						cur = new Date().getTime();
+					clearTimeout(t)
+
+					if (cur - begin >= delay) {
+						console.log(cur)
+						fn.apply(_self, args);
+						begin = cur
+					} else {
+						uni.showToast({
+							icon: "error",
+							title: "操作过快，请稍等"
+						})
+						t = setTimeout(function() {
+							console.log("set")
+							console.log(cur)
+							fn.apply(_self, args)
+						}, delay)
+					}
+				}
+			},
+
+			gobackTop() {
+				uni.pageScrollTo({
+					duration: 500, // 毫秒
+					scrollTop: 1 // 位置
+				})
+			},
+			getscrollTop() {
+				let scrollDetail = uni.getStorageSync('scrollDetail' + this.pageId)
+				let pageNoDetail = uni.getStorageSync('pageNoDetail' + this.pageId)
+
+
+				console.log(this.listRequest)
+				console.log(typeof pageNoDetail)
+
+				if (!pageNoDetail) {
+					pageNoDetail = 1
+				}
+
+				console.log(scrollDetail, pageNoDetail)
+				this.listRequest.pageSize = pageNoDetail * 5
+				this.listRequest.pageNo = 1
+				console.log("执行")
+				uni.$http.post("/leave/selectNodeByGrade", this.listRequest).then(res => {
+					if (res.data.code == 200) {
+						console.log(res)
+						this.leaveNoteList = res.data.data.list
+						if (this.listRequest.pageNo >= this.endPage) {
+							this.shownodata = true
+						}
+						if (this.changeCart) {
+
+							this.endPage = res.data.data.endPage
+							console.log("end", this.endPage)
+
+						}
+
+						setTimeout(() => {
+							this.changeCart = false
+						}, 1000)
+						this.listRequest.pageSize = 5
+						this.listRequest.pageNo = pageNoDetail
+						uni.pageScrollTo({
+							duration: 500, // 毫秒
+							scrollTop: scrollDetail // 位置
+						})
+						// uni.setStorageSync('scrollDetail' + this.pageId, 1);
+						// uni.setStorageSync('pageNoDetail' + this.pageId, 1);
+					} else {
+						this.msg.msgType = "error"
+						this.msg.messageText = res.data.message
+						this.$refs.message.open()
+						this.shownodata = true
+						// uni.setStorageSync('scrollDetail' + this.pageId, 1);
+						// uni.setStorageSync('pageNoDetail' + this.pageId, 1);
+					}
+				}).catch(err => {
+					this.msg.msgType = "error"
+					this.msg.messageText = err.errMsg
+					this.$refs.message.open()
+					this.shownodata = true
+					// uni.setStorageSync('scrollDetail' + this.pageId, 1);
+					// uni.setStorageSync('pageNoDetail' + this.pageId, 1);
+				})
+
+				// if (data) {
+				// 	uni.pageScrollTo({
+				// 		duration: 500, // 毫秒
+				// 		scrollTop: data // 位置
+				// 	})
+				// }
+			},
 		},
 		onReachBottom() {
+			console.log(this.endPage)
+			// console.log(this.listRequest.pageNo, this.endPage)
 			if (this.listRequest.pageNo >= this.endPage) {
 				this.shownodata = true
 				return
@@ -300,17 +447,43 @@
 			if (this.isloading) return;
 			this.isloading = true
 			this.listRequest.pageNo++;
-			uni.$http.post(`/leave/selectNodeByGrade`, this.listRequest).then(res => {
+			this.throttle(uni.$http.post(`/leave/selectNodeByGrade`, this.listRequest).then(res => {
 				if (res.data.code == 200) {
 					this.leaveNoteList = [...this.leaveNoteList, ...res.data.data.list]
 					this.isloading = false
 				} else {
-					this.msg.msgType = "error"
-					this.msg.messageText = "请求错误"
+					//如果请求错误的话，重新请求一次
+					this.listRequest.pageNo--;
+					this.msg.msgType = "none"
+					this.msg.messageText = "错误！操作频繁请重试"
 					this.$refs.message.open()
 					this.isloading = false
 				}
-			})
+			}), 1000)
+		},
+		// 监听页面滚动位置
+		onPageScroll(e) {
+			// console.log(e) // {scrollTop: 216}
+			// console.log(this.listRequest.pageNo)
+			this.scrollTop = e.scrollTop;
+			this.scrollTop = e.scrollTop;
+			if (e.scrollTop >= 1000) {
+				this.showTop = true
+			} else {
+				this.showTop = false
+			}
+			uni.setStorageSync('scrollDetail' + this.pageId, e.scrollTop);
+
+		},
+		onPullDownRefresh() {
+			this.listRequest.pageNo = 1
+			this.changeCart = true
+			this.requestLeaveNotes()
+			this.requestLeaveCount()
+			setTimeout(function() {
+				this.changeCart = false
+				uni.stopPullDownRefresh();
+			}, 1000);
 		}
 	}
 </script>
@@ -370,6 +543,24 @@
 		.show-nodata {
 			text-align: center;
 			padding: 20px;
+		}
+
+		.goTotop {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			width: 30px;
+			height: 30px;
+			background-color: #bcbcbc;
+			padding: 10px;
+			border-radius: 50px;
+			color: #fff;
+			position: fixed;
+			bottom: 20px;
+			right: 20px;
+			z-index: 1000;
+			font-size: 12px;
 		}
 	}
 </style>

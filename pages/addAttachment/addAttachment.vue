@@ -85,7 +85,7 @@
 					return;
 				} 
 			    const path = this.imageValue.pop();
-				//console.log(path)
+				console.log(path)
 				//console.log(this.imageValue[0])
 				await uni.uploadFile({
 						url: "https://leave.jxnu.edu.cn/api/image/uploadFiles?id=" + this.id,

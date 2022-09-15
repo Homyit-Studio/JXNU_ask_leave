@@ -168,10 +168,14 @@
 		},
 		methods: {
 			showLeaveDetail(id) {
+				uni.showLoading({
+					title:"正在获取请假信息"
+				})
 				uni.$http.get(`/leave/selectANote/${id}`).then(res => {
 					if (res.data.code == 200) {
 						this.leaveDetails = res.data.data
 						//审核进程
+						uni.hideLoading()
 						this.pushProcess(res.data.data)
 						let processIn = this.process.some(element => {
 							return res.data.data.examine == element.other
@@ -346,6 +350,7 @@
 					if (this.opinionEnum == 'YES') {
 						requestMessage['leaderNumber'] = this.processMessage.checkpeople.join()
 					}
+					this.$refs.inputDialog.close()
 					// console.log(requestMessage)
 					uni.$http.post("/leave/updateNote", requestMessage).then(res => {
 						// console.log(res)

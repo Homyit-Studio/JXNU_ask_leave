@@ -49,7 +49,8 @@
 			"path": "pages/handleLeave/handleLeave",
 			"style": {
 				"navigationBarTitleText": "处理假条",
-				"onReachBottomDistance": 150
+				"onReachBottomDistance": 150,
+				"enablePullDownRefresh": true
 			}
 
 		},
@@ -77,7 +78,7 @@
 			"path": "pages/allLeaves/allLeaves",
 			"style": {
 				"navigationBarTitleText": "申请记录",
-				"enablePullDownRefresh": false
+				"enablePullDownRefresh": true
 			}
 
 		}, {
@@ -111,7 +112,8 @@
 			"path": "pages/showGradeLeave/showGradeLeave",
 			"style": {
 				"navigationBarTitleText": "年级假条",
-				"onReachBottomDistance": 150
+				"onReachBottomDistance": 150,
+				"enablePullDownRefresh": true
 			}
 
 		},
@@ -119,6 +121,7 @@
 			"path": "pages/finishRecord/finishRecord",
 			"style": {
 				"navigationBarTitleText": "请假记录"
+				
 			}
 
 		}, {
