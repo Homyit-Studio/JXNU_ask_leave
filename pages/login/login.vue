@@ -1,7 +1,7 @@
 <template>
 	<view class="login-content">
 		<view class="login-img">
-			<image class="login-img" src="https://www.jxnu.edu.cn/_upload/site/00/05/5/logo.png" lazy-load mode="scaleToFill"
+			<image class="login-img" src="https://leave.jxnu.edu.cn/images/jx.png" lazy-load mode="scaleToFill"
 				fade-show></image>
 		</view>
 		<view class="login-card">
@@ -35,10 +35,6 @@
 						placeholder="请输入登录密码" />
 				</uni-forms-item>
 			</uni-forms>
-			<view class="forget-box">
-				<navigator url="../forgetPassword/forgetPassword" hover-class="forget-hover" class="forget-nav">忘记密码?
-				</navigator>
-			</view>
 			<button type="button" class="button" @click="loginSubmit('teacherForm')">提交</button>
 		</view>
 		<view>
@@ -217,6 +213,11 @@
 									this.requestStatus = false
 								}, 1000)
 							}
+						}).catch(err => {
+							uni.showToast({
+								icon: "error",
+								title: "网络出小差了"
+							})
 						})
 					} else if (ref === "studentForm") {
 						uni.$http.post("/user/login", this.loginFormData).then(res => {
@@ -261,6 +262,11 @@
 									this.requestStatus = false
 								}, 1000)
 							}
+						}).catch(err => {
+							uni.showToast({
+								icon: "error",
+								title: "网络出小差了"
+							})
 						})
 					}
 				})
@@ -278,9 +284,10 @@
 		margin: 0 auto;
 
 		.login-img {
-			width: 500rpx;
-			height: 100rpx;
-			margin: 20rpx 0;
+			width: 750rpx;
+			height: 150rpx;
+			// margin: 20rpx 0;
+			margin-bottom: 40rpx;
 		}
 
 		.login-card {

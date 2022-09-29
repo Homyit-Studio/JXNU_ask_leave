@@ -12,11 +12,11 @@
 					<uni-forms-item required label="选择年级" name="gradeId" v-if="index == 0">
 						<uni-easyinput  type="text" v-model="formData.gradeId" placeholder="请输入年级数字(如:2018)" />
 					</uni-forms-item>
-					<uni-forms-item required label="选择班级" name="gradeId" v-else-if="index == 1">
-						<uni-easyinput  type="text" v-model="formData.gradeId" placeholder="请选择班级" />
+					<uni-forms-item required label="选择班级" name="classId" v-else-if="index == 1">
+						<uni-easyinput  type="text" v-model="formData.classId" placeholder="请输入班级id" />
 					</uni-forms-item>
-					<uni-forms-item required label="选择个人" name="gradeId" v-else-if="index == 2">
-						<uni-easyinput  type="text" v-model="formData.gradeId" placeholder="请输入学生学号" />
+					<uni-forms-item required label="选择个人" name="studentNumber" v-else-if="index == 2">
+						<uni-easyinput  type="text" v-model="formData.studentNumber" placeholder="请输入学生学号" />
 					</uni-forms-item>
 					<uni-forms-item required name="startTime" label="选择起始时间" >
 						<uni-datetime-picker type="datetime" v-model="formData.startTime" :border="false"  :clear-icon="false"  placeholder="选择起始日期和时间"/>		
@@ -24,7 +24,7 @@
 					<uni-forms-item required name="endTime" label="选择结束时间" >
 						<uni-datetime-picker type="datetime" v-model="formData.endTime" :border="false"  :clear-icon="false"  placeholder="选择结束日期和时间"/>
 					</uni-forms-item>
-					<button @click="submitForm()">获取假条</button>
+					<button @click="submitForm()" class="submit-button">获取假条</button>
 			</uni-forms>
 		</uni-group>
 	</view>
@@ -40,7 +40,9 @@
 				formData:{
 					"startTime": "",
 					"endTime": "",
-					"gradeId": "",	
+					"gradeId": "",
+					"classId":"",
+					"studentNumber":""
 				},
 				formDatarules:{
 					"gradeId":{
@@ -68,32 +70,34 @@
 		},
 		methods: {
 			bindPickerChange(e){
-				// console.log(e)
-				this.index = e.detail.value
+				//console.log(e)
+				//清空数据
+				this.formData.classId = this.formData.gradeId = this.formData.studentNumber;
+				this.index = e.detail.value;
 			},
 			submitForm(){
 				// this.formData.startTime = this.dateAdd(this.formData.startTime);
 				// this.formData.endTime = this.dateAdd(this.formData.endTime);
 				this.$refs.form.validate().then(res=>{
-					if(uni.getSystemInfoSync({}).platform.match(/(ios|android|mac)/i)){
-						this.platformnotH5()//移动端
-					}else{
-						this.platformH5()//h5
-					}
+					this.platformnotH5()//移动端
+					// if(uni.getSystemInfoSync({}).platform.match(/(ios|android|mac)/i)){
+					// 	this.platformnotH5()//移动端
+					// }else{
+					// 	this.platformH5()//h5
+					// }
 				}).catch(err=>{
-					
 				})
 			},
 			//H5环境文件下载
 			platformH5(){
 				uni.request({
-					url: 'https://www.lovehot.club/api/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&endTime='+this.formData.endTime,
+					url: 'https://leave.jxnu.edu.cn/api/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&classId='+this.formData.classId+'&studentNumber='+this.formData.studentNumber,
 					responseType: 'ArrayBuffer',
 					header: {
 						"token" : uni.getStorageSync('token'),
 					},
 					success: (res) => {
-						// console.log(res)
+						//console.log(res)
 						if(res.statusCode === 200){	
 							this.getFile(res.data)
 						}		
@@ -102,65 +106,59 @@
 			},
 			//非H5环境下文件下载
 			platformnotH5(){
-				const that = this;
-				uni.downloadFile({
-					url: 'https://www.lovehot.club/api/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&endTime='+this.formData.endTime, 
+				//console.log(123123)
+				//const that = this;
+				wx.request({
+					url: 'https://leave.jxnu.edu.cn/api/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&classId='+this.formData.classId+'&studentNumber='+this.formData.studentNumber,
 					header: {
 						"token" : uni.getStorageSync('token'),
 						//"Content-Type": "multipart/form-data",
 					},
+					responseType: "arraybuffer",
 					success: (res) => {
-						// console.log(res)
-						that.dataPath = res.tempFilePath;
-						if (res.statusCode === 200) {
-							//直接打开？
-							uni.openDocument({
-							  filePath: that.dataPath,
-							  showMenu: true,
-							  success: function (res) {
-								// console.log('打开文档成功');
-							  },
-							  fail:(err)=>{
-								uni.showToast({
-									title: `文件打开失败`,
-									icon:"error"
-								})
-								// console.log(err);
-							  }
-						});
-						  
-						// 	uni.saveFile({
-						// 		tempFilePath:that.dataPath,//下载成功之后返回的临时路径
-						// 		success:(e)=>{
-						// 		//保存成功之后 打开文件
-						// 		uni.openDocument({
-						// 		  filePath: e.savedFilePath,
-						// 		  fail:(e)=>{
-						// 			  console.log(e)
-						// 			uni.showToast({
-						// 			  icon:"error",
-						// 			  title: `打开失败`
-						// 			})
-						// 		  }
-						// 		})
-						// 	  },
-						// 	  fail:(e)=>{
-						// 		console.log(e)
-						// 		uni.showToast({
-						// 			title: `保存失败`,
-						// 			icon:"error"
-						// 		})
-						// 	  }
-						// 	})
-						 }
+								//console.log("下载成功！", res);
+						        var fileManager = wx.getFileSystemManager();
+						        var FilePath = wx.env.USER_DATA_PATH + "/" + "假条.xlsx";
+						        fileManager.writeFile({
+						          data: res.data,
+						          filePath: FilePath,
+						          encoding: "binary", //编码方式 
+						          success: res => {
+									//console.log('编码格式');
+									wx.openDocument({ //我这里成功之后直接打开
+									  filePath: FilePath, 
+									  showMenu:true,
+									  fileType: "xlsx",
+									  success: res => {
+										//console.log("打开文档成功");
+										uni.showToast({
+											icon:"success",
+											title:"文档打开成功"
+										})
+									  },
+									  fail: err => {
+										//console.log("打开文档失败", err);
+										uni.showToast({
+											icon:"error",
+											title:"文档打开失败"
+										})
+									  }
+						    });
+						}
+					})
+					},
+					fail:(err)=>{
+						uni.showToast({
+							icon:"error",
+							title:"文件下载失败，请检查时间格式是否正确"
+						})
 					}
-				});
-				
+				})	
 			},
 			//补充时间
 			dateAdd(dateStr){
-				if(dateStr.length <= 11){
-					// console.log(dateStr + '00:00:00')
+				if(dateStr.length <= 10){
+					//console.log(dateStr + '00:00:00')
 					return dateStr + '00:00:00'
 				}
 				else{
@@ -197,7 +195,7 @@
 				     var currentdate = year + sign1 + month + sign1 + day + " " + hour + sign2 + minutes + sign2 + seconds;
 				     return currentdate;
 					},
-				getFile(data){
+			getFile(data){
 				let blob = new Blob([data], {type: `application/xlsx;charset=utf-8`});
 					// 获取heads中的filename文件名
 					let downloadElement = document.createElement('a');
@@ -214,9 +212,9 @@
 					// 释放掉blob对象
 					window.URL.revokeObjectURL(href);
 			
-		}}
-		
-	}
+			}
+			},
+		}
 </script>
 
 <style lang="scss">
@@ -224,15 +222,13 @@
 		width: 95vw;
 		margin:0 auto;
 		text-align: center;
-		.download-form{
-			button{
-				background-color: $jxnu-bg-color;
-				color: aliceblue;		
-			}
-		}
 	}
 	.uni-input{
 		margin-top: 8px;
+	}
+	.submit-button{
+		background-color: $jxnu-bg-color;
+		color: aliceblue;		
 	}
 	@media screen and (min-width:950px){
 		.download-note{

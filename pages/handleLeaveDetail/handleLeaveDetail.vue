@@ -59,9 +59,9 @@
 									:localdata="nextPeople" />
 							</uni-forms-item>
 
-							<uni-forms-item required name="advice" label="审批建议">
+							<uni-forms-item name="advice" label="审批建议">
 								<uni-easyinput type="textarea" v-model="processMessage.teacherOpinion"
-									placeholder="请输入审核意见" />
+									placeholder="请输入审核意见"/>
 							</uni-forms-item>
 						</uni-forms>
 						<view class="confirm-button">
@@ -116,10 +116,10 @@
 				nextPeople: [],
 				statusCard: null,
 				commitRules: {
-					"advice": {
+					"checkpeople": {
 						rules: [{
 							required: true,
-							errorMessage: "审核意见不能为空"
+							errorMessage: "负责人不能为空"
 						}]
 					}
 				},
@@ -345,6 +345,12 @@
 						"id": this.leaveDetails.id,
 						"levelEnum": this.leaveDetails.level,
 						"opinionEnum": this.opinionEnum
+					}
+					if(this.opinionEnum == 'YES' && this.processMessage.teacherOpinion == ""){
+						console.log("空")
+						this.processMessage.teacherOpinion = "同意"
+					}else if(this.opinionEnum == 'NO' && this.processMessage.teacherOpinion == ""){
+						this.processMessage.teacherOpinion = "拒绝"
 					}
 					requestMessage[status] = this.processMessage.teacherOpinion
 					if (this.opinionEnum == 'YES') {

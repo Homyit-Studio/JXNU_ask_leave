@@ -334,9 +334,6 @@
 				this.currentCatalog = e.value
 				this.changeCart = true
 				this.requestLeaveNotes()
-				setTimeout(() => {
-					this.changeCart = false
-				}, 1000)
 			},
 			throttle(fn, delay) {
 				let t = null,
@@ -481,7 +478,6 @@
 			this.requestLeaveNotes()
 			this.requestLeaveCount()
 			setTimeout(function() {
-				this.changeCart = false
 				uni.stopPullDownRefresh();
 			}, 1000);
 		}

@@ -6,10 +6,6 @@
 					<text class="card-title">假条</text>
 				</uni-card>
 			</view>
-			<!-- 	<view class="uni-padding-wrap uni-common-mt">
-				<uni-segmented-control :current="currentIndex" :values="handleChoices" style-type="text"
-					active-color="#1b478e" @clickItem="onClickChoice" />
-			</view> -->
 			<view class="leave-notes">
 				<view>
 					<uni-data-menu :localdata="localMenus" :unique-opened="true" active-text-color="#409eff"
@@ -27,7 +23,7 @@
 										</uni-tag>
 										<uni-tag :mark="true" v-else :text="index+1 + '.'" type="default"></uni-tag>
 										<view>
-											<text>发起时间:{{item.startTime}}</text>
+											<text>请假开始时间:{{item.startTime}}</text>
 										</view>
 									</view>
 								</template>
@@ -135,23 +131,6 @@
 
 			}
 		},
-		//不知为啥不生效
-		// computed:{
-		// 	currentTitle:{
-		// 		get(){
-		// 			console.log(4)
-		// 			return this.currentIndex == 0? "3" : "4"
-		// 		},
-		// 		set(newValue){
-		// 			console.log(newValue)
-		// 		}
-		// 	}
-		// },
-		onLoad() {
-			// this.listRequest.pageNo = 1
-			// this.requestLeaveNotes()
-			// this.requestLeaveCount()
-		},
 		onShow() {
 			if (this.listRequest.examineEnum == "PROCESSING") {
 				this.requestLeaveCount()
@@ -218,6 +197,7 @@
 					}
 				})
 			},
+			// 查看详情
 			checkDetails(id, examine, indexnum) {
 				console.log(id)
 				this.currentPage = Math.ceil(indexnum / 5)
@@ -235,9 +215,6 @@
 				this.leaveNoteList = []
 				this.changeCart = true
 				this.requestLeaveNotes()
-				setTimeout(() => {
-					this.changeCart = false
-				}, 1000)
 			},
 			//节流处理
 			throttle(fn, delay) {
@@ -379,7 +356,6 @@
 			this.requestLeaveNotes()
 			this.requestLeaveCount()
 			setTimeout(function() {
-				this.changeCart = false
 				uni.stopPullDownRefresh();
 			}, 1000);
 		}

@@ -74,8 +74,13 @@
 							<uni-easyinput multiple v-model="peopleformData.homeAddress" placeholder="请输入学生家庭地址"
 								:inputBorder="false" />
 						</uni-forms-item>
+						<uni-forms-item label="密码">
+							<uni-easyinput multiple v-model="peopleformData.password" placeholder="修改学生登录密码,请谨慎操作"
+								:inputBorder="false" />
+						</uni-forms-item>
 						<button @click="submitForm" class="confirm-button">确认</button>
 					</uni-forms>
+
 				</view>
 			</uni-popup>
 		</view>
@@ -111,6 +116,7 @@
 				//节流阀
 				isloading: false,
 				className: null,
+				modifyPassword: "",
 				//数据总数
 				endPage: null,
 				msg: {
@@ -173,12 +179,6 @@
 			}
 		},
 		methods: {
-			bindClick(e) {
-				// console.log('点击了' + (e.position === 'left' ? '左侧' : '右侧') + e.content.text + '按钮')
-			},
-			swipeChange(e, index) {
-				// console.log('当前状态：' + e + '，下标：' + index)
-			},
 			requestClassRoster(id) {
 				this.rosterRequest.pageNo = 1
 				this.rosterRequest.classId = id
@@ -211,6 +211,7 @@
 			modifyStudent() {
 				this.modify = 1
 				this.peopleformData = JSON.parse(JSON.stringify(this.studentMessage))
+				console.log(this.peopleformData)
 			},
 			cancelmark() {
 				this.modify = 0
@@ -219,14 +220,18 @@
 				uni.$http.post("/user/updateUser",
 					this.peopleformData).then(res => {
 					if (res.data.code == 200) {
+						console.log(this.peopleformData)
 						// console.log(res)
-						this.msg.msgType = "success"
-						this.msg.messageText = "修改成功"
-						this.rosterRequest.pageNo = 1
-						this.modify = 0
-						this.$refs.message.open()
-						this.$refs.studentPopup.close()
-						this.requestClassRoster(this.classId)
+						setTimeout(() => {
+							this.msg.msgType = "success"
+							this.msg.messageText = "修改成功"
+							this.rosterRequest.pageNo = 1
+							this.modify = 0
+							this.modifyPassword = ""
+							this.$refs.message.open()
+							this.$refs.studentPopup.close()
+							this.requestClassRoster(this.classId)
+						}, 100)
 					} else {
 						this.msg.msgType = "error"
 						this.msg.messageText = "修改信息错误"
@@ -256,7 +261,34 @@
 						this.$refs.studentPopup.close()
 					}
 				})
-			}
+			},
+			//节流处理
+			throttle(fn, delay) {
+				let t = null,
+					begin = new Date().getTime();
+				return function() {
+					let _self = this,
+						args = arguments,
+						cur = new Date().getTime();
+					clearTimeout(t)
+
+					if (cur - begin >= delay) {
+						console.log(cur)
+						fn.apply(_self, args);
+						begin = cur
+					} else {
+						uni.showToast({
+							icon: "error",
+							title: "操作过快，请稍等"
+						})
+						t = setTimeout(function() {
+							console.log("set")
+							console.log(cur)
+							fn.apply(_self, args)
+						}, delay)
+					}
+				}
+			},
 		},
 		onReachBottom() {
 			if (this.rosterRequest.pageNo >= this.endPage) {
@@ -266,7 +298,7 @@
 			if (this.isloading) return;
 			this.isloading = true
 			this.rosterRequest.pageNo++;
-			uni.$http.post(`/teacher/getStudentsByClassId`, this.rosterRequest).then(res => {
+			this.throttle(uni.$http.post(`/teacher/getStudentsByClassId`, this.rosterRequest).then(res => {
 				if (res.data.code == 200) {
 					// console.log(res)
 					uni.showToast({
@@ -287,7 +319,7 @@
 				this.msg.messageText = err
 				this.$refs.message.open()
 				this.isloading = false
-			})
+			}), 1000)
 		}
 	}
 </script>

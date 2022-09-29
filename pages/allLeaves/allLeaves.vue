@@ -1,15 +1,6 @@
 <template>
 	<view class="grade-content">
-		<!-- 	<view class="grade-select">
-			<uni-data-select v-model="gradevalue" :localdata="gradeSelect" @change="changeGrade" label="年级">
-			</uni-data-select>
-		</view> -->
-		<!-- <view class="card-title">
-			<uni-card :is-shadow="false" is-full>
-				<text class="uni-h6">假条</text>
-			</uni-card>
-		</view> -->
-		<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中填写返校内容。"
+		<uni-notice-bar scrollable="true" single="true" text="为落实落细防疫工作,请各位同学在离校和返校后进行假条销假。如未出行，也请在假条销假界面中填写返校内容。 如果数据出现异常,请下拉刷新重试"
 			showIcon></uni-notice-bar>
 		<view class="look-list">
 			<view class="handle-leave">
@@ -113,17 +104,6 @@
 				],
 				//没有更多数据提醒
 				shownodata: false,
-				// gradevalue: "2021",
-				// gradeSelect: [{
-				// 		value: "2021",
-				// 		text: "2021级"
-				// 	},
-				// 	{
-				// 		value: "2020",
-				// 		text: "2020级"
-				// 	}
-				// ],
-				//数据总数
 				endPage: null,
 				msg: {
 					msgType: 'success',
@@ -141,7 +121,7 @@
 			}
 		},
 		onShow() {
-			if (this.listRequest.examineEnum == "PROCESSING") {
+			if (this.listRequest.examineEnum == 'WAIT_REPORT' || this.listRequest.examineEnum == 'REPORT_EXPIRED') {
 				this.requestLeaveCount()
 				this.getscrollTop()
 			}
@@ -156,9 +136,6 @@
 				this.listRequest.examineEnum = "WAIT_REPORT";
 
 			}
-			// this.listRequest.pageNo = 1
-			// this.requestLeaveNotes()
-			// this.requestLeaveCount()
 		},
 		methods: {
 			changeGrade(grade) {
@@ -183,7 +160,6 @@
 					if (res.data.code == 200) {
 						let data = res.data.data
 						for (let index in this.localMenus) {
-							//console.log(data[this.localMenus[index].value])
 							this.localMenus[index].total = data[this.localMenus[index].value]
 						}
 					} else {
@@ -216,8 +192,6 @@
 						setTimeout(() => {
 							this.changeCart = false
 						}, 1000)
-						// console.log(this.leaveNoteList)
-						//console.log(res.data.data.total)
 						this.leaveNoteList = res.data.data.list
 						this.endPage = res.data.data.endPage;
 						//console.log(this.leaveNoteList)
@@ -254,9 +228,6 @@
 				this.listRequest.examineEnum = e.value;
 				this.changeCart = true
 				this.requestLeaveNotes()
-				setTimeout(() => {
-					this.changeCart = false
-				}, 1000)
 			},
 			//节流处理
 			throttle(fn, delay) {
@@ -401,7 +372,6 @@
 			this.requestLeaveNotes()
 			this.requestLeaveCount()
 			setTimeout(function() {
-				this.changeCart = false
 				uni.stopPullDownRefresh();
 			}, 1000);
 		}
