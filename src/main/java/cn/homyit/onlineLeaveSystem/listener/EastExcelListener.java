@@ -70,7 +70,7 @@ public class EastExcelListener extends AnalysisEventListener<StudentExcelDTO> {
     @Override
     public void invoke(StudentExcelDTO data, AnalysisContext context) {
 
-/*
+
         String majorAndClass;
         //本科生
         if (gradeId/1000==UNDERGRADUATE_GRADE_ID){
@@ -115,7 +115,7 @@ public class EastExcelListener extends AnalysisEventListener<StudentExcelDTO> {
         sysClassStudentMapper.insert(new SysClassStudent(classId, data.getStudentNumber()));
         //插入用户角色表
         sysUserRoleMapper.insert(new SysUserRole(data.getStudentNumber(), LevelEnum.STUDENT.getValue().longValue()));
-*/
+
     }
 
     @Override

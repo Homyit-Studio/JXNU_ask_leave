@@ -103,6 +103,11 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public void deleteForGrade(Long gradeId) {
+        sysUserRoleMapper.deleteForGrade(gradeId);
+
+        classStudentMapper.deleteForGrade(gradeId);
+        //教师管理班级同样也删除
+
 
         studentUserMapper.delete(new QueryWrapper<SysStudentUser>().
                 eq("grade_id",gradeId));
@@ -110,9 +115,7 @@ public class TeacherServiceImpl implements TeacherService {
         classInfoMapper.delete(new QueryWrapper<SysStudentClassInfo>().
                 eq("grade_id",gradeId));
 
-        sysUserRoleMapper.deleteForGrade(gradeId);
 
-        classStudentMapper.deleteForGrade(gradeId);
 
 
 

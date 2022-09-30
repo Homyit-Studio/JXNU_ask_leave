@@ -44,6 +44,7 @@ public class BackNoteServiceImpl implements BackNoteService {
   public void updateNote(BackNoteDTO backNoteVoDTO) {
     BackNote backNote = MyBeanUtils.copyBean(backNoteVoDTO, BackNote.class);
     if(backNoteVoDTO.getBack().equals(BackEnum.YES)){
+
       backNote.setStatus(BackStatusEnum.SUCCESS);
       LeaveNote note = new LeaveNote();
       note.setId(backNote.getId());

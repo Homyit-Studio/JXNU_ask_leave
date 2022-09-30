@@ -13,12 +13,14 @@ import cn.homyit.onlineLeaveSystem.log.UserLog;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.ModuleEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.OperationEnum;
+import cn.homyit.onlineLeaveSystem.service.EmailService;
 import cn.homyit.onlineLeaveSystem.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
 
     @ApiLog
@@ -132,6 +137,20 @@ public class UserController {
         List<TeacherUserVo> list = userService.getUserByRole(role);
         return Result.success(list);
     }
+
+
+    @GetMapping("/resetPasswordByEmail/{studentNumber}")
+    public Result resetPasswordByEmail(@PathVariable Long studentNumber, HttpServletRequest request){
+        userService.resetPasswordByEmail(studentNumber,request);
+        return Result.success();
+    }
+
+    @GetMapping("/resetPasswordByTeacher/{studentNumber}")
+    public Result resetPasswordByTeacher(@PathVariable Long studentNumber){
+        userService.resetPasswordByTeacher(studentNumber);
+        return Result.success();
+    }
+
 
 
 }

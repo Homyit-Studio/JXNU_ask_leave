@@ -27,7 +27,7 @@ public class SysStudentUser implements Serializable {
   private Long classId;
   private LevelEnum role;
   private String highUser;
-
+  private String email;
   private String username;
   private String idNumber;
   private String nation;

@@ -9,6 +9,7 @@ import cn.homyit.onlineLeaveSystem.entity.VO.StudentUserVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.TeacherUserVo;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,4 +39,9 @@ public interface UserService {
     List<TeacherUserVo> getUserByRole(LevelEnum role);
 
     StudentUserVo getNoteByStudentNumber(Long studentNumber);
+
+
+    void resetPasswordByEmail(Long studentNumber, HttpServletRequest request);
+
+    void resetPasswordByTeacher(Long studentNumber);
 }

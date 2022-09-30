@@ -29,5 +29,4 @@ public class BackNote  {
 
   private Integer deleted;
 
-
 }

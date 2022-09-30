@@ -16,6 +16,7 @@ import cn.homyit.onlineLeaveSystem.mapper.SysClassStudentMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysStudentUserMapper;
 import cn.homyit.onlineLeaveSystem.mapper.SysUserRoleMapper;
 import cn.homyit.onlineLeaveSystem.myEnum.LevelEnum;
+import cn.homyit.onlineLeaveSystem.service.EmailService;
 import cn.homyit.onlineLeaveSystem.service.UserService;
 import cn.homyit.onlineLeaveSystem.util.JwtUtil;
 import cn.homyit.onlineLeaveSystem.util.MyBeanUtils;
@@ -31,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -41,6 +43,9 @@ import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    @Autowired
+    private EmailService emailService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -216,9 +221,12 @@ public class UserServiceImpl implements UserService {
             SysClassStudent sysClassStudent = new SysClassStudent(userUpdaterDTO.getClassId(), null);
             sysClassStudentMapper.update(sysClassStudent,wrapper1);
         }
+        String password = user.getPassword();
+        if(password != null&& password!=""){
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
 
-
-        user.setPassword(null);
+//        user.setPassword(null);赋予老师可修改密码权限
         userMapper.updateById(user);
     }
 
@@ -263,6 +271,30 @@ public class UserServiceImpl implements UserService {
         SysStudentUser sysStudentUser = userMapper.selectById(studentNumber);
         StudentUserVo studentUserVo = MyBeanUtils.copyBean(sysStudentUser, StudentUserVo.class);
         return studentUserVo;
+    }
+
+    @Override
+    public void resetPasswordByEmail(Long studentNumber, HttpServletRequest request) {
+//        QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
+//        wrapper.eq("student_number",studentNumber);
+//        SysStudentUser user = userMapper.selectOne(wrapper);
+//        String email = user.getEmail();
+
+        String pwd = emailService.resetPasswordByEmail("2750419070@qq.com", request);
+//        String encode = passwordEncoder.encode(pwd);
+//        user.setPassword(encode);
+//
+//        userMapper.updateById(user);
+
+    }
+
+    @Override
+    public void resetPasswordByTeacher(Long studentNumber) {
+        QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("student_number",studentNumber);
+        SysStudentUser user = userMapper.selectOne(wrapper);
+        user.setPassword(passwordEncoder.encode("123456"));
+        userMapper.updateById(user);
     }
 
 
