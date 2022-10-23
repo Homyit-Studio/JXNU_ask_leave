@@ -121,7 +121,7 @@
 			}
 		},
 		onShow() {
-			if (this.listRequest.examineEnum == 'WAIT_REPORT' || this.listRequest.examineEnum == 'REPORT_EXPIRED') {
+			if (this.listRequest.examineEnum == 'PROCESSING' || this.listRequest.examineEnum == 'WAIT_REPORT' || this.listRequest.examineEnum == 'REPORT_EXPIRED') {
 				this.requestLeaveCount()
 				this.getscrollTop()
 			}
@@ -191,7 +191,7 @@
 
 						setTimeout(() => {
 							this.changeCart = false
-						}, 1000)
+						}, 200)
 						this.leaveNoteList = res.data.data.list
 						this.endPage = res.data.data.endPage;
 						//console.log(this.leaveNoteList)

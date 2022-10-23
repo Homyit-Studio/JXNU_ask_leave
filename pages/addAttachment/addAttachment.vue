@@ -88,7 +88,7 @@
 				console.log(path)
 				//console.log(this.imageValue[0])
 				await uni.uploadFile({
-						url: "https://leave.jxnu.edu.cn/api/image/uploadFiles?id=" + this.id,
+						url: "https://blog.aday.top/api/image/uploadFiles?id=" + this.id,
 						filePath: path,
 						name: 'files',//后端接收字段名
 						header: {

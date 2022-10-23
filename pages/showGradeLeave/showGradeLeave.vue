@@ -113,33 +113,33 @@
 				],
 				//没有更多数据提醒
 				shownodata: false,
-				gradevalue: "2021",
+				gradevalue: "",
 				gradeSelect: [{
-						value: "2021",
-						text: "2021级"
+						value: "",
+						text: "大一"
 					},
 					{
-						value: "2020",
-						text: "2020级"
+						value: "",
+						text: "大二"
 					},
 					{
-						value: "2019",
-						text: "2019级"
+						value: "",
+						text: "大三"
 					},
 					{
-						value: "2018",
-						text: "2018级"
+						value: "",
+						text: "大四"
 					},
 					{
-						value: "3021",
+						value: "",
 						text: "研一"
 					},
 					{
-						value: "3020",
+						value: "",
 						text: "研二"
 					},
 					{
-						value: "3019",
+						value: "",
 						text: "研三"
 					},
 					{
@@ -165,14 +165,13 @@
 					"pageNo": 1,
 					"pageSize": 5,
 					"examineEnum": "PROCESSING",
-					"gradeId": "2021"
+					"gradeId": "2022"
 				}
 			}
 		},
 		onLoad(options) {
 			this.statuschoose = options.choose;
-			// this.requestLeaveNotes()
-			// this.requestLeaveCount()
+			this.setGradeYear()
 		},
 		onReady() {
 			uni.setStorageSync('pageNoDetail' + this.pageId, 1);
@@ -180,20 +179,47 @@
 		},
 		onShow() {
 
-			// this.listRequest.pageNo = 1
-			// if(this.changeCart){
-			// 	this.requestLeaveNotes()
-			// 	setTimeout(() => {
-			// 		this.changeCart = false
-			// 	}, 500)
-			// }
-
 			if (this.listRequest.examineEnum == "PROCESSING") {
 				this.requestLeaveCount()
 				this.getscrollTop()
 			}
 		},
 		methods: {
+			// 设置年级年份
+			setGradeYear() {
+				let date = new Date()
+				let year = date.getFullYear()
+				let month = date.getMonth()
+				let newsign = month > 8 ? true : false
+				this.gradevalue = newsign ? JSON.stringify(year) : JSON.stringify(year - 1)
+				console.log("34")
+				console.log(this.gradevalue)
+				this.gradeSelect.map(item => {
+					switch (item.text) {
+						case "大一":
+							item.value = newsign ? JSON.stringify(year) : JSON.stringify(year - 1)
+							break;
+						case "大二":
+							item.value = newsign ? JSON.stringify(year - 1) : JSON.stringify(year - 2)
+							break;
+						case "大三":
+							item.value = newsign ? JSON.stringify(year - 2) : JSON.stringify(year - 3)
+							break;
+						case "大四":
+							item.value = newsign ? JSON.stringify(year - 3) : JSON.stringify(year - 4)
+							break;
+						case "研一":
+							item.value = newsign ? JSON.stringify(year + 1000) : JSON.stringify(year + 999)
+							break;
+						case "研二":
+							item.value = newsign ? JSON.stringify(year + 999) : JSON.stringify(year + 998)
+							break;
+						case "研三":
+							item.value = newsign ? JSON.stringify(year + 998) : JSON.stringify(year + 997)
+							break;
+					}
+				})
+			},
 			changeGrade(grade) {
 				this.listRequest.gradeId = grade
 				this.listRequest.pageNo = 1
@@ -216,7 +242,18 @@
 					this.requestLeaveNotes()
 				}
 			},
+			initGrade(){
+				let date = new Date()
+				let year = date.getFullYear()
+				let month = date.getMonth()
+				let newsign = month > 8 ? true : false
+				this.listRequest.gradeId = newsign ? JSON.stringify(year) : JSON.stringify(year - 1)
+			},
 			requestLeaveCount() {
+				// load虽然在show前面执行，但是js是异步编程
+				if(!this.listRequest.gradeId){
+					this.initGrade()
+				}
 
 				uni.$http.post(`/leave/allCountsFroGradeId`, {
 					startTime: "2021-07-26 03:34:26",
@@ -247,7 +284,6 @@
 				})
 			},
 			requestLeaveNotes() {
-				console.log("再次执行")
 				uni.showToast({
 					title: '加载中',
 					duration: 1000,
@@ -255,20 +291,15 @@
 				});
 				uni.$http.post("/leave/selectNodeByGrade", this.listRequest).then(res => {
 					if (res.data.code == 200) {
-						console.log(res)
 						this.leaveNoteList = res.data.data.list
-						console.log(res.data.data.endPage)
-						console.log(this.listRequest)
 						if (this.changeCart) {
-
 							this.endPage = res.data.data.endPage
 							console.log("end", this.endPage)
-
 						}
 
 						setTimeout(() => {
 							this.changeCart = false
-						}, 1000)
+						}, 200)
 
 						if (this.listRequest.pageNo >= this.endPage) {
 							this.shownodata = true

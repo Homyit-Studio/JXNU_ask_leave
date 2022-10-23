@@ -198,6 +198,23 @@
             }
             
         }
+        ,{
+            "path" : "pages/searchLeaves/searchLeaves",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "更正审批"
+            }
+            
+        }
+        ,{
+            "path" : "pages/modifyLeaveDetails/modifyLeaveDetails",
+            "style" :                                                                                    
+            {
+                "navigationBarTitleText": "修正信息",
+                "enablePullDownRefresh": false
+            }
+            
+        }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

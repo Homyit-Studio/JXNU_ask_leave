@@ -14,8 +14,8 @@
 			</uni-card>
 		</view>
 		<view class="charts-box">
-			<qiun-data-charts :ontouch="true" :opts="opts" :onmovetip="true" :canvas2d="true" canvasId="uhfduhf9842342" type="pie"
-				:chartData="chartData" />
+			<qiun-data-charts :ontouch="true" :opts="opts" :onmovetip="true" :canvas2d="true" canvasId="uhfduhf9842342"
+				type="pie" :chartData="chartData" />
 		</view>
 		<uni-card isFull="true">
 			<view>
@@ -87,33 +87,33 @@
 					"FAILURE": "已拒绝",
 					"APPLY_EXPIRED": "申请过期"
 				},
-				gradevalue: "2021",
+				gradevalue: "",
 				gradeSelect: [{
-						value: "2021",
-						text: "2021级"
+						value: "",
+						text: "大一"
 					},
 					{
-						value: "2020",
-						text: "2020级"
+						value: "",
+						text: "大二"
 					},
 					{
-						value: "2019",
-						text: "2019级"
+						value: "",
+						text: "大三"
 					},
 					{
-						value: "2018",
-						text: "2018级"
+						value: "",
+						text: "大四"
 					},
 					{
-						value: "3021",
+						value: "",
 						text: "研一"
 					},
 					{
-						value: "3020",
+						value: "",
 						text: "研二"
 					},
 					{
-						value: "3019",
+						value: "",
 						text: "研三"
 					},
 					{
@@ -149,6 +149,9 @@
 				gradeChartData: {}
 			};
 		},
+		onLoad(){
+			this.setGradeYear()
+		},
 		onReady() {
 			this.dateChoose.startTime = this.getFormatDate(2)
 			this.dateChoose.endTime = this.getFormatDate()
@@ -156,6 +159,41 @@
 			this.getGradeData(this.gradevalue)
 		},
 		methods: {
+			// 设置年级年份
+			setGradeYear() {
+				let date = new Date()
+				let year = date.getFullYear()
+				let month = date.getMonth()
+				let newsign = month > 8 ? true : false
+				this.gradevalue = newsign ? JSON.stringify(year) : JSON.stringify(year - 1)
+				console.log("34")
+				console.log(this.gradevalue)
+				this.gradeSelect.map(item => {
+					switch (item.text) {
+						case "大一":
+							item.value = newsign ? JSON.stringify(year) : JSON.stringify(year - 1)
+							break;
+						case "大二":
+							item.value = newsign ? JSON.stringify(year - 1) : JSON.stringify(year - 2)
+							break;
+						case "大三":
+							item.value = newsign ? JSON.stringify(year - 2) : JSON.stringify(year - 3)
+							break;
+						case "大四":
+							item.value = newsign ? JSON.stringify(year - 3) : JSON.stringify(year - 4)
+							break;
+						case "研一":
+							item.value = newsign ? JSON.stringify(year + 1000) : JSON.stringify(year + 999)
+							break;
+						case "研二":
+							item.value = newsign ? JSON.stringify(year + 999) : JSON.stringify(year + 998)
+							break;
+						case "研三":
+							item.value = newsign ? JSON.stringify(year + 998) : JSON.stringify(year + 997)
+							break;
+					}
+				})
+			},
 			datePopup() {
 				this.$refs.dateMessage.open()
 			},
@@ -191,6 +229,7 @@
 				this.getGradeData(grade)
 			},
 			getGradeData(grade) {
+				console.log(grade)
 				uni.$http.post(`/leave/allCountsFroGradeId`, {
 					"startTime": this.dateChoose.startTime,
 					"endTime": this.dateChoose.endTime,
@@ -228,7 +267,7 @@
 				if (month >= 1 && month <= 9) {
 					month = "0" + month;
 				}
-				if(choose == 2){
+				if (choose == 2) {
 					day -= 7
 				}
 				if (day >= 0 && day <= 9) {

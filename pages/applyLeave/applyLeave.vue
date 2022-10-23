@@ -227,7 +227,7 @@
 						icon: "error"
 					})
 					setTimeout(() => {
-						this.requestStatus = true
+						this.requestStatus = false
 					}, 1000)
 					this.current = 0;
 				})

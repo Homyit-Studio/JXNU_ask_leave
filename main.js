@@ -29,10 +29,10 @@ import {
 } from '@escook/request-miniprogram'
 uni.$http = $http
 
-$http.baseUrl = 'https://leave.jxnu.edu.cn/api'
+$http.baseUrl = 'https://blog.aday.top/api'
 
 $http.beforeRequest = function(options) {
-	if (options.url != "https://leave.jxnu.edu.cn/api/user/login") {
+	if (options.url != "https://blog.aday.top/api/user/login") {
 		options.header["token"] = uni.getStorageSync('token')
 	}
 	// uni.showLoading({

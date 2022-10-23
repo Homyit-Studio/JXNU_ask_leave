@@ -1,7 +1,7 @@
 <template>
 	<view class="login-content">
 		<view class="login-img">
-			<image class="login-img" src="https://leave.jxnu.edu.cn/images/jx.png" lazy-load mode="scaleToFill"
+			<image class="login-img" src="https://blog.aday.top/picture/jx.png" lazy-load mode="scaleToFill"
 				fade-show></image>
 		</view>
 		<view class="login-card">
@@ -11,7 +11,7 @@
 			<uni-forms ref="studentForm" :rules="studentRules" :modelValue="loginFormData" validateTrigger="submit">
 				<uni-forms-item name="studentNumber">
 					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.studentNumber"
-						placeholder="请输入工号或学号" />
+						placeholder="请输入你的学号" />
 				</uni-forms-item>
 				<uni-forms-item name="password">
 					<uni-easyinput type="password" prefixIcon=".uniui-locked-filled" v-model="loginFormData.password"
@@ -28,13 +28,17 @@
 			<uni-forms ref="teacherForm" :rules="teacherRules" :modelValue="loginFormData">
 				<uni-forms-item name="studentNumber">
 					<uni-easyinput type="text" prefixIcon=".uniui-person-filled" v-model="loginFormData.studentNumber"
-						placeholder="请输入工号或学号" />
+						placeholder="请输入工号" />
 				</uni-forms-item>
 				<uni-forms-item name="password">
 					<uni-easyinput type="password" prefixIcon=".uniui-locked-filled" v-model="loginFormData.password"
 						placeholder="请输入登录密码" />
 				</uni-forms-item>
 			</uni-forms>
+			<view class="forget-box">
+				<navigator url="../forgetPassword/forgetPassword" hover-class="forget-hover" class="forget-nav">忘记密码?
+				</navigator>
+			</view>
 			<button type="button" class="button" @click="loginSubmit('teacherForm')">提交</button>
 		</view>
 		<view>
@@ -214,10 +218,14 @@
 								}, 1000)
 							}
 						}).catch(err => {
+							
 							uni.showToast({
 								icon: "error",
 								title: "网络出小差了"
 							})
+							setTimeout(() => {
+								this.requestStatus = false
+							}, 1000)
 						})
 					} else if (ref === "studentForm") {
 						uni.$http.post("/user/login", this.loginFormData).then(res => {
@@ -267,6 +275,9 @@
 								icon: "error",
 								title: "网络出小差了"
 							})
+							setTimeout(() => {
+								this.requestStatus = false
+							}, 1000)
 						})
 					}
 				})

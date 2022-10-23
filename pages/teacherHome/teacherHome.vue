@@ -41,52 +41,61 @@
 					<text>常用工具</text>
 				</view>
 				<view class="tools-box">
-					<view class="teacher" v-if="teacherMessage.role == 'SECRETARY' || teacherMessage.role =='DEAN' ||teacherMessage.role =='INSTRUCTOR'">
-						<view>
-							<navigator animation-type="pop-in" animation-duration="300"
-								url="/pages/handleLeave/handleLeave?choose=0" class="tools-btn">
-								<uni-icons type="notification-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-							</navigator>
-							<text>审批请假</text>
-						</view>
-						<view>
-							<navigator animation-type="pop-in" animation-duration="300"
-								url="/pages/personFinishRecord/personFinishRecord" class="tools-btn">
-								<uni-icons type="email-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-							</navigator>
-							<text>审批汇总</text>
-						</view>
-						<view v-if="teacherMessage.role == 'INSTRUCTOR'">
-							<navigator animation-type="pop-in" animation-duration="300" url="/pages/classList/classList?choose=0"
-								class="tools-btn">
-								<uni-icons type="staff" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-							</navigator>
-							<text>管理班级</text>
-						</view>
-						<view class="teacher" v-else-if="teacherMessage.role == 'SECRETARY' ||teacherMessage.role == 'DEAN'">
-							<view v-if="teacherMessage.role == 'SECRETARY'">
-								<navigator animation-type="pop-in" animation-duration="300"
-									url="../adminTeacher/adminTeacher?choose=INSTRUCTOR" class="tools-btn">
-									<uni-icons type="link" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-								</navigator>
-								<text>管理教师</text>
-							</view>
-							<view v-else-if="teacherMessage.role == 'DEAN'">
-								<navigator animation-type="pop-in" animation-duration="300"
-									url="../adminTeacher/adminTeacher?choose=INSTRUCTOR" class="tools-btn">
-									<uni-icons type="link" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-								</navigator>
-								<text>管理教师</text>
-							</view>
-							<view>
-								<navigator animation-type="pop-in" animation-duration="300"
-									url="../showGradeLeave/showGradeLeave?choose=1" class="tools-btn">
-									<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
-								</navigator>
-								<text>跨级审批</text>
-							</view>
-						</view>
+
+					<view
+						v-if="teacherMessage.role == 'SECRETARY' || teacherMessage.role =='DEAN' ||teacherMessage.role =='INSTRUCTOR'">
+						<navigator animation-type="pop-in" animation-duration="300"
+							url="/pages/handleLeave/handleLeave?choose=0" class="tools-btn">
+							<uni-icons type="notification-filled" size="35" color="#f0f0f0" class="icon-style">
+							</uni-icons>
+						</navigator>
+						<text>审批请假</text>
 					</view>
+					<view
+						v-if="teacherMessage.role == 'SECRETARY' || teacherMessage.role =='DEAN' ||teacherMessage.role =='INSTRUCTOR'">
+						<navigator animation-type="pop-in" animation-duration="300"
+							url="/pages/searchLeaves/searchLeaves" class="tools-btn">
+							<uni-icons type="star-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>更正审批</text>
+					</view>
+					<view
+						v-if="teacherMessage.role == 'SECRETARY' || teacherMessage.role =='DEAN' ||teacherMessage.role =='INSTRUCTOR'">
+						<navigator animation-type="pop-in" animation-duration="300"
+							url="/pages/personFinishRecord/personFinishRecord" class="tools-btn">
+							<uni-icons type="email-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>审批汇总</text>
+					</view>
+					<view v-if="teacherMessage.role == 'INSTRUCTOR'">
+						<navigator animation-type="pop-in" animation-duration="300"
+							url="/pages/classList/classList?choose=0" class="tools-btn">
+							<uni-icons type="staff" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>管理班级</text>
+					</view>
+					<view v-if="teacherMessage.role == 'SECRETARY'">
+						<navigator animation-type="pop-in" animation-duration="300"
+							url="../adminTeacher/adminTeacher?choose=INSTRUCTOR" class="tools-btn">
+							<uni-icons type="link" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>管理教师</text>
+					</view>
+					<view v-else-if="teacherMessage.role == 'DEAN'">
+						<navigator animation-type="pop-in" animation-duration="300"
+							url="../adminTeacher/adminTeacher?choose=INSTRUCTOR" class="tools-btn">
+							<uni-icons type="link" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>管理教师</text>
+					</view>
+					<view v-if="teacherMessage.role == 'SECRETARY' ||teacherMessage.role == 'DEAN'">
+						<navigator animation-type="pop-in" animation-duration="300"
+							url="../showGradeLeave/showGradeLeave?choose=1" class="tools-btn">
+							<uni-icons type="tune" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
+						</navigator>
+						<text>跨级审批</text>
+					</view>
+
 					<view>
 						<navigator class="tools-btn" animation-type="pop-in" animation-duration="300"
 							url="/pages/classList/classList?choose=1">
@@ -95,14 +104,15 @@
 						<text>全院班级</text>
 					</view>
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/downloadNote/downloadNote"
-							class="tools-btn">
+						<navigator animation-type="pop-in" animation-duration="300"
+							url="/pages/downloadNote/downloadNote" class="tools-btn">
 							<uni-icons type="download-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>下载假条</text>
 					</view>
 					<view>
-						<navigator animation-type="pop-in" animation-duration="300" url="/pages/importList/importList" class="tools-btn">
+						<navigator animation-type="pop-in" animation-duration="300" url="/pages/importList/importList"
+							class="tools-btn">
 							<uni-icons type="upload-filled" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
 						</navigator>
 						<text>导入名单</text>
@@ -146,6 +156,13 @@
 						</view>
 						<text>个人信息</text>
 					</view>
+					<view @click="modifyEmail">
+						<view class="tools-btn">
+							<uni-icons type="person-filled" size="35" color="#f0f0f0" class="icon-style">
+							</uni-icons>
+						</view>
+						<text>绑定邮箱</text>
+					</view>
 					<view>
 						<navigator class="tools-btn" url="../contactUs/contactUs">
 							<uni-icons type="mail-open" size="35" color="#f0f0f0" class="icon-style"></uni-icons>
@@ -182,10 +199,16 @@
 						<uni-list-item title="姓名" :rightText="teacherMessage.username"></uni-list-item>
 						<uni-list-item title="性别" :rightText="teacherMessage.sex == 'WOMAN'? '女' : '男'"></uni-list-item>
 						<uni-list-item title="联系方式" :rightText="teacherMessage.phoneNumber"></uni-list-item>
+						<uni-list-item title="邮箱" :rightText="teacherMessage.email"></uni-list-item>
 					</uni-list>
 				</view>
 			</uni-popup>
 		</view>
+		<!-- 修改邮箱 -->
+		<uni-popup ref="updateEmail" type="dialog">
+			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入邮箱" :duration="2000"
+				@close="closeModifyEmail" @confirm="confirmModifyEmail"></uni-popup-dialog>
+		</uni-popup>
 	</view>
 </template>
 
@@ -258,6 +281,32 @@
 			})
 		},
 		methods: {
+			modifyEmail() {
+				this.$refs.updateEmail.open()
+			},
+			closeModifyEmail() {
+				this.$refs.updateEmail.close()
+			},
+			confirmModifyEmail(e) {
+				console.log(e)
+				uni.$http.post(
+					'/user/updateUserForStudent', {
+						"email": e
+					}
+				).then(res => {
+					if (res.data.code == 200) {
+						this.$refs.updateEmail.close()
+						uni.showToast({
+							title: "绑定成功"
+						})
+					} else {
+						this.$refs.updateEmail.close()
+						uni.showToast({
+							title: "网络出小差了，请重试"
+						})
+					}
+				})
+			},
 			revisePassword() {
 				this.$refs.popupRevisePassword.open()
 			},
@@ -306,18 +355,18 @@
 						uni.removeStorage({
 							key: 'role',
 						});
-						if(uni.getStorageSync("teacherMessage")){
+						if (uni.getStorageSync("teacherMessage")) {
 							uni.removeStorage({
 								key: 'teacherMessage',
 							});
-						}else{
+						} else {
 							uni.removeStorage({
 								key: 'studentMessage',
 							});
 						}
 						uni.showToast({
 							title: "退出成功",
-							icon:"success"
+							icon: "success"
 						})
 						setTimeout(() => {
 							uni.redirectTo({
@@ -402,6 +451,7 @@
 			.teacher,
 			.other {
 				display: flex;
+				flex-wrap: wrap;
 			}
 
 			.tools-btn {

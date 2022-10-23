@@ -211,7 +211,7 @@
 								// console.log(res.data.data)
 								this.confirmImg = res.data.data
 								for (let item in this.confirmImg) {
-									this.confirmImg[item].url = "https://leave.jxnu.edu.cn" + this.confirmImg[item].url;
+									this.confirmImg[item].url = "https://blog.aday.top" + this.confirmImg[item].url;
 								}
 							} else {
 								this.confirmImg = null
@@ -352,8 +352,9 @@
 					}else if(this.opinionEnum == 'NO' && this.processMessage.teacherOpinion == ""){
 						this.processMessage.teacherOpinion = "拒绝"
 					}
+					// status就是对应人物的意见
 					requestMessage[status] = this.processMessage.teacherOpinion
-					if (this.opinionEnum == 'YES') {
+					if (this.opinionEnum == 'YES' && this.processMessage.checkpeople.length != 0) {
 						requestMessage['leaderNumber'] = this.processMessage.checkpeople.join()
 					}
 					this.$refs.inputDialog.close()

@@ -90,6 +90,8 @@
 						@click="onClick3()"></uni-list-item>
 					<uni-list-item title="宿舍号" :rightText="studentMessage.dormitoryNumber" clickable :showArrow="true"
 						@click="onClick4()"></uni-list-item>
+						<uni-list-item title="邮箱" :rightText="studentMessage.email" clickable :showArrow="true"
+							@click="modifyEmail()"></uni-list-item>
 				</uni-list>
 			</view>
 		</uni-popup>
@@ -133,6 +135,11 @@
 			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入宿舍号" :duration="2000"
 				@close="closeFour" @confirm="confirmFour"></uni-popup-dialog>
 		</uni-popup>
+		<!-- 修改邮箱 -->
+		<uni-popup ref="updateEmail" type="dialog">
+			<uni-popup-dialog mode="input" title="输入内容" message="成功消息" placeholder="请输入邮箱" :duration="2000"
+				@close="closeModifyEmail" @confirm="confirmModifyEmail"></uni-popup-dialog>
+		</uni-popup>
 	</view>
 </template>
 
@@ -144,6 +151,7 @@
 				studentMessage: {
 					studentNumber: "null",
 					username: "null",
+					email:null
 				},
 				reviseFormData: {
 					oldPassword: "",
@@ -176,7 +184,8 @@
 						"phoneNumber": this.studentMessage.phoneNumber,
 						"parentNumber": this.studentMessage.parentNumber,
 						"buildingNumber": this.studentMessage.buildingNumber,
-						"dormitoryNumber": this.studentMessage.dormitoryNumber
+						"dormitoryNumber": this.studentMessage.dormitoryNumber,
+						"email" : this.studentMessage.email
 					}
 				).then(res => {
 					//console.log(res);
@@ -197,6 +206,9 @@
 								break;
 							case "four":
 								this.closeFour()
+								break;
+							case "four":
+								this.closeModifyEmail()
 								break;
 						}
 					}
@@ -335,6 +347,10 @@
 			onClick4() {
 				this.$refs.updateFour.open()
 			},
+			//修改邮箱
+			modifyEmail(){
+				this.$refs.updateEmail.open()
+			},
 
 			//弹窗关闭
 			closeOne() {
@@ -348,6 +364,9 @@
 			},
 			closeFour() {
 				this.$refs.updateFour.close();
+			},
+			closeModifyEmail(){
+				this.$refs.updateEmail.close()
 			},
 			confirmOne(e) {
 				if(e == ""){
@@ -397,6 +416,12 @@
 					this.submitUpdate("four");
 				}
 			},
+			
+			//修改邮箱
+			confirmModifyEmail(e){
+				this.studentMessage.email = e
+				this.submitUpdate("five");
+			}
 
 		}
 	}

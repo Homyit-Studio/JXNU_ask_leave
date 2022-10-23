@@ -109,7 +109,7 @@
 				//console.log(123123)
 				//const that = this;
 				wx.request({
-					url: 'https://leave.jxnu.edu.cn/api/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&classId='+this.formData.classId+'&studentNumber='+this.formData.studentNumber,
+					url: 'https://blog.aday.top/api/excel/downloadNote1?gradeId='+this.formData.gradeId+'&startTime='+this.formData.startTime+'&classId='+this.formData.classId+'&studentNumber='+this.formData.studentNumber,
 					header: {
 						"token" : uni.getStorageSync('token'),
 						//"Content-Type": "multipart/form-data",

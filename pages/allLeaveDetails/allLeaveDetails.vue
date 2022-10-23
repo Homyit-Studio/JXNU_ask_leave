@@ -120,7 +120,7 @@
 				types: '',
 				leaveDetails: {},
 				imgs: [],
-				baseUrl: "https://leave.jxnu.edu.cn",
+				baseUrl: "https://blog.aday.top",
 				isextendTime: true
 			}
 		},
