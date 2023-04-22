@@ -7,15 +7,12 @@ import lombok.NoArgsConstructor;
 /**
  * @author 州牧
  * @description
- * @since 2022-05-15 11:31
+ * @since 2022-11-20 16:29
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class StudentUpdateDTO {
-    private String phoneNumber;
-    private String parentNumber;
-    private String buildingNumber;
-    private String dormitoryNumber;
-    private String email;
+public class PageDTO {
+    private Integer pageNo;
+    private Integer pageSize;
 }

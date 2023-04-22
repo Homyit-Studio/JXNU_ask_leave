@@ -29,7 +29,7 @@ public class EmailServiceImpl implements EmailService {
         simpleMailMessage.setTo(email);
         simpleMailMessage.setSubject("重置密码邮件");
         String pwd= UUID.randomUUID().toString().replaceAll("-", "").substring(0,6);
-        simpleMailMessage.setText("你好！你的新密码为："+pwd+"(提示：无空格)"+"\n请登录系统再次修改密码！你的请求地址ip："+getClientIp(request));
+        simpleMailMessage.setText("你好！你的新密码为："+pwd+"\n请登录系统再次修改密码!");
 
         javaMailSender.send(simpleMailMessage);
         return pwd;

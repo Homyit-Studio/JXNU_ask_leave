@@ -88,7 +88,14 @@ public class EastExcelListener extends AnalysisEventListener<StudentExcelDTO> {
             sysStudentClassInfo.setMajorAndClass(majorAndClass);
             sysStudentClassInfo.setGradeId(gradeId);
             //创建班级
-            classInfoMapper.insert(sysStudentClassInfo);
+
+
+            if (classInfoMapper.selectCount(new QueryWrapper<SysStudentClassInfo>().eq("major_and_class",majorAndClass)) == 0){
+                classInfoMapper.insert(sysStudentClassInfo);
+            }
+
+
+
         }
 
         SysStudentUser user = MyBeanUtils.copyBean(data, SysStudentUser.class);

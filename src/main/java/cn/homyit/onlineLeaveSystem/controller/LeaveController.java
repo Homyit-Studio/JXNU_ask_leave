@@ -1,9 +1,7 @@
 package cn.homyit.onlineLeaveSystem.controller;
 
 import cn.homyit.onlineLeaveSystem.entity.DO.LeaveNote;
-import cn.homyit.onlineLeaveSystem.entity.DTO.SelectNotePageDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.TableTimeDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.UpdateNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.*;
 import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.Result;
@@ -12,6 +10,7 @@ import cn.homyit.onlineLeaveSystem.log.UserLog;
 import cn.homyit.onlineLeaveSystem.myEnum.ModuleEnum;
 import cn.homyit.onlineLeaveSystem.myEnum.OperationEnum;
 import cn.homyit.onlineLeaveSystem.service.LeaveNoteService;
+import org.apache.xmlbeans.impl.xb.xsdschema.All;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -59,12 +58,34 @@ public class LeaveController {
         LeaveNoteVo leaveNoteVo = leaveNoteService.selectANote(id);
         return Result.success(leaveNoteVo);
     }
+//根据学生信息查找假条
+    @PostMapping("/selectNotesByStudentInfo")
+    public Result<PageVo<LeaveNoteVo>> selectNotesByStudentInfo(@RequestBody FindNotesDTO findNotesDTO){
+        PageVo<LeaveNoteVo> noteListVo = leaveNoteService.selectNotesByStudentInfo(findNotesDTO);
+        return Result.success(noteListVo);
+    }
+
+    @PostMapping("/updateTheNote")
+    public Result<LeaveNoteVo> updateTheNote( @RequestBody AllUpdateDTO allUpdateDTO){
+
+        leaveNoteService.updateTheNote(allUpdateDTO);
+        LeaveNoteVo leaveNoteVo = leaveNoteService.selectANote(allUpdateDTO.getId());
+        return Result.success(leaveNoteVo);
+    }
 
     @UserLog(module = ModuleEnum.NOTE,title = "审批假条",type = OperationEnum.MODIFY)
     @ApiLog
     @PostMapping("/updateNote")
     public Result updateNote(@Validated @RequestBody UpdateNoteDTO updateNoteDTO){
         leaveNoteService.updateNote(updateNoteDTO);
+
+        return Result.success();
+    }
+    //批量处理假条
+    //讲真，见证自己越来越没耐心，摆了个大的
+    @PostMapping("/updateLotsNote")
+    public Result updateLotsNote(@Validated @RequestBody ManyNotesDTO manyNotesDTO){
+        leaveNoteService.updateLotsNote(manyNotesDTO);
 
         return Result.success();
     }

@@ -41,7 +41,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     public void upload(MultipartFile file,Long id) {
-
+        System.out.println(urlPath);
 //        boolean isImage = CheckImageUtil.isImage(file);
 //        if (!isImage){
 //            throw new BizException(ExceptionCodeEnum.NOT_IMAGE);
@@ -76,6 +76,36 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    public void uploadFilesAdd(MultipartFile[] files, Long discussionId) {
+        for (MultipartFile file : files) {
+            String temp = UUID.randomUUID() + file.getOriginalFilename();
+            String uploadUrl = resourcePath+temp;
+            File uploadFile = new File(uploadUrl);
+            try {
+                file.transferTo(uploadFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new BizException(ExceptionCodeEnum.UPLOAD_ERROR);
+            }
+
+            String dbUrl = urlPath + temp;
+            ImagesNote imagesNote = new ImagesNote();
+            imagesNote.setUrl(dbUrl);
+            imagesNote.setDiscussionId(discussionId);
+            imageMapper.insert(imagesNote);
+        }
+    }
+
+    @Override
+    public List<ImagesNote> getImagesForadd(Long discussionId) {
+        List<ImagesNote> imagesNotes = imageMapper.selectList(new QueryWrapper<ImagesNote>().eq("discussion_id", discussionId));
+        if (CollectionUtils.isEmpty(imagesNotes)){
+            throw new BizException(ExceptionCodeEnum.NO_IMAGES);
+        }
+        return imagesNotes;
+    }
+
+    @Override
     public List<ImagesNote> getImagesForNote(Long id) {
         List<ImagesNote> imagesNotes = imageMapper.selectList(new QueryWrapper<ImagesNote>().eq("note_id", id));
         if (CollectionUtils.isEmpty(imagesNotes)){
@@ -101,4 +131,6 @@ public class ImageServiceImpl implements ImageService {
 
         imageMapper.delete(wrapper);
     }
+
+
 }

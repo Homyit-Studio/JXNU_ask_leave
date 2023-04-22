@@ -35,6 +35,7 @@ public class ImageNoteController {
         return Result.success();
     }
 
+
     /*
    批量上传
     */
@@ -44,6 +45,18 @@ public class ImageNoteController {
 
         imageService.upload(files,id);
         return Result.success();
+    }
+    //新增
+    @PostMapping(value = "/uploadFilesAdd")
+    public Result uploadFilesAdd(@RequestPart("files") MultipartFile[] files,@RequestParam("discussionId") Long discussionId) {
+
+        imageService.uploadFilesAdd(files,discussionId);
+        return Result.success();
+    }
+    @GetMapping("/getAdd")
+    public Result<List<ImagesNote>> getImagesForAdd(Long discussionId){
+        List<ImagesNote> list = imageService.getImagesForadd(discussionId);
+        return Result.success(list);
     }
 
     @GetMapping("/{id}")
@@ -59,4 +72,6 @@ public class ImageNoteController {
         imageService.deleteByNoteId(id);
         return Result.success();
     }
+
+
 }

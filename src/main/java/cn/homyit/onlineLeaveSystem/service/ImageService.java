@@ -13,4 +13,9 @@ public interface ImageService {
     List<ImagesNote> getImagesForNote(Long id);
 
     void deleteByNoteId(Long id);
+
+    void uploadFilesAdd(MultipartFile[] files, Long discussionId);
+
+    List<ImagesNote> getImagesForadd(Long discussionId);
+
 }

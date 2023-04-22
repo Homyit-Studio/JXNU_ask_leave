@@ -92,11 +92,14 @@ public class TeacherServiceImpl implements TeacherService {
 
     //获取所有班级
     @Override
-    public List<ClassInfoVO> getAllClass() {
+    public List<ClassInfoVO> getAllClass(Long gradeId) {
         QueryWrapper<SysStudentClassInfo> wrapper = new QueryWrapper<>();
+        wrapper.eq("grade_id",gradeId);
         wrapper.orderByAsc("id");
+
         List<SysStudentClassInfo> sysStudentClassInfos = classInfoMapper.selectList(wrapper);
         List<ClassInfoVO> classInfoVOS = MyBeanUtils.copyList(sysStudentClassInfos, ClassInfoVO.class);
+
         return classInfoVOS;
 
     }
@@ -116,10 +119,12 @@ public class TeacherServiceImpl implements TeacherService {
                 eq("grade_id",gradeId));
 
 
-
-
-
     }
+
+//    @Override
+//    public HashMap<Integer, Integer> getAllGradeId() {
+//        return classInfoMapper.getAllGradeId();
+//    }
 
 
 }

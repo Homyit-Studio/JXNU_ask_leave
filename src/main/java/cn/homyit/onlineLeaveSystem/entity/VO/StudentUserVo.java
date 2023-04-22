@@ -15,6 +15,7 @@ public class StudentUserVo {
     private Long classId;
     private LevelEnum role;
     private String username;
+    private String email;
     private String idNumber;
     private String nation;
     private Long studentNumber;

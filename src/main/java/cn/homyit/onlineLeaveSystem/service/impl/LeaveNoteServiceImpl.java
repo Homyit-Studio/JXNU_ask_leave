@@ -1,10 +1,7 @@
 package cn.homyit.onlineLeaveSystem.service.impl;
 
 import cn.homyit.onlineLeaveSystem.entity.DO.*;
-import cn.homyit.onlineLeaveSystem.entity.DTO.DownloadNoteDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.SelectNotePageDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.TableTimeDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.UpdateNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.*;
 import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.exception.BizException;
@@ -53,7 +50,7 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
 
     @Override
-    public void insertNote(LeaveNote note) {
+    public void  insertNote(LeaveNote note) {
         LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
         SysStudentUser user = loginUser.getUser();
@@ -143,6 +140,25 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         return new PageVo<>(list1,iPage.getTotal(),iPage.getPages());
 
     }
+    @Override
+    public PageVo<LeaveNoteVo> selectNotesByStudentInfo(FindNotesDTO findNotesDTO) {
+        QueryWrapper<LeaveNote> wrapper = new QueryWrapper<>();
+        Page<LeaveNote> page = new Page<>(findNotesDTO.getPageNo(),findNotesDTO.getPageSize());
+        if(!Objects.isNull(findNotesDTO.getUsername()))
+            wrapper.like("username",findNotesDTO.getUsername());
+        if(!Objects.isNull(findNotesDTO.getStartTime()))
+            wrapper.gt("start_time",findNotesDTO.getStartTime());
+        if(!Objects.isNull(findNotesDTO.getEndTime()))
+            wrapper.lt("end_time",findNotesDTO.getEndTime());
+        if(!Objects.isNull(findNotesDTO.getExamineEnum()))
+            wrapper.eq("examine",findNotesDTO.getExamineEnum());
+        if(!Objects.isNull(findNotesDTO.getStudentNumber()))
+            wrapper.eq("student_number",findNotesDTO.getStudentNumber());
+
+        IPage<LeaveNote> iPage =leaveNoteMapper.selectPage(page,wrapper);
+        List<LeaveNoteVo> list = MyBeanUtils.copyList(iPage.getRecords(), LeaveNoteVo.class);
+        return new PageVo<>(list,iPage.getTotal(),iPage.getPages());
+    }
 
 
     @Override
@@ -199,6 +215,57 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
         LeaveNoteVo leaveNoteVo = MyBeanUtils.copyBean(note, LeaveNoteVo.class);
         return leaveNoteVo;
     }
+
+    @Override
+    public void updateTheNote(AllUpdateDTO allUpdateDTO) {
+        LeaveNote note = MyBeanUtils.copyBean(allUpdateDTO, LeaveNote.class);
+        note.setLeaderNumber(null);
+        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        LevelEnum role = loginUser.getUser().getRole();
+
+        if (allUpdateDTO.getOpinionEnum().equals(OpinionEnum.NO)){
+            note.setExamine(ExamineEnum.FAILURE);
+        }else{
+            //院长审批或最后一级审批生成销假条或者跨级
+            if(role.equals(LevelEnum.DEAN)||allUpdateDTO.getLevelEnum().getValue()<=role.getValue()){
+                note.setExamine(ExamineEnum.WAIT_REPORT);
+
+                BackNote backNote = MyBeanUtils.copyBean(note, BackNote.class);
+                backNote.setDepart(LeaveEnum.NO);
+                backNoteService.insertNote(backNote);
+            }else{
+                note.setExamine(ExamineEnum.getEumByCode(role.getValue()));
+                if (role.equals(LevelEnum.INSTRUCTOR)){
+                    //手动指定负责人
+                    note.setLeaderNumber(allUpdateDTO.getLeaderNumber());
+                }
+            }
+        }
+        leaveNoteMapper.updateById(note);
+
+    }
+
+    @Override
+    public void updateLotsNote(ManyNotesDTO manyNotesDTO) {
+        String[] ids = manyNotesDTO.getIds().split(",");
+        for (String s : ids) {
+            long id = Long.parseLong(s);
+            UpdateNoteDTO updateNoteDTO = new UpdateNoteDTO();
+            updateNoteDTO.setId(id);
+            updateNoteDTO.setInstructorOpinion(manyNotesDTO.getInstructorOpinion());
+            updateNoteDTO.setSecretaryOpinion(manyNotesDTO.getSecretaryOpinion());
+            updateNoteDTO.setDeanOpinion(manyNotesDTO.getDeanOpinion());
+            updateNoteDTO.setOpinionEnum(manyNotesDTO.getOpinionEnum());
+            updateNoteDTO.setLeaderNumber(manyNotesDTO.getLeaderNumber());
+            updateNoteDTO.setLevelEnum(manyNotesDTO.getLevelEnum());
+
+            updateNote(updateNoteDTO);
+        }
+
+
+    }
+
 
     //审批
     @Override
@@ -475,6 +542,8 @@ public class LeaveNoteServiceImpl implements LeaveNoteService {
 
         return getStringIntegerMap(waitReport, applyExpired, reportExpired, failure, processing,processed);
     }
+
+
 
     private Map<String, Integer> getStringIntegerMap(Integer waitReport, Integer applyExpired, Integer reportExpired, Integer failure, Integer processing,Integer processed) {
         Map<String,Integer> map  = new HashMap<>();

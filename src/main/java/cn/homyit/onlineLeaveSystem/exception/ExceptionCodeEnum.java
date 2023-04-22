@@ -25,6 +25,8 @@ public enum ExceptionCodeEnum {
     TOKEN_EXPIRED(567,"登录过期，请重新登录"),
     FORBIDDEN(568,"权限不足"),
     EXCEL_IMPORT(111,"请检查数据是否正确，对应信息是否完整，是否重复"),
+    DELETE_DIS_ERROR(112,"您不是讨论的发布者，删除失败"),
+    DELETE_COM_ERROR(113,"您不是评论的发布者，删除失败"),
 
     /**
      * 通用结果

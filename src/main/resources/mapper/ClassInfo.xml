@@ -12,5 +12,16 @@
         WHERE sct.student_number = #{number}
     </select>
 
+<!--    <select id="getAllGradeId" resultType="configMap">-->
+<!--        SELECT grade_id,COUNT(*) as count-->
+<!--        FROM sys_student_class_info-->
+<!--        GROUP BY grade_id;-->
+<!--    </select>-->
+
+<!--    <resultMap id="configMap" type="java.util.Map" >-->
+<!--        <result property="key" column="grade_id"  jdbcType="VARCHAR" />-->
+<!--        <result property="value" column="count"  jdbcType="VARCHAR" />-->
+<!--    </resultMap>&lt;!&ndash; 模糊查询出多条记录 &ndash;&gt;-->
+
 
 </mapper>

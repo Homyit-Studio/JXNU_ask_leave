@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class ImagesNote {
   @TableId(type = IdType.AUTO)
   private Long id;
-
+  private Long discussionId;
   private Long noteId;
   private String url;
 

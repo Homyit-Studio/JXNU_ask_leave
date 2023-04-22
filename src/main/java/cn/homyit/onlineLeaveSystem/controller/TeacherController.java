@@ -4,10 +4,12 @@ import cn.homyit.onlineLeaveSystem.entity.DTO.PageStudentDTO;
 import cn.homyit.onlineLeaveSystem.entity.VO.*;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author 州牧
@@ -39,11 +41,27 @@ public class TeacherController {
     }
 
     /*获取所有班级*/
-    @GetMapping("/getAllClass")
-    public Result<List<ClassInfoVO>> getAllClass(){
-        List<ClassInfoVO> list = teacherService.getAllClass();
-        return Result.success(list);
+    @GetMapping("/getAllClass/{gradeId}")
+    public Result<HashMap<String,Object>> getAllClass(@PathVariable Long gradeId){
+        List<ClassInfoVO> list = teacherService.getAllClass(gradeId);
+        HashMap<String,Object> map = new HashMap<>();
+        map.put("list",list);
+        map.put("total",list.size());
+        return Result.success(map);
     }
+
+//    /*获取各个年级数量*/
+//    @GetMapping("/getAllGradeId")
+//    public Result getAllGradeId(){
+//        List<ClassInfoVO> list = teacherService.getAllClass(gradeId);
+//        Map<Long,Integer> map = new HashMap<>();
+//        for (ClassInfoVO classInfoVO : list) {
+//            Long id = classInfoVO.getGradeId();
+//            map.put(id,map.getOrDefault(id,0)+1);
+//        }
+//        System.out.println(map);
+//        return Result.success(map);
+//    }
 
     @GetMapping("/deleteForGrade/{gradeId}")
     public Result deleteForGrade(@PathVariable Long gradeId){

@@ -5,6 +5,7 @@ import cn.homyit.onlineLeaveSystem.entity.VO.ClassInfoVO;
 import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.StudentUserVo;
 
+import java.util.HashMap;
 import java.util.List;
 
 public interface TeacherService {
@@ -16,7 +17,9 @@ public interface TeacherService {
     List<Long> getAllStudentNumber();
 
 
-    List<ClassInfoVO> getAllClass();
+    List<ClassInfoVO> getAllClass(Long gradeId);
 
     void deleteForGrade(Long gradeId);
+
+//    HashMap<Integer, Integer> getAllGradeId();
 }

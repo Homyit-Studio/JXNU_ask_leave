@@ -1,10 +1,7 @@
 package cn.homyit.onlineLeaveSystem.service;
 
 import cn.homyit.onlineLeaveSystem.entity.DO.LeaveNote;
-import cn.homyit.onlineLeaveSystem.entity.DTO.DownloadNoteDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.SelectNotePageDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.TableTimeDTO;
-import cn.homyit.onlineLeaveSystem.entity.DTO.UpdateNoteDTO;
+import cn.homyit.onlineLeaveSystem.entity.DTO.*;
 import cn.homyit.onlineLeaveSystem.entity.VO.LeaveNoteVo;
 import cn.homyit.onlineLeaveSystem.entity.VO.PageVo;
 
@@ -39,6 +36,13 @@ public interface LeaveNoteService {
     Map<String, Integer> allCountForGrade(TableTimeDTO tableTimeDTO);
 
     Map<String, Integer> allCountForGradeId(TableTimeDTO tableTimeDTO);
+
+    PageVo<LeaveNoteVo> selectNotesByStudentInfo(FindNotesDTO findNotesDTO);
+
+    void updateTheNote(AllUpdateDTO allUpdateDTO);
+
+    void updateLotsNote(ManyNotesDTO manyNotesDTO);
+
 
 
 //    List<ImagesNote> selectImageForNote(Long noteId);

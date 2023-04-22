@@ -137,7 +137,7 @@ public class UserServiceImpl implements UserService {
 
         QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
         wrapper.eq("role", LevelEnum.SECRETARY)
-        .select("student_number","username");
+                .select("student_number","username");
         List<SysStudentUser> sysStudentUsers = userMapper.selectList(wrapper);
 
         Map<String, Long> map = new HashMap<>();
@@ -147,6 +147,23 @@ public class UserServiceImpl implements UserService {
         }
         return map;
     }
+
+
+//    @Override
+//    public Map<String, Long> getAllLeaders() {
+//
+//        QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
+//        wrapper.eq("role", LevelEnum.SECRETARY)
+//                .select("student_number","username");
+//        List<SysStudentUser> sysStudentUsers = userMapper.selectList(wrapper);
+//
+//        Map<String, Long> map = new HashMap<>();
+//        for (SysStudentUser sysStudentUser : sysStudentUsers) {
+//            System.out.println(sysStudentUser);
+//            map.put(sysStudentUser.getUsername(),sysStudentUser.getStudentNumber());
+//        }
+//        return map;
+//    }
 
     //根据姓名获取学生列表
     @Override
@@ -275,16 +292,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void resetPasswordByEmail(Long studentNumber, HttpServletRequest request) {
-//        QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
-//        wrapper.eq("student_number",studentNumber);
-//        SysStudentUser user = userMapper.selectOne(wrapper);
-//        String email = user.getEmail();
+        QueryWrapper<SysStudentUser> wrapper = new QueryWrapper<>();
+        wrapper.eq("student_number",studentNumber);
+        SysStudentUser user = userMapper.selectOne(wrapper);
+        String email = user.getEmail();
 
-        String pwd = emailService.resetPasswordByEmail("2750419070@qq.com", request);
-//        String encode = passwordEncoder.encode(pwd);
-//        user.setPassword(encode);
-//
-//        userMapper.updateById(user);
+        String pwd = emailService.resetPasswordByEmail(email, request);
+        String encode = passwordEncoder.encode(pwd);
+        user.setPassword(encode);
+
+        userMapper.updateById(user);
 
     }
 
