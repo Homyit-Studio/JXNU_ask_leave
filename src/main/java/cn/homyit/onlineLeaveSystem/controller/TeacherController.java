@@ -4,6 +4,7 @@ import cn.homyit.onlineLeaveSystem.entity.DTO.PageStudentDTO;
 import cn.homyit.onlineLeaveSystem.entity.VO.*;
 import cn.homyit.onlineLeaveSystem.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
