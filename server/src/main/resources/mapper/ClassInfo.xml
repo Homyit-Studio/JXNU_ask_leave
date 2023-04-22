@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.homyit.onlineLeaveSystem.mapper.ClassInfoMapper">
+
+
+    <select id="selectClassInfoByNumber" resultType="cn.homyit.onlineLeaveSystem.entity.VO.ClassInfoVO">
+        SELECT
+               *
+        FROM
+            sys_class_teacher   sct
+        LEFT JOIN `sys_student_class_info` ssci  ON sct.`class_id` = ssci.`id`
+        WHERE sct.student_number = #{number}
+    </select>
+
+<!--    <select id="getAllGradeId" resultType="configMap">-->
+<!--        SELECT grade_id,COUNT(*) as count-->
+<!--        FROM sys_student_class_info-->
+<!--        GROUP BY grade_id;-->
+<!--    </select>-->
+
+<!--    <resultMap id="configMap" type="java.util.Map" >-->
+<!--        <result property="key" column="grade_id"  jdbcType="VARCHAR" />-->
+<!--        <result property="value" column="count"  jdbcType="VARCHAR" />-->
+<!--    </resultMap>&lt;!&ndash; 模糊查询出多条记录 &ndash;&gt;-->
+
+
+</mapper>

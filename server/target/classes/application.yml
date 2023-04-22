@@ -1,0 +1,55 @@
+spring:
+  mail:
+    protocol: smtps
+    host: smtp.126.com
+    default-encoding: UTF-8
+    username: homyit@126.com
+    password: TEWORJISPGNPIJLX
+    port: 465
+    properties:
+      mail:
+        debug: true
+      smtp:
+        auth: true
+        socketFactory:
+          port: 465
+          class: javax.net.ssl.SSLSocketFactory
+          fallback: false
+        ssl:
+          enable: true
+  datasource:
+    url: jdbc:mysql://101.43.85.67:3307/ask_leave?characterEncoding=utf-8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  #    hikari:springboot默认有数据库连接连接大小和tomcat连接数量，不知道是否需要自定义，
+
+  redis:
+    host: 101.43.85.67
+    port: 6380
+    password: 123456
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
+
+logging:
+  level:
+    cn:
+      homyit:
+        onlineLeaveSystem: trace
+
+
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-enums-package: cn.homyit.onlineLeaveSystem.myEnum
+  global-config:
+    db-config:
+      logic-delete-field: "null"
+      logic-not-delete-value: 0
+  configuration:
+    map-underscore-to-camel-case: true
+
+upload:
+  resourcePath: /root/OnlineLeaveSystem/images/
+  urlPath: /picture/
